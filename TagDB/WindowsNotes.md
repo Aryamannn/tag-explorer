@@ -44,7 +44,9 @@ choco install mysql.workbench -y
 ### Install node.js
 In the same bash window type:
 
-`choco install nodejs -y`
+```
+choco install nodejs -y
+```
 
 ## One-time TagDB Setup
 
@@ -94,7 +96,9 @@ Just leave that window running - it is the TagDB service.
 
 Create another *bash* window by right clicking the *Git Bash* icon in the task bar. A menu will pop up. Select `Git Bash` and a new window will open. In the newly opened window, navigate to the TagDB directory (e.g. c`d TagDB`) then type:
 
-`./populate.sh`
+```
+./populate.sh
+```
 
 You will see quite a few messages pass by as it add files, tags, and then tags the files.
 Eventually you'll see the output from several sample tag queries. These will show that
@@ -104,7 +108,9 @@ TagDB is populated and operating.
 
 Once you have setup and populated *TagDB* then using it in the future is easy. Just open *bash* and type:
 
-`node tagdb.js`
+```
+node tagdb.js
+```
 
 It will launch, connect to MySQL, and become available via its REST API. To stop the service just type `CTRL-C` to *bash*.
 
