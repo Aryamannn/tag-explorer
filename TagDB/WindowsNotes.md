@@ -29,7 +29,9 @@ iex $script
 ### Install *jq*, the JSON formatter
 Start by opening bash as Administrator using the instructions given above. Once open, type:
 
-`choco install jq -y`
+```
+choco install jq -y
+```
 
 ### Install MySQL
 In the same bash window use the two commands below to install *MySQL* and *MySQL Workbench*:
