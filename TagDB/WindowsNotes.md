@@ -9,7 +9,7 @@
 
 ### Install *git bash*
 
-To install bash, we need to use `PowerShell`. Launch it as administrator using the instructions given above. When it is open, type:
+To install bash, we need to use `PowerShell`. **Launch it as administrator** using the instructions given above. When it is open, type:
 
 `winget install --id Git.Git -e --source winget`
 
