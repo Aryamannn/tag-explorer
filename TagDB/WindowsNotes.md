@@ -48,25 +48,17 @@ In the same bash window type:
 choco install nodejs -y
 ```
 
+*Important*: Close the current git bash window. It won't be able to find the node files that were just installed. Open a new window.
+
 ## One-time TagDB Setup
-
-### Download the TagDB project
-
-Choose a development folder where you'd like to place TagDB then download it from github. You can do this by navigating to the [repo](https://github.com/jpasqua/TagDB) and downloading a zip file, or by using the following command in *bash*:
-
-```
-wget --header="Authorization: token TOKEN_GOES_HERE" \
-     -O TagDB.zip \
-	  https://github.com/jpasqua/TagDB/archive/refs/heads/main.zip
-```
-
-Unzip the downloaded file (`TagDB.zip`). You will end up with a folder named TagDB-main. Rename it to TagDB.
 
 ### Install the required node modules
 
 The necessary node modules are not part of the repo. You need to download them. In *bash*, navigate to the TagDB directory (e.g. `cd TagDB`) and type:
 
-`npm install`
+```
+npm install
+```
 
 ### Prepare MySQL
 1. Launch the MySQL Workbench app
@@ -94,7 +86,7 @@ Just leave that window running - it is the TagDB service.
 
 ## Populating TagDB with Sample Data
 
-Create another *bash* window by right clicking the *Git Bash* icon in the task bar. A menu will pop up. Select `Git Bash` and a new window will open. In the newly opened window, navigate to the TagDB directory (e.g. c`d TagDB`) then type:
+Create another *bash* window by right clicking the *Git Bash* icon in the task bar. A menu will pop up. Select `Git Bash` and a new window will open. In the newly opened window, navigate to the TagDB directory (e.g. `cd /c/Users/joe/Dev/tag-explorer/TagDB`) then type:
 
 ```
 ./populate.sh
@@ -106,7 +98,7 @@ TagDB is populated and operating.
 
 ## After Setup
 
-Once you have setup and populated *TagDB* then using it in the future is easy. Just open *bash* and type:
+Once you have setup and populated *TagDB* then using it in the future is easy. Just open *bash*, navigate to the TagDB directory, and type:
 
 ```
 node tagdb.js
