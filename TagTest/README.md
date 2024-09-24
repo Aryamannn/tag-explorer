@@ -8,16 +8,6 @@ It is assumed you have already installed:
 
 ## Installation
 
-Download the [repo](https://github.com/jpasqua/TagTest) from GitHub using the web UI or with the following command in *bash*:
-
-```
-wget --header="Authorization: token TOKEN_GOES_HERE" \
-     -O TagTest.zip \
-	  https://github.com/jpasqua/TagTest/archive/refs/heads/main.zip
-```
-
-Unzip the downloaded file (`TagTest.zip`). You will end up with a folder named TagTest-main. Rename it to TagTest.
-
 The necessary node modules are not part of the repo. You need to download them. In *bash*, navigate to the TagTest directory (e.g. `cd TagTest`) and type:
 
 `npm install`
@@ -26,7 +16,9 @@ The necessary node modules are not part of the repo. You need to download them. 
 
 In *bash*, navigate to the TagTest directory (e.g. `cd TagTest`) and type:
 
-`npm run dev`
+```
+npm run dev
+```
 
 Once TagTest begins running, you'll get output that looks like this:
 
@@ -38,7 +30,7 @@ Once TagTest begins running, you'll get output that looks like this:
   ➜  press h + enter to show help
 ```
 
-If you press h + enter, you will see:
+If you press 'h' and hit the enter key, you will see:
 
 ```
 h
