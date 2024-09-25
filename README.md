@@ -1,6 +1,6 @@
 # **Tag Explorer**
 
-`Traditional hierarchical file systems` can be limiting and inefficient for organizing and finding data. For example, deciding whether a file about a new `AI-based approach to economics` belongs in the **economics** or **AI** folder can be confusing, and deep folder hierarchies can complicate navigation. **Tag Explorer** solves these issues by utilizing a tag-based system for more flexible and efficient data organization. The goal is to simplify file organization and retrieval through tagging.
+`Traditional hierarchical file systems can be limiting and inefficient for organizing and finding data. For example, deciding whether a file about a new AI-based approach to economics belongs in the "economics" or "AI" folder can be confusing, and deep folder hierarchies can complicate navigation. Tag Explorer solves these issues by utilizing a tag-based system for more flexible and efficient data organization. The goal is to simplify file organization and retrieval through tagging.
 
 ## **Project Status**
 
@@ -9,7 +9,7 @@ This project is currently in the planning and development phase. More details an
 
 ## **Components**
 
-- **TagDB**: A database for storing tags, provided by the sponsor.
+- **TagDB**:A database for storing tags, provided by the sponsor.
 - **TagEdit**: A web-based UI for creating and managing tags.
 - **TagExplorer**: A web-based UI for viewing and managing files using tag queries, similar to traditional file explorers.
 - **Autotagger** (Optional): An automated tool that analyzes files in a staging directory and applies or suggests tag/value pairs.
