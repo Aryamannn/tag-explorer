@@ -1,5 +1,7 @@
 # TagDB Notes for Windows
 
+These notes describe the setup and operation of TagDB on the Windows platform. Though very similar conceptually to the process on Mac, it is different in the details.
+
 ## General Notes
 
 * You'll be using an app called `git bash` in this process. It is like `PowerShell`, but is a Linux-style shell. This allows more scripts to work between Windows, Mac, and Linux. In these instructions I will refer to it simply as `bash`.
