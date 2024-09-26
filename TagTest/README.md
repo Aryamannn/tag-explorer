@@ -10,7 +10,9 @@ It is assumed you have already installed:
 
 The necessary node modules are not part of the repo. You need to download them. In *bash*, navigate to the TagTest directory (e.g. `cd TagTest`) and type:
 
-`npm install`
+```
+npm install
+```
 
 ## Running TagTest
 
