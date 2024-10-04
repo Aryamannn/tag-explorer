@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS TagDB;
-CREATE USER IF NOT EXISTS 'taguser'@'localhost' IDENTIFIED BY 'taggy';
+CREATE USER IF NOT EXISTS 'taguser'@'localhost' IDENTIFIED BY 'Taggy@1234';
 
 USE TagDB;
 
