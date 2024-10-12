@@ -1,5 +1,6 @@
 CREATE DATABASE IF NOT EXISTS TagDB;
 CREATE USER IF NOT EXISTS 'taguser'@'localhost' IDENTIFIED BY 'taggy';
+GRANT CREATE TEMPORARY TABLES ON tagdb.* TO 'taguser'@'localhost';
 
 USE TagDB;
 
