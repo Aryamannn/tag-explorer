@@ -260,11 +260,11 @@ New_Store_Opening_Strategy.pdf
 	"Priority" "Low"
 	"Client" "Nike"
 	"Content Type" "Document"
-New_Jordans_TV_Ad.pdf
+New_Jordans_TV_Ad.mp4
 	"Priority" "High"
 	"Client" "Nike"
 	"Content Type" "Video"
-New_Jordans_Radio_Ad.pdf
+New_Jordans_Radio_Ad.mp3
 	"Priority" "High"
 	"Client" "Nike"
 	"Content Type" "Audio"
@@ -323,6 +323,6 @@ Q42023_Board_Summary.docx
 Morale_Preso.pptx
 	"Priority" "Low"
 	"Content Type" "Presentation"
-2H2024_Marketing_Org_Chart
+2H2024_Marketing_Org_Chart.pptx
 	"Priority" "Low"
 	"Content Type" "Presentation"
