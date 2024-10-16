@@ -10,8 +10,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "mysql2": "^3.11.0"
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "mysql2": "^3.11.0",
+    "react-bootstrap": "^2.10.5"
   }
 }
