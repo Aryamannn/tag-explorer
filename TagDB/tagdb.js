@@ -447,17 +447,10 @@ app.use("/switch-view", switchViewRoutes );
 //     });
 // });
 
-// // API to retrieve files with all given tag/value pairs
-// app.post('/files/tags', (req, res) => {
-//     const tagValuePairs = req.body.tagValuePairs; // Expecting an array of { tag_name, tag_value }
-
-//     if (!tagValuePairs || !Array.isArray(tagValuePairs) || tagValuePairs.length === 0) {
-//         return res.status(400).send({ message: "Invalid input. Provide a list of tag/value pairs." });
-//     }
-
-//     // Create placeholders for the tag_name and tag_value pairs in the SQL query
-//     const placeholders = tagValuePairs.map(() => "(t.tag_name = ? AND tv.tag_value = ?)").join(" OR ");
-//     const queryValues = tagValuePairs.reduce((arr, pair) => [...arr, pair.tag_name, pair.tag_value], []);
+function buildFileQuery(tagValuePairs) {
+    // Create placeholders for the tag_name and tag_value pairs in the SQL query
+    const placeholders = tagValuePairs.map(() => "(t.tag_name = ? AND tv.tag_value = ?)").join(" OR ");
+    const queryValues = tagValuePairs.reduce((arr, pair) => [...arr, pair.tag_name, pair.tag_value], []);
 
 //     // SQL query that counts the number of tag/value matches per file
 //     const sql = `
@@ -471,14 +464,125 @@ app.use("/switch-view", switchViewRoutes );
 //         HAVING COUNT(*) = ?
 //     `;
 
-//     // Add the expected number of matches to the query values
-//     queryValues.push(tagValuePairs.length);
+    return sql;
+}
 
-//     db.query(sql, queryValues, (err, results) => {
-//         if (err) return res.status(500).send(err);
-//         res.send(results);
-//     });
-// });
+// API to retrieve files with all given tag/value pairs
+app.post('/files/tags', (req, res) => {
+  const tagValuePairs = req.body.tagValuePairs;
+
+  const wildcardTagValuePairs = [];
+  const normalTagValuePairs = [];
+
+  // Separate wildcard and non-wildcard tag-value pairs
+  const promises = tagValuePairs.map(tagPair => {
+    if (tagPair.tag_value === '*') {
+      return new Promise((resolve, reject) => {
+        // Get all possible values for the wildcard tag
+        const findValuesSql = 'SELECT tag_value FROM tag_values tv JOIN tags t ON t.tag_id = tv.tag_id WHERE t.tag_name = ?';
+        db.query(findValuesSql, [tagPair.tag_name], (err, results) => {
+          if (err) return reject(err);
+
+          // Store all possible values for the wildcard
+          results.forEach(row => {
+            wildcardTagValuePairs.push({
+              tag_name: tagPair.tag_name,
+              tag_value: row.tag_value
+            });
+          });
+
+          resolve();
+        });
+      });
+    } else {
+      // No wildcard, treat it as a normal AND condition
+      normalTagValuePairs.push(tagPair);
+      return Promise.resolve();
+    }
+  });
+
+  // Wait for all asynchronous wildcard queries to complete
+  Promise.all(promises)
+    .then(() => {
+      if (wildcardTagValuePairs.length > 0) {
+        // Step 1: Create a temporary table with wildcard results
+        const wildcardSql = `
+          CREATE TEMPORARY TABLE temp_files AS
+          SELECT DISTINCT f.file_id
+          FROM files f
+          JOIN file_tags ft ON f.file_id = ft.file_id
+          JOIN tag_values tv ON ft.value_id = tv.value_id
+          JOIN tags t ON t.tag_id = tv.tag_id
+          WHERE ${wildcardTagValuePairs.map(() => "(t.tag_name = ? AND tv.tag_value = ?)").join(" OR ")}
+        `;
+        const wildcardValues = wildcardTagValuePairs.reduce((arr, pair) => [...arr, pair.tag_name, pair.tag_value], []);
+
+        db.query(wildcardSql, wildcardValues, (err) => {
+          if (err) return res.status(500).send(err);
+
+          // Step 2: Query the temporary table for non-wildcard conditions
+          if (normalTagValuePairs.length > 0) {
+            const normalSql = `
+              SELECT f.*
+              FROM temp_files tf
+              JOIN files f ON f.file_id = tf.file_id
+              JOIN file_tags ft ON f.file_id = ft.file_id
+              JOIN tag_values tv ON ft.value_id = tv.value_id
+              JOIN tags t ON t.tag_id = tv.tag_id
+              WHERE ${normalTagValuePairs.map(() => "(t.tag_name = ? AND tv.tag_value = ?)").join(" OR ")}
+              GROUP BY f.file_id
+              HAVING ${normalTagValuePairs.map(pair => `COUNT(DISTINCT CASE WHEN t.tag_name = '${pair.tag_name}' AND tv.tag_value = '${pair.tag_value}' THEN 1 END) > 0`).join(" AND ")}
+            `;
+            const normalValues = normalTagValuePairs.reduce((arr, pair) => [...arr, pair.tag_name, pair.tag_value], []);
+
+            db.query(normalSql, normalValues, (err, files) => {
+              if (err) return res.status(500).send(err);
+              
+              // Drop the temporary table after querying
+              db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {
+                res.json(files);
+              });
+            });
+          } else {
+            // No normal tag-value pairs, just return the wildcard results
+            const sql = `SELECT f.* FROM temp_files tf JOIN files f ON f.file_id = tf.file_id`;
+            db.query(sql, (err, files) => {
+              if (err) return res.status(500).send(err);
+              
+              // Drop the temporary table after querying
+              db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {
+                res.json(files);
+              });
+            });
+          }
+        });
+      } else {
+        // No wildcards, just query normally against the files table
+        const sql = `
+          SELECT f.*
+          FROM files f
+          JOIN file_tags ft ON f.file_id = ft.file_id
+          JOIN tag_values tv ON ft.value_id = tv.value_id
+          JOIN tags t ON t.tag_id = tv.tag_id
+          WHERE ${normalTagValuePairs.map(() => "(t.tag_name = ? AND tv.tag_value = ?)").join(" OR ")}
+          GROUP BY f.file_id
+          HAVING ${normalTagValuePairs.map(pair => `COUNT(DISTINCT CASE WHEN t.tag_name = '${pair.tag_name}' AND tv.tag_value = '${pair.tag_value}' THEN 1 END) > 0`).join(" AND ")}
+        `;
+        const values = normalTagValuePairs.reduce((arr, pair) => [...arr, pair.tag_name, pair.tag_value], []);
+
+        db.query(sql, values, (err, files) => {
+          if (err) return res.status(500).send(err);
+          res.json(files);
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error processing tag queries:', error);
+      res.status(500).send('Error processing tag queries');
+    });
+});
+
+
 
 // // API to list tags for a specific file
 // app.get('/files/:file_id/tags', (req, res) => {

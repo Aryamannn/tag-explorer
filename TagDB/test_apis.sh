@@ -4,6 +4,38 @@
 # Start the TagDB service in a separate shell, or in the background with:
 # node tagdb.js
 
+query() {
+    # Start building the JSON data with an opening structure
+    local json_data='{ "tagValuePairs": ['
+    local tvpairs=""
+
+    # Iterate over the list of key-value pairs passed as arguments
+    while [[ $# -gt 1 ]]; do
+        local tag_name=$1
+        local tag_value=$2
+
+        # Append the key-value pair to the JSON structure
+        json_data+="{ \"tag_name\": \"$tag_name\", \"tag_value\": \"$tag_value\" },"
+        tvpairs="$tvpairs, ($tag_name, $tag_value)"
+        # Shift arguments to get the next key-value pair
+        shift 2
+    done
+
+    # Remove the trailing comma from the last key-value pair
+    json_data=${json_data%,}
+    # Remove the initial comma
+    tvpairs="(${tvpairs#*[(]}"
+
+    # Close the JSON array and object
+    json_data+="] }"
+
+    # Execute the curl command
+    echo "===== Query on: " $tvpairs "====="
+    curl -s -X POST http://localhost:3000/files/tags \
+        -H "Content-Type: application/json" \
+        -d "$json_data" | jq -r '.[].file_path | split("/") | last'
+}
+
 # Create a tag
 curl -X POST http://localhost:3000/tags -H "Content-Type: application/json" -d '{"tag_name": "Region", "tag_value": "USA"}' | jq
 curl -X POST http://localhost:3000/tags -H "Content-Type: application/json" -d '{"tag_name": "City", "tag_value": "New York"}' | jq
@@ -68,3 +100,12 @@ curl -X GET http://localhost:3000/tags/Country/values | jq
 
 # List all tags and for each, list its values
 curl -X GET http://localhost:3000/tags/with-values | jq
+
+# Queries
+query "Genre" "Comedy"   "Actor" "Tom Hanks"
+query "Genre" "*"        "Actor" "Tom Hanks"
+query "Genre" "Comedy"   "Actor" "Brad Pitt" "Actor" "Angelina Jolie"
+query "Genre" "*"        "Actor" "Brad Pitt" "Actor" "Angelina Jolie"
+query "Content Type" "Presentation"
+query "Content Type" "Presentation" "Client" "*"
+query                               "Client" "*"

@@ -20,6 +20,12 @@ const TagEdit = () => {
   const fetchTags = async () => {
     try {
       const response = await axios.get('http://localhost:3000/tags/with-values');
+      for (let key in response.data) {
+        if (response.data.hasOwnProperty(key)) {
+          response.data[key].push('*');
+        }
+      }
+      console.log(JSON.stringify(response, null, 2));
       setTags(response.data);
     } catch (error) {
       console.error('Error fetching tags', error);
