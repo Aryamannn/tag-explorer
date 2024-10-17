@@ -32,11 +32,16 @@ db.connect(err => {
 //routes
 // Import route files
 const tagExplorerRoutes = require("./routes/tagExplorerRoutes");
+const tagEditorRoutes = require("./routes/tagEditorRoutes");
+const mangeTagsRoutes = require("./routes/manageTagsRoutes");
+const switchViewRoutes = require("./routes/switchViewRoutes");
 
 
 // Use route files
 app.use("/", tagExplorerRoutes);
-
+app.use("/tag-editor", tagEditorRoutes);
+app.use("/manage-tags", mangeTagsRoutes );
+app.use("/switch-view", switchViewRoutes );
 
 
 //==============================================================================
