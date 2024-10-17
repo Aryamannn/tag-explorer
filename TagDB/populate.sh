@@ -171,8 +171,11 @@ populate_tags
 tag_files
 
 # Do some queries
+query "Genre" "Comedy"   "Actor" "Tom Hanks"
+query "Genre" "*"       "Actor" "Tom Hanks"
+query "Genre" "Comedy"  "Actor" "Brad Pitt" "Actor" "Angelina Jolie"  "Studio" "*"
+query "Genre" "*"       "Actor" "Brad Pitt" "Actor" "Angelina Jolie"  "Studio" "*"
 query "Genre" "Romance" "Genre" "Comedy"
-query "Genre" "Drama" "Actor" "Tom Hanks"
 query "Genre" "Drama" "Genre" "Comedy" "Actor" "Tom Hanks"
 
 query "Client" "Walmart" "Priority" "High"

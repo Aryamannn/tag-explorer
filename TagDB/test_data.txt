@@ -10,6 +10,21 @@
 #
 # Lines that begin with a '#' are comments and are ignored.
 #
+By_the_Sea.mp4
+	"Actor" "Brad Pitt"
+	"Actor" "Angelina Jolie"
+    "Content Type" "Video"
+	"Genre" "Drama"
+	"Genre" "Romance"
+	"Studio" "Universal"
+Mr_and_Mrs_Smith.mp4
+	"Actor" "Brad Pitt"
+	"Actor" "Angelina Jolie"
+    "Content Type" "Video"
+	"Genre" "Comedy"
+	"Genre" "Romance"
+	"Genre" "Thriller"
+	"Studio" "20th Century Fox"
 Forrest_Gump.mp4
 	"Actor" "Tom Hanks"
     "Content Type" "Video"
@@ -245,11 +260,11 @@ New_Store_Opening_Strategy.pdf
 	"Priority" "Low"
 	"Client" "Nike"
 	"Content Type" "Document"
-New_Jordans_TV_Ad.pdf
+New_Jordans_TV_Ad.mp4
 	"Priority" "High"
 	"Client" "Nike"
 	"Content Type" "Video"
-New_Jordans_Radio_Ad.pdf
+New_Jordans_Radio_Ad.mp3
 	"Priority" "High"
 	"Client" "Nike"
 	"Content Type" "Audio"
@@ -301,4 +316,13 @@ Environmental_Impact_Report_2024.docx
 Annual_Investor_Presentation_2024.pptx
 	"Priority" "Medium"
 	"Client" "Exxon"
+	"Content Type" "Presentation"
+Q42023_Board_Summary.docx
+	"Priority" "High"
+	"Content Type" "Document"
+Morale_Preso.pptx
+	"Priority" "Low"
+	"Content Type" "Presentation"
+2H2024_Marketing_Org_Chart.pptx
+	"Priority" "Low"
 	"Content Type" "Presentation"
