@@ -6,6 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Set the view engine to EJS
+app.set('view engine', 'ejs');
+
+
+
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'taguser',
@@ -23,6 +28,20 @@ db.connect(err => {
     if (err) throw err;
     console.log('MySQL connected...');
 });
+
+//routes
+// Import route files
+const tagExplorerRoutes = require("./routes/tagExplorerRoutes");
+const tagEditorRoutes = require("./routes/tagEditorRoutes");
+const mangeTagsRoutes = require("./routes/manageTagsRoutes");
+const switchViewRoutes = require("./routes/switchViewRoutes");
+
+
+// Use route files
+app.use("/", tagExplorerRoutes);
+app.use("/tag-editor", tagEditorRoutes);
+app.use("/manage-tags", mangeTagsRoutes );
+app.use("/switch-view", switchViewRoutes );
 
 
 //==============================================================================
@@ -585,5 +604,5 @@ app.get('/files/:file_id/tags', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    ensureDefaultTags();
+    // ensureDefaultTags();
 });
