@@ -1,14 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <%- include("partials/head.ejs") %>
+
 </head>
 <body>
-    <%- include("partials/nav.ejs") %>
 
-    <h1>Tag Explorer testing </h1>
-    <p>Connection check successful! Your route is working.</p>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="row">
+        <div class="col-12">
+            <header class="p-3" style="background-color: #f8f9fa;">
+                <h1 class="text-left">Tag Explorer</h1>
+            </header>
+        </div>
+    </div>
+
+ <div class="row">
+        <!-- Sidebar -->
+        <div class="col-3 sidebar p-3">
+            <!-- Search -->
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <!-- Favorites/Recents -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu">
+                  <% tags.forEach(tag => { %>
+                    <li class="nav-item dropdown dropend">
+                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <%= tag.tag_name || 'Untitled Tag' %>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <% if (tag.tag_values && tag.tag_values.length > 0) { %>
+                                <% tag.tag_values.forEach(value => { %>
+                                    <li><a class="dropdown-item" href="#"><%= value.tag_value %></a></li>
+                                <% }); %>
+                            <% } else { %>
+                                <li><a class="dropdown-item" href="#">No values</a></li>
+                            <% } %>
+                        </ul>
+                    </li>
+                <% }); %>
+                </ul>
+              </li>
+        </div>
+
+      <!-- Main Content Area -->
+      <div class="col-9 p-3">
+        <!-- Filter Tags -->
+        <div class="filter-tags">
+          <span class="tag-badge">
+            Genre
+            <span class="close-btn">&times;</span>
+          </span>
+          <span class="tag-badge">
+            Color: Blue
+            <span class="close-btn">&times;</span>
+          </span>
+          <span class="tag-badge">
+            Actor: Angela
+            <span class="close-btn">&times;</span>
+          </span>
+        </div>
+
+        <!-- File List -->
+        <div class="file-list">
+          <div class="file-list-header row">
+            <div class="col-4">File Name</div>
+            <div class="col-3">Date Modified</div>
+            <div class="col-3">Type</div>
+            <div class="col-2">Size</div>
+          </div>
+          <div class="file-item row">
+            <div class="col-4">File1.pdf</div>
+            <div class="col-3">10/2/2024</div>
+            <div class="col-3">PDF File</div>
+            <div class="col-2">45 KB</div>
+          </div>
+          <div class="file-item row active">
+            <div class="col-4">File2.txt</div>
+            <div class="col-3">10/1/2024</div>
+            <div class="col-3">Text Document</div>
+            <div class="col-2">2 KB</div>
+          </div>
+          <div class="file-item row">
+            <div class="col-4">File3.xlsx</div>
+            <div class="col-3">9/29/2024</div>
+            <div class="col-3">Microsoft Excel Workbook</div>
+            <div class="col-2">10 KB</div>
+          </div>
+          <div class="file-item row">
+            <div class="col-4">File4.exe</div>
+            <div class="col-3">8/12/2024</div>
+            <div class="col-3">Application</div>
+            <div class="col-2">691 KB</div>
+          </div>
+        </div>
+
+        <!-- Buttons (Settings and Actions) -->
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-secondary me-2">
+            <i class="bi bi-x"></i>
+          </button>
+          <button class="btn btn-secondary me-2">
+            <i class="bi bi-plus"></i>
+          </button>
+          <button class="btn btn-secondary">
+            <i class="bi bi-gear"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
 </body>
 </html>
