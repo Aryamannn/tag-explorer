@@ -1,65 +1,96 @@
 .sidebar {
-    height: 100vh;
-    background-color: #f8f9fa;
-  }
+  height: 100vh;
+  background-color: #f8f9fa;
+}
 
-  .file-list {
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-  }
+.file-list {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
 
-  .file-item {
-    padding: 10px;
-    border-bottom: 1px solid #dee2e6;
-    cursor: pointer;
-  }
+.file-item {
+  padding: 10px;
+  border-bottom: 1px solid #dee2e6;
+  cursor: pointer;
+}
 
-  .file-item:last-child {
-    border-bottom: none;
-  }
+.file-item:last-child {
+  border-bottom: none;
+}
 
-  .filter-tags {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+.filter-tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
 
-  .tag-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background-color: #e9ecef;
-    padding: 5px 10px;
-    border-radius: 20px;
-  }
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
 
-  .tag-badge .close-btn {
-    cursor: pointer;
-  }
+.tag-badge .close-btn {
+  cursor: pointer;
+}
 
-  .file-list-header {
-    background-color: #f1f3f5;
-    padding: 10px;
-    font-weight: bold;
-    border-bottom: 1px solid #dee2e6;
-  }
+.file-list-header {
+  background-color: #f1f3f5;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #dee2e6;
+}
 
-  .file-item.active {
-    background-color: #ffecb3;
-  }
+.file-item.active {
+  background-color: #ffecb3;
+}
 
-  .dropdown:hover > .dropdown-menu,  .dropend:hover > .dropdown-menu {
-        display: block;
-        margin-top: .125em;
-        margin-left: .125em;
+.dropdown:hover > .dropdown-menu, .dropend:hover > .dropdown-menu {
+  display: block;
+  margin-top: .125em;
+  margin-left: .125em;
+}
 
-  }
-  @media screen and (min-width:769px) {
-    .dropend:hover > .dropdown-menu{
+@media screen and (min-width:769px) {
+  .dropend:hover > .dropdown-menu {
       position: absolute;
       top: 0;
       left: 100%;
-    }
-    
   }
+}
+
+.tag-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  flex-grow: 1;
+  max-width: calc(100% - 80px);
+}
+
+.icon-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.top-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  padding: 10px;
+}
+
+#dropzone {
+  flex-grow: 1;
+  border: 1px dashed #ccc; 
+  padding: 10px;
+}
+
+.icon-buttons img {
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+}

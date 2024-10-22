@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
+app.use(express.static(path.join(__dirname, 'public')));
+
+
 // Route to render the tag explorer page
 router.get("/", (req, res) => {
     const sqlTags = 'SELECT * FROM tags'; // Query to get all tags
