@@ -58,7 +58,12 @@ function createTag(draggedText, tagName) {
   const newTag = document.createElement("span");
   newTag.className = "tag-badge";
   newTag.id = draggedText;
-  newTag.textContent = draggedText;
+  if (!(draggedText == tagName)){
+    newTag.textContent = tagName + ": " + draggedText;
+  } else{
+    newTag.textContent = draggedText;
+  }
+
 
   const closeBtn = document.createElement("span");
   closeBtn.className = "close-btn";
