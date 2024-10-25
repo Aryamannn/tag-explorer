@@ -1,10 +1,12 @@
+// const path = require('path')
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 
+// Route to render the tag explorer page
 // Route to render the tag explorer page
 router.get("/", (req, res) => {
     const sqlTags = 'SELECT * FROM tags'; // Query to get all tags
@@ -30,10 +32,23 @@ router.get("/", (req, res) => {
                 };
             });
 
-            console.log(JSON.stringify(tagsWithValues, null, 2))          
-            res.render("tag-explorer", { tags: tagsWithValues });
+            // Query to get all files
+            const sqlFiles = 'SELECT * FROM files';
+            db.query(sqlFiles, (err, fileResults) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send("Database error");
+                }
+
+                console.log(JSON.stringify(tagsWithValues, null, 2));
+                console.log(JSON.stringify(fileResults, null, 2)); // Log files for debugging
+                
+                // Render the view with both tags and files
+                res.render("tag-explorer", { tags: tagsWithValues, files: fileResults });
+            });
         });
     });
 });
+
 
 module.exports = router;
