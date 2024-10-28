@@ -95,6 +95,7 @@
                         <i class="bi bi-arrow-clockwise"></i>
                     </button>
 
+                    <!-- Tag Edit button -->
                     <button class="btn btn-outline-primary rounded-circle" id="addTagBtn">
                         <i class="bi bi-plus"></i>
                     </button>
@@ -106,27 +107,11 @@
             <!-- Modal body -->
             <div class="modal-body">
                 <ul>
-                    <%
-                    const tags = [
-                        { tag_name: "Genre", values: ["Sci-fi", "Drama"] },
-                        { tag_name: "Color", values: ["Blue", "Green"] },
-                        { tag_name: "Finance", values: ["Z", "B"] },
-                        { tag_name: "Work", values: ["Reviewed", "Approved", "Denied"] },
-                        { tag_name: "Archived", values: ["Old", "Unused"] },
-                        { tag_name: "Important", values: ["Low Priority", "Urgent"] },
-                        { tag_name: "Actor", values: ["Jim Carrey", "Will Smith"] },
-                        { tag_name: "School", values: [] },
-                        { tag_name: "Tag", values: ["Value1", "ValueA", "Value2"] },
-                        { tag_name: "Actor", values: ["Jim Carrey", "Will Smith"] },
-                        { tag_name: "School", values: [] },
-                        { tag_name: "Tag", values: ["Value1", "ValueA", "Value2"] }
-                    ];
-                    %>
 
                     <% tags.forEach(tag => { %>
 
                     <li class="tag-container">
-                        <input type="checkbox" id="tag-<%= tag.tag_name %>">
+                        <input type="checkbox" id="tag-<%= tag.tag_id %>">
                         <!-- Checkbox for the main tag -->
                         <span class="toggle"><i class="bi bi-caret-down"></i>
                             <%= tag.tag_name %>
@@ -142,16 +127,16 @@
 
     <script>
         var modal = document.getElementById("manageTagsModal");
-        var btn = document.getElementById("manageTagsBtn");
-        var span = document.getElementsByClassName("close")[0];
+        var openModalBtn = document.getElementById("manageTagsBtn");
 
-        // Open the modal 
-        btn.onclick = function () {
+        // Open the modal
+        // This will open from a right click on a file, not a designated button
+        openModalBtn.onclick = function () {
             modal.style.display = "block";
         }
 
-        // Close the modal on click X
-        span.onclick = function () {
+        // Close modal on X click
+        document.getElementsByClassName("close")[0].onclick = function () {
             modal.style.display = "none";
         }
 
@@ -163,8 +148,12 @@
         }
 
         document.getElementById("saveChangesBtn").onclick = function () {
-            console.log("Save button clicked")
-            modal.style.display = "none";
+            // modal.style.display = "none";
+            alert("Changes confirmed");
+        }
+
+        document.getElementById("addTagBtn").onclick = function () {
+            window.location.href = "./tag-editor";
         }
     </script>
 
