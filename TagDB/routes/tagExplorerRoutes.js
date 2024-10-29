@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
+
 // app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -33,7 +34,7 @@ router.get("/", (req, res) => {
             });
 
             // Query to get all files
-            const sqlFiles = 'SELECT * FROM files';
+            const sqlFiles = 'SELECT f.file_id, f.file_path, GROUP_CONCAT(DISTINCT tv.value_id) AS tag_values, GROUP_CONCAT(DISTINCT t.tag_id) AS tag_names FROM files f LEFT JOIN file_tags ft ON f.file_id = ft.file_id LEFT JOIN tag_values tv ON ft.value_id = tv.value_id LEFT JOIN tags t ON tv.tag_id = t.tag_id GROUP BY f.file_id, f.file_path ORDER BY f.file_path ASC;';
             db.query(sqlFiles, (err, fileResults) => {
                 if (err) {
                     console.error(err);

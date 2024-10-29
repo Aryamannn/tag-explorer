@@ -449,6 +449,7 @@ app.get('/files', (req, res) => {
     });
 });
 
+
 function buildFileQuery(tagValuePairs) {
     // Create placeholders for the tag_name and tag_value pairs in the SQL query
     const placeholders = tagValuePairs.map(() => "(t.tag_name = ? AND tv.tag_value = ?)").join(" OR ");
@@ -584,6 +585,109 @@ app.post('/files/tags', (req, res) => {
     });
 });
 
+app.get('/allFiles', (req, res) => {
+  const sql = 'SELECT * FROM files'; // SQL query to fetch all files
+
+  db.query(sql, (err, results) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+
+      res.json(results); // Return the results as JSON
+  });
+});
+
+app.post("/files/searchTags", (req, res) => {
+  const tagIds = req.body.tagIdsToQuery; // Expecting an array of tag_ids
+
+  // Check if tagIds is provided and is an array
+  if (!Array.isArray(tagIds) || tagIds.length === 0) {
+      return res.status(400).json({ error: "Invalid input. Please provide an array of tag_ids." });
+  }
+
+  // Construct the SQL query
+  const sql = `
+      SELECT f.*
+      FROM files f
+      INNER JOIN file_tags ft ON f.file_id = ft.file_id
+      INNER JOIN tag_values tv ON ft.value_id = tv.value_id
+      INNER JOIN tags t ON tv.value_id = t.tag_id
+      WHERE tv.tag_name IN (?)
+      GROUP BY f.file_id
+  `;
+
+  // Extract tag_ids from the request body
+  const tagIdList = tagIds.map(tag => tag.tag_id).filter(id => id); // Ensure to filter out any undefined or null ids
+
+  db.query(sql, [tagIdList], (err, results) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Database error" });
+      }
+
+      res.json(results); // Send the results back to the client
+  });
+});
+
+app.post('/files/combineTags', (req, res) => {
+  const { tagIds, valueIds } = req.body; // Expecting arrays of tag_ids and value_ids
+
+  if (!Array.isArray(tagIds) || !Array.isArray(valueIds)) {
+      return res.status(400).json({ error: 'tagIds and valueIds must be arrays' });
+  }
+
+  const helperQuery = `
+     SELECT DISTINCT file_id FROM files f
+      NATURAL JOIN file_tags
+      NATURAL JOIN tag_values
+      WHERE file_id in (${tagIds})
+      
+      UNION
+
+      (SELECT DISTINCT file_id
+      FROM files f
+      NATURAL JOIN file_tags
+      WHERE value_id IN (${valueIds}));
+  `;
+
+
+  db.query(helperQuery, (err, results) => {
+      if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+      res.json(results);
+      console.log(results)
+  });
+});
+
+app.post('/files/searchByTagId', (req, res) => {
+  const { tagIds } = req.body; // Expecting an array of tag_ids
+  console.log("API " + tagIds);
+  if (!Array.isArray(tagIds)) {
+      return res.status(400).json({ error: 'tagIds must be an array' });
+  }
+
+  // Create a comma-separated list of tag IDs for the SQL query
+  const query = `
+      SELECT DISTINCT f.file_id, f.file_path
+      FROM files f
+      JOIN file_tags ft ON f.file_id = ft.file_id
+      WHERE ft.value_id IN (
+          SELECT value_id FROM tag_values WHERE tag_id IN (${tagIds})
+      )
+  `;
+
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+
+      res.json(results);
+  });
+});
 
 
 // API to list tags for a specific file
