@@ -16,6 +16,14 @@
             cursor: pointer;
         }
 
+        .modal-header {
+            position: sticky;
+            top: 0;
+            background-color: #fefefe;
+            z-index: 100;
+            padding-bottom: 10px;
+        }
+
         .modal {
             background-color: rgb(0, 0, 0);
             background-color: rgba(0, 0, 0, 0.4);
@@ -48,14 +56,6 @@
             cursor: pointer;
         }
 
-        .modal-header {
-            position: sticky;
-            top: 0;
-            background-color: #fefefe;
-            z-index: 100;
-            padding-bottom: 10px;
-        }
-
         ul {
             list-style-type: none;
             /*
@@ -78,7 +78,7 @@
             <!-- Header -->
             <div class="modal-header">
                 <h2 style="flex-grow: 1;">Manage Tags for file_name</h2>
-                <span class="close" style="cursor: pointer;">&times;</span> <!-- Close (X) button -->
+                <span class="close" style="cursor: pointer;" title="Close the window - changes won't be saved">&times;</span> <!-- Close (X) button -->
             </div>
 
             <br>
@@ -86,72 +86,73 @@
             <!-- Search field and buttons (part of the header) -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <form class="d-flex flex-grow-1 me-2" role="search">
-                    <input class="form-control me-2 p-2" type="search" placeholder="Search tags" aria-label="Search">
+                    <input class="form-control me-2 p-2" type="search" placeholder="Search tags or values" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit" onclick="event.preventDefault();">Search</button>
                 </form>
 
                 <div class="d-flex">
-                    <button class="btn btn-outline-secondary rounded-circle me-2" id="refreshBtn">
+                    <button class="btn btn-outline-secondary rounded-circle me-2" id="refreshBtn" title="Refresh the list">
                         <i class="bi bi-arrow-clockwise"></i>
                     </button>
 
-                    <button class="btn btn-outline-primary rounded-circle" id="addTagBtn">
+                    <!-- Tag Edit button -->
+                    <button class="btn btn-outline-primary rounded-circle" id="addTagBtn" title="Go to Tag Edit to create new tags">
                         <i class="bi bi-plus"></i>
                     </button>
                 </div>
             </div>
 
             <hr>
+            <h4>
+                <div style="text-align: center;">
+                    All Tags
+                </div>
+            </h4>
 
             <!-- Modal body -->
             <div class="modal-body">
                 <ul>
-                    <%
-                    const tags = [
-                        { tag_name: "Genre", values: ["Sci-fi", "Drama"] },
-                        { tag_name: "Color", values: ["Blue", "Green"] },
-                        { tag_name: "Finance", values: ["Z", "B"] },
-                        { tag_name: "Work", values: ["Reviewed", "Approved", "Denied"] },
-                        { tag_name: "Archived", values: ["Old", "Unused"] },
-                        { tag_name: "Important", values: ["Low Priority", "Urgent"] },
-                        { tag_name: "Actor", values: ["Jim Carrey", "Will Smith"] },
-                        { tag_name: "School", values: [] },
-                        { tag_name: "Tag", values: ["Value1", "ValueA", "Value2"] },
-                        { tag_name: "Actor", values: ["Jim Carrey", "Will Smith"] },
-                        { tag_name: "School", values: [] },
-                        { tag_name: "Tag", values: ["Value1", "ValueA", "Value2"] }
-                    ];
-                    %>
-
                     <% tags.forEach(tag => { %>
-
                     <li class="tag-container">
-                        <input type="checkbox" id="tag-<%= tag.tag_name %>">
-                        <!-- Checkbox for the main tag -->
+                        <input type="checkbox" id="tag-<%= tag.tag_id %>">
+                        <!-- Checkbox for the tag -->
                         <span class="toggle"><i class="bi bi-caret-down"></i>
                             <%= tag.tag_name %>
                         </span>
+
+                        <!-- Tag values -->
+                        <ul class="tag-values" id="tag-values-<%= tag.tag_id %>">
+                            <% tag.tag_values.forEach(value => { %>
+                                <li>
+                                    <input type="checkbox" id="tag-value-<%= value.id %>">
+                                    <label for="tag-value-<%= value.id %>">
+                                        <%= value.tag_value %>
+                                    </label>
+                                </li>
+                            <% }) %>
+                        </ul>
+                        
                     </li>
                     <% }) %>
                 </ul>
             </div>
 
-            <button id="saveChangesBtn">Save Changes</button>
+            <button id="saveChangesBtn" title="Save changes you have made">Save Changes</button>
         </div>
     </div>
 
     <script>
         var modal = document.getElementById("manageTagsModal");
-        var btn = document.getElementById("manageTagsBtn");
-        var span = document.getElementsByClassName("close")[0];
+        var openModalBtn = document.getElementById("manageTagsBtn");
 
-        // Open the modal 
-        btn.onclick = function () {
+        // Open the modal
+        // This will open from a right click on a file, not a designated button
+        openModalBtn.onclick = function () {
             modal.style.display = "block";
         }
 
-        // Close the modal on click X
-        span.onclick = function () {
+        // Close modal on X click
+        document.getElementsByClassName("close")[0].onclick = function () {
             modal.style.display = "none";
         }
 
@@ -163,8 +164,12 @@
         }
 
         document.getElementById("saveChangesBtn").onclick = function () {
-            console.log("Save button clicked")
-            modal.style.display = "none";
+            // modal.style.display = "none";
+            alert("Changes confirmed");
+        }
+
+        document.getElementById("addTagBtn").onclick = function () {
+            window.location.href = "./tag-editor";
         }
     </script>
 
