@@ -20,8 +20,8 @@
         <div class="col-3 sidebar p-3" style="max-height: 95vh; overflow-y: auto;">
           <!-- Search -->
           <form class="d-flex mb-3" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
+            <input class="form-control me-2" type="search" id="searchInput" placeholder="Search" aria-label="Search" oninput="filterTags()">
+            <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
           </form>
 
           <!-- Favorites/Recents Dropdown -->
@@ -59,8 +59,8 @@
 
           <!-- Dropdown List Section -->
           <% tags.forEach(tag => { %>
-            <div class="card mb-3">
-                <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" onclick="toggleDropdown('<%= tag.tag_id %>')">
+            <div class="card mb-3 tag-item"> <!-- Added class "tag-item" -->
+              <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" onclick="toggleDropdown('<%= tag.tag_id %>')">
                     <span><i class="bi bi-chevron-down me-2"></i><%= tag.tag_name || 'Untitled Tag' %></span>
                     <i class="bi bi-caret-down-fill"></i>
                 </div>
@@ -191,6 +191,19 @@
         // Remove the tag display from the UI
         element.parentElement.remove();
     }
+    function filterTags() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const tagItems = document.querySelectorAll('.tag-item');
+
+    tagItems.forEach(item => {
+        const tagName = item.querySelector('.card-header span').innerText.toLowerCase();
+        if (tagName.includes(searchInput)) {
+            item.style.display = 'block'; // Show matching tag
+        } else {
+            item.style.display = 'none'; // Hide non-matching tag
+        }
+    });
+}
   </script>
 </body>
 </html>
