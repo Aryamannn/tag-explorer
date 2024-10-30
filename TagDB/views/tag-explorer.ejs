@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <%- include("partials/head.ejs") %>
-
 </head>
 <body>
-
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -17,57 +15,81 @@
         </div>
     </div>
 
- <div class="row">
+    <div class="row">
         <!-- Sidebar -->
-        <div class="col-3 sidebar p-3">
-            <!-- Search -->
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-            <!-- Favorites/Recents -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu">
-                  <% tags.forEach(tag => { %>
-                    <li class="nav-item dropdown dropend">
-                        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <%= tag.tag_name || 'Untitled Tag' %>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <% if (tag.tag_values && tag.tag_values.length > 0) { %>
-                                <% tag.tag_values.forEach(value => { %>
-                                    <li><a class="dropdown-item" href="#"><%= value.tag_value %></a></li>
+        <div class="col-3 sidebar p-3" style="max-height: 95vh; overflow-y: auto;">
+          <!-- Search -->
+          <form class="d-flex mb-3" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+
+          <!-- Favorites/Recents Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown
+            </a>         
+            <ul class="dropdown-menu">
+              <% tags.forEach(tag => { %>
+                  <li class="nav-item dropdown dropend">
+                      <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          <%= tag.tag_name || 'Untitled Tag' %>
+                      </a>
+                      <ul class="dropdown-menu">
+                          <% 
+                          // Update to use tag.tag_id
+                          const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); 
+                          if (filteredValues.length > 0) { 
+                              filteredValues.forEach(value => { 
+                          %>
+                          <li class="list-group-item ps-4" onclick="addFilterTag('<%= tag.tag_name %>:<%= value.tag_value %>')" style="cursor: pointer;">
+                            <i class="bi bi-arrow-right-circle me-2"></i><%= value.tag_value %>
+                        </li>                       
+                          <% 
+                              }); 
+                          } else { 
+                          %>
+                              <li><a class="dropdown-item" href="#">No values</a></li>
+                          <% } %>
+                      </ul>
+                  </li>
+              <% }); %>
+          </ul>
+          </li>
+
+          <!-- Dropdown List Section -->
+          <% tags.forEach(tag => { %>
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" onclick="toggleDropdown('<%= tag.tag_id %>')">
+                    <span><i class="bi bi-chevron-down me-2"></i><%= tag.tag_name || 'Untitled Tag' %></span>
+                    <i class="bi bi-caret-down-fill"></i>
+                </div>
+                <div id="dropdownContent-<%= tag.tag_id %>" class="collapse">
+                    <div class="card-body">
+                        <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
+                        <% if (filteredValues.length > 0) { %>
+                            <ul class="list-group list-group-flush">
+                                <% filteredValues.forEach(value => { %>
+                                    <li class="list-group-item ps-4" onclick="addFilterTag('<%= tag.tag_name %>:<%= value.tag_value %>')" style="cursor: pointer;">
+                                        <i class="bi bi-arrow-right-circle me-2"></i><%= value.tag_value %>
+                                    </li>
                                 <% }); %>
-                            <% } else { %>
-                                <li><a class="dropdown-item" href="#">No values</a></li>
-                            <% } %>
-                        </ul>
-                    </li>
-                <% }); %>
-                </ul>
-              </li>
+                            </ul>
+                        <% } else { %>
+                            <p class="text-muted ps-4">No values</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+          <% }); %>
         </div>
 
       <!-- Main Content Area -->
       <div class="col-9 p-3">
         <!-- Filter Tags -->
-        <div class="filter-tags">
-          <span class="tag-badge">
-            Genre
-            <span class="close-btn">&times;</span>
-          </span>
-          <span class="tag-badge">
-            Color: Blue
-            <span class="close-btn">&times;</span>
-          </span>
-          <span class="tag-badge">
-            Actor: Angela
-            <span class="close-btn">&times;</span>
-          </span>
-        </div>
+        <div class="filter-tags mb-3" id="filterTagsArea">
+          <!-- Dynamically added tags will appear here -->
+      </div>
 
         <!-- File List -->
         <div class="file-list">
@@ -121,5 +143,54 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+  
+  <script>
+    // Function to toggle the dropdown
+    function toggleDropdown(tagId) {
+      const content = document.getElementById('dropdownContent-' + tagId);
+      content.classList.toggle('show');
+    }
+    const selectedTags = [];
+
+    // Toggle the dropdown content
+    function toggleDropdown(tagId) {
+        const content = document.getElementById('dropdownContent-' + tagId);
+        content.classList.toggle('show');
+    }
+
+    // Add tag to filter area and manage existing tags
+    function addFilterTag(tagText) {
+        // Check if the tag is already selected
+        if (selectedTags.includes(tagText)) {
+            alert('This tag is already selected.'); // Alert for feedback
+            return; // Tag already exists, do not add again
+        }
+
+        // Add the tag to the selected array
+        selectedTags.push(tagText);
+
+        // Create the tag badge element
+        const tagBadge = document.createElement('span');
+        tagBadge.className = 'tag-badge badge bg-primary text-white me-2';
+        tagBadge.innerHTML = `
+            ${tagText} <span class="close-btn ms-2" onclick="removeFilterTag(this, '${tagText}')">&times;</span>
+        `;
+
+        // Append the new tag badge to the filter tags area
+        document.getElementById('filterTagsArea').appendChild(tagBadge);
+    }
+
+    // Remove tag from filter area
+    function removeFilterTag(element, tagText) {
+        // Remove the tag from the selected array
+        const index = selectedTags.indexOf(tagText);
+        if (index > -1) {
+            selectedTags.splice(index, 1);
+        }
+
+        // Remove the tag display from the UI
+        element.parentElement.remove();
+    }
+  </script>
 </body>
 </html>

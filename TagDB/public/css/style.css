@@ -63,3 +63,27 @@
     }
     
   }
+  .collapse {
+    display: none; /* Initially hidden */
+}
+.collapse.show {
+    display: block; /* Show when expanded */
+}
+.dropdown-header {
+    cursor: pointer; /* Change cursor to pointer for dropdown headers */
+    background-color: #f8f9fa; /* Light background for header */
+    border: 1px solid #ddd; /* Add border */
+    padding: 10px; /* Add padding */
+    margin-bottom: 5px; /* Space between dropdowns */
+}
+.filter-tags .tag-badge {
+  display: inline-block;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+.close-btn {
+  cursor: pointer;
+  color: white;
+}
