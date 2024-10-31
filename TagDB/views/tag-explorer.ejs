@@ -51,17 +51,19 @@
         <div class="col-9 p-3">
           <div class="top-box" style="display: flex; align-items: center;">
             <div class="filter-tags" id="dropzone">
-              <div class="tag-container">
+              <div id ="tag-container" class="tag-container">
                   <span class="tag-badge">Tags</span>
                   
               </div>
             </div>
             <div class="icon-buttons" style="margin-left: 10px;">
-              <img src="/images/x_symbol.png" alt="X symbol" />
-              <a href="/manage-tags">
+              <a href = "#" onclick="clearTags()">
+                <img src="/images/x_symbol.png" alt="X symbol" />
+              </a>
+              <a href="#">
                 <img src="/images/plus_symbol.png" alt="Plus symbol" />
               </a>
-              <a href="/tag-editor">
+              <a href="/manage-tags">
                 <img src="/images/gear_symbol.png" alt="Gear symbol" />
               </a>
             </div>

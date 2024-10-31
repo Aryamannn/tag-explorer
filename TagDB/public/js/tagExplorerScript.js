@@ -303,3 +303,12 @@ function getFileType(filePath) {
           return 'Unknown File Type';
   }
 }
+
+function clearTags(){
+  const resultsContainer = document.getElementById('tag-container');
+  resultsContainer.innerHTML = '<span class="tag-badge">Tags</span>';
+  parentTags.clear();
+  activePairs.clear();
+  safePairs.clear();
+  handleQuery();
+}
