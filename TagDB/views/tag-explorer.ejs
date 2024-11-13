@@ -15,6 +15,8 @@
         </div>
     </div>
 
+
+  
     <div class="row">
         <!-- Sidebar -->
         <div class="col-3 sidebar p-3" style="max-height: 95vh; overflow-y: auto;">
@@ -24,73 +26,69 @@
             <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
           </form>
 
-          <!-- Favorites/Recents Dropdown -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
-            </a>         
-            <ul class="dropdown-menu">
-              <% tags.forEach(tag => { %>
-                  <li class="nav-item dropdown dropend">
-                      <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          <%= tag.tag_name || 'Untitled Tag' %>
-                      </a>
-                      <ul class="dropdown-menu">
-                          <% 
-                          // Update to use tag.tag_id
-                          const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); 
-                          if (filteredValues.length > 0) { 
-                              filteredValues.forEach(value => { 
-                          %>
-                          <li class="list-group-item ps-4" onclick="addFilterTag('<%= tag.tag_name %>:<%= value.tag_value %>')" style="cursor: pointer;">
-                            <i class="bi bi-arrow-right-circle me-2"></i><%= value.tag_value %>
-                        </li>                       
-                          <% 
-                              }); 
-                          } else { 
-                          %>
-                              <li><a class="dropdown-item" href="#">No values</a></li>
-                          <% } %>
-                      </ul>
-                  </li>
-              <% }); %>
-          </ul>
-          </li>
-
-          <!-- Dropdown List Section -->
-          <% tags.forEach(tag => { %>
-            <div class="card mb-3 tag-item"> <!-- Added class "tag-item" -->
-              <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" onclick="toggleDropdown('<%= tag.tag_id %>')">
-                    <span><i class="bi bi-chevron-down me-2"></i><%= tag.tag_name || 'Untitled Tag' %></span>
-                    <i class="bi bi-caret-down-fill"></i>
-                </div>
-                <div id="dropdownContent-<%= tag.tag_id %>" class="collapse">
-                    <div class="card-body">
+      
+            <button class="dropdown-btn">
+                <span>Favorites</span>
+                <span>&#9662;</span> <!-- Down arrow symbol -->
+            </button>
+            <div class="dropdown-content">
+                <% tags.forEach(tag => { %>
+                    <button class="dropdown-btn">
+                        <span><%= tag.tag_name || 'Untitled Tag' %></span>
+                        <span>&#9662;</span> <!-- Down arrow symbol -->
+                    </button>
+                    <div class="dropdown-content">
                         <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
-                        <% if (filteredValues.length > 0) { %>
-                            <ul class="list-group list-group-flush">
-                                <% filteredValues.forEach(value => { %>
-                                    <li class="list-group-item ps-4" onclick="addFilterTag('<%= tag.tag_name %>:<%= value.tag_value %>')" style="cursor: pointer;">
-                                        <i class="bi bi-arrow-right-circle me-2"></i><%= value.tag_value %>
-                                    </li>
-                                <% }); %>
-                            </ul>
+                        <% if (filteredValues && filteredValues.length > 0) { %>
+                            <% filteredValues.forEach(value => { %>
+                                <a href="#subitem1"><%= value.tag_value %></a>
+                            <% }); %>
                         <% } else { %>
-                            <p class="text-muted ps-4">No values</p>
+                            <a href="#subitem2">No values</a>
                         <% } %>
                     </div>
-                </div>
+                <% }); %>
             </div>
-          <% }); %>
+       <br>
+       <hr>
+       <br>
+
+
+          <!-- Dropdown List Section -->
+       
+            <% tags.forEach(tag => { %>
+              <button class="dropdown-btn">
+                <span><%= tag.tag_name || 'Untitled Tag' %></span>
+                <span>&#9662;</span> <!-- Down arrow symbol -->
+              </button>
+              <div class="dropdown-content">
+                <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
+                <% if (filteredValues && filteredValues.length > 0) { %>
+                  <% filteredValues.forEach(value => { %>
+                    <a href="#subitem1"><%= value.tag_value %></a>
+                  <% }); %>
+                <% } else { %>
+                  <a href="#subitem2">No values</a>
+                <% } %>
+              </div>
+            <% }); %>
+     
         </div>
+
+      
 
       <!-- Main Content Area -->
       <div class="col-9 p-3">
-        <!-- Filter Tags -->
-        <div class="filter-tags mb-3" id="filterTagsArea">
-          <!-- Dynamically added tags will appear here -->
-      </div>
+        <!-- <div class="filter-tags mb-3" id="filterTagsArea">
+      </div> -->
 
+      <div class="filter-tags" id="dropzone">
+        <div id ="tag-container" class="tag-container">
+            <span class="tag-badge">Tags</span>
+            
+        </div>
+      </div>
+      
         <!-- File List -->
         <div class="file-list">
           <div class="file-list-header row">
@@ -143,7 +141,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
-  
+<!--   
   <script>
     // Function to toggle the dropdown
     function toggleDropdown(tagId) {
@@ -204,6 +202,7 @@
         }
     });
 }
-  </script>
+  </script> -->
+  <script src="/js/tagExplorerScript.js"></script>
 </body>
 </html>

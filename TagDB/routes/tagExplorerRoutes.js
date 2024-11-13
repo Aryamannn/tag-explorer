@@ -33,20 +33,34 @@ router.get("/", async (req, res) => {
     //     });
     // });
     try {
-        const [tagsResponse, tagValuesResponse] = await Promise.all([
+        const [tagsResponse, tagValuesResponse,defaultTagsResponse] = await Promise.all([
             axios.get('http://localhost:3000/tags'),
-            axios.get('http://localhost:3000/tag_values')
+            axios.get('http://localhost:3000/tag_values'),
+            axios.get('http://localhost:3000/default-tags') // Fetching default tags from the new API
+
         ]);
 
         const tags = tagsResponse.data;
         const tagValues = tagValuesResponse.data;
-        console.log(tags)
-        console.log(tagValues)
-        res.render('tag-explorer', { tags, tagValues });
+        const defaultTags = defaultTagsResponse.data;
+
+        console.log("tags" + tags)
+        console.log("tag-values" + tagValues.data)
+        console.log("default tags" + defaultTags.data)
+        res.render('tag-explorer', { tags, tagValues , defaultTags});
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');
     }
 });
-
+router.get("/autocomplete", async (req, res) => {
+    try {
+        const tagsResponse = await axios.get('http://localhost:3000/tags');
+        const tagNames = tagsResponse.data.map(tag => tag.tag_name); // Extract tag names only
+        res.json(tagNames);
+    } catch (error) {
+        console.error("Error fetching autocomplete tags:", error);
+        res.status(500).send("Server error");
+    }
+});
 module.exports = router;

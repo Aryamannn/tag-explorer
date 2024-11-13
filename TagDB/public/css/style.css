@@ -87,3 +87,110 @@
   cursor: pointer;
   color: white;
 }
+  /* Container for the dropdown */
+  .dropdown {
+    width: 200px;
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3; /* Light gray background */
+    color: black;
+    border: 1px solid #d4d4d4; /* Subtle border for container */
+    padding: 10px;
+}
+
+/* Main button for each dropdown */
+.dropdown-btn {
+    width: 100%;
+    background-color: #e7e7e7; /* Slightly darker gray for buttons */
+    color: black;
+    padding: 12px;
+    font-size: 15px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+/* Hover effect for dropdown button */
+.dropdown-btn:hover {
+    background-color: #cce6ff; /* Light blue for hover */
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    background-color: #f3f3f3; /* Same light gray as main container */
+    padding-left: 20px; /* Indent for sub-items */
+    border-left: 2px solid #cce6ff; /* Blue line for active dropdown */
+}
+
+/* Dropdown items */
+.dropdown-content a {
+    color: #333;
+    padding: 8px 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+/* Hover effect for items */
+.dropdown-content a:hover {
+    background-color: #d6e9ff; /* Very light blue on hover */
+    color: black;
+}
+
+/*  selected area style */
+
+/* Style for the tag container */
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;  /* Allow tags to wrap to the next line if needed */
+  gap: 10px;  /* Space between tags */
+}
+
+/* Style for each tag badge */
+.tag-badge {
+  display: inline-flex;  /* Ensure the items inside are in a row */
+  align-items: center;  /* Align text and "X" vertically in the center */
+  background-color: #007bff;  /* Blue background */
+  color: white;
+  padding: 5px 10px;  
+  border-radius: 20px;  /* Rounded corners for tags */
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;  /* Prevent text from wrapping to the next line */
+}
+
+/* Style for the "X" button */
+.remove-tag {
+  background: #f44336;  /* Red background for the "X" */
+  color: white;
+  border: none;
+  border-radius: 50%;  /* Circular shape for the "X" */
+  width: 20px;
+  height: 20px;
+  
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 8px;  /* Space between text and "X" */
+  padding: 0;  /* Remove any extra padding */
+}
+
+/* Hover effect for the "X" button */
+.remove-tag:hover {
+  background-color: #d32f2f;  /* Darker red when hovered */
+  transform: scale(1.1);  /* Slightly grow the "X" when hovered */
+}
+
+/* Focus effect for accessibility */
+.remove-tag:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
+}
+
