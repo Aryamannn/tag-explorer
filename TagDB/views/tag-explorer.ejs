@@ -84,8 +84,10 @@
 
       <div class="filter-tags" id="dropzone">
         <div id ="tag-container" class="tag-container">
-          <span class="tag-badge"> <%= defaultTags[0].tag_name %> </span>: <span class="star">*</span>
-          
+          <span class="tag-badge">
+            <%= defaultTags[0].tag_name %>: *  
+            <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
+          </span>
       </div>
       <!-- <div id="tag-container" class="tag-container">
         <% defaultTags.forEach(tag => { %>
