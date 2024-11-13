@@ -85,12 +85,30 @@
 
 #dropzone {
   flex-grow: 1;
-  border: 1px dashed #ccc; 
+  border: 1px dashed #ccc;
   padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;   /* Vertical scrolling when needed */
+  overflow-x: auto;   /* Horizontal scrolling when needed */
+  box-sizing: border-box; /* Includes padding in the total width/height */
 }
 
 .icon-buttons img {
   width: 20px;
   height: 20px;
   margin-left: 5px;
+}
+
+/* Prevent the tags from shrinking or growing when inside the dropzone */
+#dropzone .tag-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;  /* Allows scrolling horizontally */
+  gap: 10px;  /* Space between tags */
+  flex-wrap: nowrap;  /* Ensure tags don't wrap to the next line */
+}
+
+#dropzone .tag-badge {
+  flex-shrink: 0;  /* Prevent the tags from shrinking */
+  flex-grow: 0;  /* Prevent the tags from growing */
 }

@@ -249,7 +249,7 @@ function setQueryResults(data) {
 
     const dateModifiedCol = document.createElement('div');
     dateModifiedCol.className = 'col-3';
-    dateModifiedCol.textContent = file.date_modified || 'N/A';
+    dateModifiedCol.textContent = getDateModified();
 
     const typeCol = document.createElement('div');
     typeCol.className = 'col-3';
@@ -311,4 +311,8 @@ function clearTags(){
   activePairs.clear();
   safePairs.clear();
   handleQuery();
+}
+
+function getDateModified(){
+  return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
 }
