@@ -44,9 +44,9 @@ router.get("/", async (req, res) => {
         const tagValues = tagValuesResponse.data;
         const defaultTags = defaultTagsResponse.data;
 
-        console.log("tags" + tags)
-        console.log("tag-values" + tagValues.data)
-        console.log("default tags" + defaultTags.data)
+        console.log("tags:", tags); // Logs the full tags array
+        console.log("tag-values:", tagValues); // Logs the full tagValues array
+        console.log("default tags:", defaultTags); // Logs the full defaultTags array
         res.render('tag-explorer', { tags, tagValues , defaultTags});
     } catch (error) {
         console.error(error);

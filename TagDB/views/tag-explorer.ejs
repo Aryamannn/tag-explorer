@@ -84,9 +84,16 @@
 
       <div class="filter-tags" id="dropzone">
         <div id ="tag-container" class="tag-container">
-            <span class="tag-badge">Tags</span>
-            
-        </div>
+          <span class="tag-badge"> <%= defaultTags[0].tag_name %> :*</span>
+          
+      </div>
+      <!-- <div id="tag-container" class="tag-container">
+        <% defaultTags.forEach(tag => { %>
+            <span class="tag-badge">
+                <%= tag.tag_name %>: <%= tag.tag_value %>
+            </span>
+        <% }); %>
+    </div> -->
       </div>
       
         <!-- File List -->
