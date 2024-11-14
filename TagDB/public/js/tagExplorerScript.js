@@ -2,6 +2,7 @@ let dragged;
 const safePairs = new Map();
 const parentTags = new Map();
 const activePairs = new Map();
+let currentTag;
 
 document.addEventListener("DOMContentLoaded", () => {
   const draggables = document.querySelectorAll(".draggable, .nav-link"); // Include parent tags
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     draggable.addEventListener("dragend", (event) => {
       event.target.classList.remove("dragging");
     });
+
   });
 
   // Allow drop on the dropzone
@@ -37,20 +39,28 @@ document.addEventListener("DOMContentLoaded", () => {
     event.target.classList.remove("dragover");
 
     if (dragged) {
-      const draggedText = dragged.textContent.trim();
+      let draggedText = dragged.textContent.trim();
       const tagName = dragged.getAttribute('data-tag-name');
       const tagId = dragged.getAttribute('data-tag-id');
       const valueId = dragged.getAttribute('data-subtag-id');
       
-
+      if(dragged.getAttribute('any-tag')){
+        draggedText = tagName;
+      }
 
 
       // Check for existing tags in the dropzone
       const existingTags = Array.from(dropzone.getElementsByClassName("tag-badge"));
       const tagExists = existingTags.some(tag => tag.id === draggedText);
-
+      
       if (!tagExists) {
-        const newTag = createTag(draggedText, tagName);
+        let newTag;
+        if(draggedText.includes("\n")){
+          newTag = createTag(tagName, tagName);
+        } else {
+          newTag = createTag(draggedText, tagName);
+        }
+        
         dropzone.querySelector('.tag-container').appendChild(newTag);
         updatesafePairs(newTag.id, tagName, draggedText, valueId, tagId);
         handleQuery();
@@ -68,10 +78,18 @@ function createTag(draggedText, tagName) {
   newTag.id = draggedText;
   if (!(draggedText == tagName)){
     newTag.textContent = tagName + ": " + draggedText;
-  } else{
+    console.log(draggedText);
+  } else {
     newTag.textContent = draggedText;
   }
-
+  //  if (Array.isArray(draggedText) | draggedText.includes("\n")){
+  //   newTag.textContent = tagName;
+  //   draggedText = tagName;
+  //   console.log("text");
+  //  } else if(!(draggedText == tagName)) {
+  //   newTag.textContent = tagName + ": " + draggedText;
+  //   console.log(draggedText);
+  //  }
 
   const closeBtn = document.createElement("span");
   closeBtn.className = "close-btn";
@@ -90,15 +108,16 @@ function createTag(draggedText, tagName) {
 
 // Function to update active pairs
 function updatesafePairs(tagId, tagName, draggedText, valueId, parentId) {
-  if(draggedText == tagName){
-    console.log('dupe added');
+  if(draggedText == tagName | draggedText.includes('\n')){
+    console.log('dupe added : ' + parentId + "booo: " + valueId);
     parentTags.set(tagName, parentId);
   } else {
+    console.log("subtag added");
     safePairs.set(tagId, tagName);
     activePairs.set(draggedText, valueId)
   }
-  console.log(Array.from(activePairs.entries()));
-  console.log(Array.from(parentTags.entries()));
+  console.log("Actve Pairs" + Array.from(activePairs.entries()));
+  console.log("Parent tags" + Array.from(parentTags.entries()));
 
 }
 
@@ -315,4 +334,95 @@ function clearTags(){
 
 function getDateModified(){
   return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
+}
+
+document.querySelectorAll('.dropdown-btn').forEach(button => {
+  button.addEventListener('click', function () {
+    // Toggle the display of the related dropdown content
+    const dropdownContent = this.nextElementSibling;
+    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+  });
+});
+
+let selectedValues = [];
+
+// Function to handle the value selection
+function selectValue(tagName, value) {
+  const formattedValue = `${tagName}: ${value}`;
+
+  // Check if the value has already been selected
+  if (selectedValues.includes(formattedValue)) {
+    alert('This value has already been selected!');
+    return; // Do not add it again
+  }
+
+  // Add the selected value to the list
+  selectedValues.push(formattedValue);
+
+  // Create a new element to display the selected tag
+  const tagContainer = document.getElementById('tag-container');
+  const tagElement = document.createElement('span');
+  tagElement.classList.add('tag-badge');
+  tagElement.textContent = formattedValue;
+
+  // Create a button (X) to remove the tag
+  const removeButton = document.createElement('button');
+  removeButton.classList.add('remove-tag');
+  removeButton.textContent = 'X';
+
+  // Add the remove button click handler
+  removeButton.addEventListener('click', function () {
+    // Remove the tag element from the tag container
+    tagContainer.removeChild(tagElement);
+
+    // Also remove the value from the selectedValues array
+    const index = selectedValues.indexOf(formattedValue);
+    if (index > -1) {
+      selectedValues.splice(index, 1); // Remove the value
+    }
+  });
+
+  // Append the remove button to the tag element
+  tagElement.appendChild(removeButton);
+
+  // Append the new tag to the container
+  tagContainer.appendChild(tagElement);
+}
+
+function addTagOnClick(tagType, id, parentTag, tagText){
+  console.log("clcikeddddd!!");
+  console.log(tagType + " : " + id);
+  let attribute = "data-tag-subtag";
+  dragged = document.querySelector(`[${attribute}="${id}"]`);
+  // const draggedText = dragged.textContent.trim();
+  // const tagName = dragged.getAttribute('data-tag-name');
+  // const tagId = dragged.getAttribute('data-tag-id');
+  // const valueId = dragged.getAttribute('data-subtag-id');
+  
+
+
+
+  // Check for existing tags in the dropzone
+  const existingTags = Array.from(dropzone.getElementsByClassName("tag-badge"));
+  const tagExists = existingTags.some(tag => tag.id === tagText);
+  
+  if (!tagExists) {
+    let newTag;
+    if(tagText.includes("\n")){
+      newTag = createTag(parentTag, parentTag);
+    } else {
+      newTag = createTag(tagText, parentTag);
+    }
+    
+    dropzone.querySelector('.tag-container').appendChild(newTag);
+    if(tagType == "subtag"){
+      updatesafePairs(newTag.id, parentTag, tagText, id, null);
+    } else if (tagType == "tag"){
+      updatesafePairs(newTag.id, parentTag, tagText, null, id);
+    }
+    
+    handleQuery();
+  } else {
+    alert("This tag is already added!");
+  }
 }

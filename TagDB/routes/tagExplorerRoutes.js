@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
+const axios = require('axios');
 
 
 // app.use(express.static(path.join(__dirname, 'public')));
@@ -9,7 +10,7 @@ const db = require('./db');
 
 // Route to render the tag explorer page
 // Route to render the tag explorer page
-router.get("/", (req, res) => {
+router.get("/",  (req, res) => {
     const sqlTags = 'SELECT * FROM tags'; // Query to get all tags
     db.query(sqlTags, (err, tagResults) => {
         if (err) {
@@ -35,17 +36,27 @@ router.get("/", (req, res) => {
 
             // Query to get all files
             const sqlFiles = 'SELECT f.file_id, f.file_path, GROUP_CONCAT(DISTINCT tv.value_id) AS tag_values, GROUP_CONCAT(DISTINCT t.tag_id) AS tag_names FROM files f LEFT JOIN file_tags ft ON f.file_id = ft.file_id LEFT JOIN tag_values tv ON ft.value_id = tv.value_id LEFT JOIN tags t ON tv.tag_id = t.tag_id GROUP BY f.file_id, f.file_path ORDER BY f.file_path ASC;';
-            db.query(sqlFiles, (err, fileResults) => {
+            db.query(sqlFiles, async (err, fileResults) => {
                 if (err) {
                     console.error(err);
                     return res.status(500).send("Database error");
                 }
 
                 console.log(JSON.stringify(tagsWithValues, null, 2));
-                console.log(JSON.stringify(fileResults, null, 2)); // Log files for debugging
+                console.log(JSON.stringify(fileResults, null, 2));
                 
+                try {
+                    const [tagValuesResponse] = await Promise.all([
+                        axios.get('http://localhost:3000/tag_values')// Fetching default tags from the new API
+                    ]);
+                    const tagValues = tagValuesResponse.data;
+                    res.render("tag-explorer", { tags: tagsWithValues, files: fileResults, tagValues: tagValues });
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).send('Server error');
+                }
                 // Render the view with both tags and files
-                res.render("tag-explorer", { tags: tagsWithValues, files: fileResults });
+                
             });
         });
     });

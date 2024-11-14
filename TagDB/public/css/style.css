@@ -111,4 +111,49 @@
 #dropzone .tag-badge {
   flex-shrink: 0;  /* Prevent the tags from shrinking */
   flex-grow: 0;  /* Prevent the tags from growing */
+  background-color: #007bff;  /* Blue background */
+  color: white;
+  padding: 5px 10px;  
+  border-radius: 10px;  
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;  /* Prevent text from wrapping to the next line */
+}
+
+.dropdown-btn {
+  width: 100%;
+  background-color: #e7e7e7; /* Slightly darker gray for buttons */
+  color: black;
+  padding: 12px;
+  font-size: 15px;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for dropdown button */
+.dropdown-btn:hover {
+  background-color: #cce6ff; /* Light blue for hover */
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  background-color: #f3f3f3; /* Same light gray as main container */
+  padding-left: 20px; /* Indent for sub-items */
+  border-left: 2px solid #cce6ff; /* Blue line for active dropdown */
+}
+
+/* Dropdown items */
+.dropdown-content a {
+  color: #333;
+  padding: 8px 10px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  transition: background-color 0.3s;
 }
