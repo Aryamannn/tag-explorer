@@ -77,15 +77,17 @@ function filterTags() {
 }
 
 // Function to reset dropdowns to their normal state when search is cleared
+// Function to reset dropdowns to their normal state when search is cleared
 function resetDropdowns() {
   document.querySelectorAll('.dropdown-content').forEach(dropdown => {
     dropdown.style.display = 'none'; // Reset the dropdown visibility
   });
 
-  // Make sure all dropdown buttons are visible and clickable again
   document.querySelectorAll('.dropdown-btn').forEach(button => {
-    button.style.display = 'block';
-  });
+    button.style.display = 'flex';          // Set display to flex for justify-content to work
+    button.style.justifyContent = "space-between"; // Space items within each button element
+    button.style.alignItems = "center";     // Optional: Align items vertically centered if needed
+});
 }
 
 // Bind the selectValue function to each link in the dropdown

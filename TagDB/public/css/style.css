@@ -144,13 +144,17 @@
 
 /*  selected area style */
 
-/* Style for the tag container */
-.tag-container {
-  display: flex;
-  flex-wrap: wrap;  /* Allow tags to wrap to the next line if needed */
-  gap: 10px;  /* Space between tags */
+.filter-tags {
+  max-height: 15vh;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  overflow-y: hidden; /* Disables vertical scrolling */
+  white-space: nowrap; /* Prevents items from wrapping to the next line */
 }
 
+.tag-container {
+  display: inline-flex; /* Align items horizontally in a single line */
+  gap: 10px; /* Space between tags */
+}
 /* Style for each tag badge */
 .tag-badge {
   display: inline-flex;  /* Ensure the items inside are in a row */
@@ -194,3 +198,14 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
 }
 
+    /* This is added for the selected tag area in  the manage tags  */
+    #dropzone {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Space between tags */
+      padding: 10px;
+      border: 2px solid #ddd; /* Light border around the dropzone */
+      border-radius: 12px; /* Rounded corners for the box */
+      background-color: #f3f3f3; /* Light background color */
+      max-width: 100%; /* Prevent it from stretching too wide */
+  }
