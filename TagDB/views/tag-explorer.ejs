@@ -99,36 +99,12 @@
               <div class="col-3">Type</div>
               <div class="col-2">Size</div>
             </div>
-            <div class="file-item row">
-              <div class="col-4">File1.pdf</div>
-              <div class="col-3">10/2/2024</div>
-              <div class="col-3">PDF File</div>
-              <div class="col-2">45 KB</div>
-            </div>
-            <div class="file-item row active">
-              <div class="col-4">File2.txt</div>
-              <div class="col-3">10/1/2024</div>
-              <div class="col-3">Text Document</div>
-              <div class="col-2">2 KB</div>
-            </div>
-            <div class="file-item row">
-              <div class="col-4">File3.xlsx</div>
-              <div class="col-3">9/29/2024</div>
-              <div class="col-3">Microsoft Excel Workbook</div>
-              <div class="col-2">10 KB</div>
-            </div>
-            <div class="file-item row">
-              <div class="col-4">File4.exe</div>
-              <div class="col-3">8/12/2024</div>
-              <div class="col-3">Application</div>
-              <div class="col-2">691 KB</div>
-            </div>
             <% files.forEach(file => { %>
               <div class="file-item row">
-                  <div class="col-4"><%= file.file_path.split('/').pop() %></div> <!-- Extracts the file name -->
-                  <div class="col-3"> <!-- Date Modified (You might want to add this field in your DB) --></div>
+                  <div class="col-4"> <a href="open/<%=file.file_path.split('/').pop()%>"> <%= file.file_path.split('/').pop() %> </a></div> <!-- Extracts the file name -->
+                  <div class="col-3">  <%= file.modifiedDate.toLocaleDateString() %></div>
                   <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
-                  <div class="col-2"> 0 KB</div>
+                  <div class="col-2"> <%= file.size < 1024 ? file.size + " bytes" : (file.size / 1024).toFixed(2) + " KB" %></div>
               </div>
             <% }); %>
             

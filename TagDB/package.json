@@ -11,11 +11,15 @@
   "description": "",
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "ejs": "^3.1.10",
+    "exec": "^0.2.1",
     "express": "^4.21.1",
+    "fs": "^0.0.1-security",
     "mysql2": "^3.11.0",
+    "path": "^0.12.7",
     "react-bootstrap": "^2.10.5"
   }
 }

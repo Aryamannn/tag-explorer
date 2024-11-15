@@ -2,6 +2,11 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const db = require('./routes/db');
+const fs = require('fs');
+const path = require('path');
+
+
+const filesDirectory = path.join(__dirname, '..','TagDB-main','TagDB-main', 'test_dir');
 
 const app = express();
 app.use(cors());
@@ -543,18 +548,19 @@ app.post('/files/tags', (req, res) => {
               
               // Drop the temporary table after querying
               db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {
-                res.json(files);
+            
+                  res.json(returnMetadata(files));
               });
             });
           } else {
             // No normal tag-value pairs, just return the wildcard results
             const sql = `SELECT f.* FROM temp_files tf JOIN files f ON f.file_id = tf.file_id`;
-            db.query(sql, (err, files) => {
+            db.query(sql, (err, results) => {
               if (err) return res.status(500).send(err);
               
               // Drop the temporary table after querying
-              db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {
-                res.json(files);
+              db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {            
+                  res.json(returnMetadata(results));
               });
             });
           }
@@ -574,8 +580,8 @@ app.post('/files/tags', (req, res) => {
         const values = normalTagValuePairs.reduce((arr, pair) => [...arr, pair.tag_name, pair.tag_value], []);
 
         db.query(sql, values, (err, files) => {
-          if (err) return res.status(500).send(err);
-          res.json(files);
+          if (err) return res.status(500).send(err);      
+            res.json(returnMetadata(files));
         });
       }
     })
@@ -593,8 +599,32 @@ app.get('/allFiles', (req, res) => {
           console.error(err);
           return res.status(500).json({ error: 'Database error' });
       }
+      const filesWithMetadata = results.map(file => {
+      const filePath = path.join(filesDirectory, file.file_path.split('/').pop()); 
+        try {
+            // Get file metadata using fs.statSync (synchronous method)
+            const stats = fs.statSync(filePath);
 
-      res.json(results); // Return the results as JSON
+            // Add metadata to the file object
+            return {
+                ...file,
+                metadata: {
+                    size: stats.size,  // Size in bytes
+                    modifiedDate: stats.mtime,  // Last modified date
+                    createdDate: stats.birthtime,  // Creation date
+                    fileType: getFileType(filePath),  // Get file type based on extension
+                }
+            };
+        } catch (err) {
+            console.error(`Error retrieving metadata for ${filePath}:`, err);
+            return {
+                ...file,
+                metadata: null  // If there's an error, return null metadata
+            };
+        }
+    });
+
+      res.json(filesWithMetadata);
   });
 });
 
@@ -657,8 +687,8 @@ app.post('/files/combineTags', (req, res) => {
           console.error('Database error:', err);
           return res.status(500).json({ error: 'Database error' });
       }
-      res.json(results);
-      console.log(results)
+        res.json(returnMetadata(results));
+      // console.log(results)
   });
 });
 
@@ -684,8 +714,7 @@ app.post('/files/searchByTagId', (req, res) => {
           console.error('Database error:', err);
           return res.status(500).json({ error: 'Database error' });
       }
-
-      res.json(results);
+        res.json(returnMetadata(results));
   });
 });
 
@@ -705,6 +734,69 @@ app.get('/files/:file_id/tags', (req, res) => {
         res.send(results);
     });
 });
+
+function getFileType(filePath) {
+  const extension = filePath.split('.').pop().toLowerCase();
+  switch (extension) {
+      case 'pdf':
+          return 'PDF Document';
+      case 'doc':
+      case 'docx':
+          return 'Word Document';
+      case 'xls':
+      case 'xlsx':
+          return 'Excel Spreadsheet';
+      case 'ppt':
+      case 'pptx':
+          return 'PowerPoint Presentation';
+      case 'txt':
+          return 'Text File';
+      case 'jpg':
+      case 'jpeg':
+          return 'JPEG Image';
+      case 'png':
+          return 'PNG Image';
+      case 'gif':
+          return 'GIF Image';
+      case 'zip':
+      case 'rar':
+          return 'Compressed File';
+      case 'mp4':
+          return 'Multimedia Video';
+      default:
+          return 'Unknown File Type';
+  }
+}
+
+function returnMetadata(data){
+  const filesWithMetadata = data.map(file => {
+    const filePath = path.join(filesDirectory, file.file_path.split('/').pop()); 
+      try {
+          // Get file metadata using fs.statSync (synchronous method)
+          const stats = fs.statSync(filePath);
+
+          // Add metadata to the file object
+          return {
+              ...file,
+              metadata: {
+                  size: stats.size,  // Size in bytes
+                  modifiedDate: stats.mtime,  // Last modified date
+                  createdDate: stats.birthtime,  // Creation date
+                  fileType: getFileType(filePath),  // Get file type based on extension
+              }
+          };
+      } catch (err) {
+          console.error(`Error retrieving metadata for ${filePath}:`, err);
+          return {
+              ...file,
+              metadata: null  // If there's an error, return null metadata
+          };
+      }
+  });
+
+  return(filesWithMetadata);
+}
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;

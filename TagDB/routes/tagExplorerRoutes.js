@@ -3,7 +3,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+const { exec } = require('child_process');
 
+const filesDirectory = path.join(__dirname, '..', '..','TagDB-main','TagDB-main', 'test_dir');
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
@@ -42,15 +46,24 @@ router.get("/",  (req, res) => {
                     return res.status(500).send("Database error");
                 }
 
-                console.log(JSON.stringify(tagsWithValues, null, 2));
-                console.log(JSON.stringify(fileResults, null, 2));
-                
+                // console.log(JSON.stringify(tagsWithValues, null, 2));
+                // console.log(JSON.stringify(fileResults, null, 2));
+                const filesWithMetadata = fileResults.map(file => {
+                    const filePath = path.join(filesDirectory, file.file_path.split('/').pop()); // Assuming the `file_path` is relative
+                    const stats = fs.statSync(filePath); // Get file metadata
+                    return {
+                        ...file,
+                        size: stats.size, // File size in bytes
+                        modifiedDate: stats.mtime // Last modified date
+                    };
+                });
+
                 try {
                     const [tagValuesResponse] = await Promise.all([
                         axios.get('http://localhost:3000/tag_values')// Fetching default tags from the new API
                     ]);
                     const tagValues = tagValuesResponse.data;
-                    res.render("tag-explorer", { tags: tagsWithValues, files: fileResults, tagValues: tagValues });
+                    res.render("tag-explorer", { tags: tagsWithValues, files: filesWithMetadata, tagValues: tagValues });
                 } catch (error) {
                     console.error(error);
                     res.status(500).send('Server error');
@@ -61,6 +74,27 @@ router.get("/",  (req, res) => {
         });
     });
 });
+
+router.get('/open/:filename', (req, res) => {
+    const fileName = req.params.filename;
+    const filePath = path.join(filesDirectory, fileName);
+    console.log(fileName+ "path:" + filePath);
+    // Check if the file exists before trying to open it
+    if (fs.existsSync(filePath)) {
+      const openCommand = process.platform === 'win32' ? '' :
+                          process.platform === 'darwin' ? 'open' : 'xdg-open';
+      console.log(openCommand+ "path:" + filePath);
+      exec(`${openCommand} "${filePath}"`, (error) => {
+        if (error) {
+          console.error(`Error opening file: ${error}`);
+          return res.status(500).send('Error opening file');
+        }
+        res.send(`Opening file: ${fileName}`);
+      });
+    } else {
+      res.status(404).send('File not found');
+    }
+  });
 
 
 module.exports = router;

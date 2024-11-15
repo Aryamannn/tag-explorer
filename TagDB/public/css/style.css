@@ -157,3 +157,8 @@
   font-size: 14px;
   transition: background-color 0.3s;
 }
+
+a {
+  text-decoration: none;
+  color: black;
+}

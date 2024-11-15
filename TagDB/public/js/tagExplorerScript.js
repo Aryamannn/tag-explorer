@@ -172,7 +172,7 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
 
   const data = await response.json();
   setQueryResults(data);  // You need to define how to handle the results
-  console.log(data);
+  // console.log(data);
   console.log("hellooo");
 } catch (error) {
   console.error('Error querying files', error);
@@ -194,7 +194,7 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
     }
 
     const data = await response.json();
-    console.log('Files found:', data); // Process the data as needed
+    // console.log('Files found:', data);
     setQueryResults(data);
 } catch (error) {
     console.error('Error searching for files:', error);
@@ -218,11 +218,11 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
     }
 
     const data = await response.json();
-    console.log('Response data:', data); // Log the entire response
+    // console.log('Response data:', data); 
 
     if (Array.isArray(data)) {
       const fileIds = data.map(item => item.file_id);
-      console.log(fileIds); // Now this should print
+      // console.log(fileIds);
     } else {
       console.error('Unexpected response format:', data);
     }
@@ -257,6 +257,8 @@ function setQueryResults(data) {
   existingResults.forEach(result => result.remove());
 
   // Populate the results container with new data
+  console.log("THIS IS DATAAA:");
+  console.log(data);
   data.forEach(file => {
     const fileItem = document.createElement('div');
     fileItem.className = 'file-item row';
@@ -264,11 +266,15 @@ function setQueryResults(data) {
     // Creating columns for file information
     const fileNameCol = document.createElement('div');
     fileNameCol.className = 'col-4';
-    fileNameCol.textContent = file.file_path.split('/').pop();
+
+    const fileLink = document.createElement('a');
+    fileLink.href = `open/${file.file_path.split('/').pop()}`;
+    fileLink.textContent = file.file_path.split('/').pop();
+    fileNameCol.appendChild(fileLink);
 
     const dateModifiedCol = document.createElement('div');
     dateModifiedCol.className = 'col-3';
-    dateModifiedCol.textContent = getDateModified();
+    dateModifiedCol.textContent = file.metadata.modifiedDate ? new Date(file.metadata.modifiedDate).toLocaleDateString() : "N/A"; // Ensure valid date format
 
     const typeCol = document.createElement('div');
     typeCol.className = 'col-3';
@@ -276,15 +282,12 @@ function setQueryResults(data) {
 
     const sizeCol = document.createElement('div');
     sizeCol.className = 'col-2';
-    sizeCol.textContent = file.size || "0 KB"; 
-
-
+    sizeCol.textContent = file.metadata.size < 1024 ? file.metadata.size + " bytes" : (file.metadata.size / 1024).toFixed(2) + " KB" || "0 KB"; 
     
     fileItem.appendChild(fileNameCol);
     fileItem.appendChild(dateModifiedCol);
     fileItem.appendChild(typeCol);
     fileItem.appendChild(sizeCol);
-
     
     resultsContainer.appendChild(fileItem);
   });
