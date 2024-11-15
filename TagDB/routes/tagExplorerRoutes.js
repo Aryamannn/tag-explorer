@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 
-const filesDirectory = path.join(__dirname, '..', '..','TagDB-main','TagDB-main', 'test_dir');
+const filesDirectory = path.join(__dirname, '..', 'test_dir');
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
@@ -78,12 +78,12 @@ router.get("/",  (req, res) => {
 router.get('/open/:filename', (req, res) => {
     const fileName = req.params.filename;
     const filePath = path.join(filesDirectory, fileName);
-    console.log(fileName+ "path:" + filePath);
+    // console.log(fileName+ "path:" + filePath);
     // Check if the file exists before trying to open it
     if (fs.existsSync(filePath)) {
       const openCommand = process.platform === 'win32' ? '' :
                           process.platform === 'darwin' ? 'open' : 'xdg-open';
-      console.log(openCommand+ "path:" + filePath);
+    //   console.log(openCommand+ "path:" + filePath);
       exec(`${openCommand} "${filePath}"`, (error) => {
         if (error) {
           console.error(`Error opening file: ${error}`);

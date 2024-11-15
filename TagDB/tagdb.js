@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 
-const filesDirectory = path.join(__dirname, '..','TagDB-main','TagDB-main', 'test_dir');
+const filesDirectory = path.join(__dirname, 'test_dir');
 
 const app = express();
 app.use(cors());
