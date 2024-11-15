@@ -606,3 +606,5 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     // ensureDefaultTags();
 });
+
+module.exports.db = db;

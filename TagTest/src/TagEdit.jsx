@@ -67,6 +67,7 @@ const TagEdit = () => {
 
   const handleQuery = async () => {
     // Prepare the list of selected tag/value pairs for the query
+    console.log(selectedValues);
     const tagValuePairs = Object.keys(selectedValues).reduce((pairs, tagName) => {
       const selectedValue = selectedValues[tagName];
       if (selectedValue && selectedValue !== 'add-new') {
@@ -74,6 +75,9 @@ const TagEdit = () => {
       }
       return pairs;
     }, []);
+    console.log(tagValuePairs);
+    console.log(pairs);
+
 
     // If no values are selected, do not perform the query
     if (tagValuePairs.length === 0) {
