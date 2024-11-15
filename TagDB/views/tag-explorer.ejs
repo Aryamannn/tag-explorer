@@ -113,10 +113,92 @@
     </div>
   </div>
 
+  <!-- Context Menu -->
+  <div id="contextMenu" class="menu">
+    <p id="manageTags">Manage Tags</p>
+    <p>More Like This</p>
+    <p>Add Tag</p>
+  </div>
+
+      <!-- Modal window -->
+    <div id="manageTagsModal" class="modal">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <!-- <h2 style="flex-grow: 1;">Manage Tags for file_name</h2> -->
+                 <!-- Close (X) button -->
+                <span class="close" style="cursor: pointer;" title="Close the window - changes won't be saved">
+                    &times;
+                </span>
+            </div>
+
+            <br>
+
+            <!-- Search field and buttons (part of the header) -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <form class="d-flex flex-grow-1 me-2" role="search">
+                    <input class="form-control me-2 p-2" type="search" id="searchInput" placeholder="Search tags or values" aria-label="Search" oninput="filterTags()">
+                </form>
+                <div class="d-flex">
+                    <!-- Tag Edit button -->
+                    <button class="btn btn-outline-primary rounded-circle" id="addTagBtn" title="Go to Tag Edit to create new tags">
+                        <a href="/tag-editor">
+                            <i class="bi bi-plus fs-5"></i>
+                        </a>
+                    </button>
+                </div>
+            </div>
+
+         <strong style="text-align: center;">
+          Applied Tags
+        </strong>
+        <!-- this area will show all the tags attached to that file  for now I only have default tags  -->
+        <div class="filter-tags" id="dropzone" title="These are the tags and values already applied">
+            <div id="tag-container" class="tag-container" style="display: inline-flex;">
+                <span class="tag-badge">
+                    tags  
+                    <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
+                </span>
+                <!-- Add more tags here to test scrolling -->
+            </div>
+        </div>
+      
+            <strong>
+              <div style="text-align: center;">
+                  All Tags
+              </div>
+            </strong>  
+            <div  style="max-height: 30vh; overflow-y: auto;">
+            <% tags.forEach(tag => { %>
+                <button class="dropdown-btn" >
+                  <span><%= tag.tag_name || 'Untitled Tag' %></span>
+                  <span>&#9662;</span>  <!--   Down arrow symbol -->
+                </button>
+                <div class="dropdown-content">
+                  <% if (tag.tag_values && tag.tag_values.length > 0) { %>
+                      <% tag.tag_values.forEach(value => { %>
+                          <a href="#subitem1"><%= value.tag_value %></a>
+                      <% }); %>
+                  <% } else { %>
+                      <a href="#subitem2">No values</a>
+                  <% } %>
+              </div>
+              <% }); %>
+            </div>
+            <br>
+
+
+            <!-- Tags and values -->  
+            <button id="saveChangesBtn" class="btn btn-success" title="Save changes you have made">
+                Save Changes
+            </button>
+        </div>
+    </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
   <script src="/js/tagExplorerScript.js"> 
-    
   </script>
 
 </body>

@@ -20,9 +20,9 @@
 <body>
     <!-- <%- include("partials/nav.ejs") %> -->
 
-    <h1>Manage Tags</h1>
+    <!-- <h1>Manage Tags</h1>
 
-    <button id="manageTagsBtn">Manage Tags</button>
+    <button id="manageTagsBtn">Manage Tags</button> -->
     <!-- Modal window -->
     <div id="manageTagsModal" class="modal">
         <div class="modal-content">
@@ -47,14 +47,14 @@
                     <!-- Tag Edit button -->
                     <button class="btn btn-outline-primary rounded-circle" id="addTagBtn" title="Go to Tag Edit to create new tags">
                         <a href="/tag-editor">
-                            <i class="bi bi-plus fs-5"></i>
+                            <i class="bi bi-plus"></i>
                         </a>
                     </button>
                 </div>
             </div>
 
          
-<!-- this area will show all the tags attached to that file  for now I only have default tags  -->
+        <!-- this area will show all the tags attached to that file  for now I only have default tags  -->
         <div class="filter-tags" id="dropzone" >
             <div id="tag-container" class="tag-container" style="display: inline-flex;">
                 <span class="tag-badge">
@@ -88,7 +88,7 @@
                 </div>
               <% }); %>
             </div>
-<br>
+            <br>
 
 
             <!-- Tags and values -->  

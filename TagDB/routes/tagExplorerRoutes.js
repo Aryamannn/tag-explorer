@@ -6,6 +6,39 @@ const db = require('./db');
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
+function getFileType(filePath) {
+    const extension = filePath.split('.').pop().toLowerCase();
+    switch (extension) {
+        case 'pdf':
+            return 'PDF Document';
+        case 'doc':
+        case 'docx':
+            return 'Word Document';
+        case 'xls':
+        case 'xlsx':
+            return 'Excel Spreadsheet';
+        case 'ppt':
+        case 'pptx':
+            return 'PowerPoint Presentation';
+        case 'txt':
+            return 'Text File';
+        case 'jpg':
+        case 'jpeg':
+            return 'JPEG Image';
+        case 'png':
+            return 'PNG Image';
+        case 'gif':
+            return 'GIF Image';
+        case 'zip':
+        case 'rar':
+            return 'Compressed File';
+        case 'mp4':
+            return 'Multimedia Video';
+        default:
+            return 'Unknown File Type';
+    }
+  }
+
 
 // Route to render the tag explorer page
 // Route to render the tag explorer page
@@ -45,11 +78,10 @@ router.get("/", (req, res) => {
                 console.log(JSON.stringify(fileResults, null, 2)); // Log files for debugging
                 
                 // Render the view with both tags and files
-                res.render("tag-explorer", { tags: tagsWithValues, files: fileResults });
+                res.render("tag-explorer", { tags: tagsWithValues, files: fileResults, getFileType });
             });
         });
     });
 });
-
 
 module.exports = router;

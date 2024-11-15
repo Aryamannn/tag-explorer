@@ -200,75 +200,83 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
 }
 
 /* Alex  */
-        .tag-container {
-            margin-bottom: 10px;
-        }
+.tag-container {
+  margin-bottom: 10px;
+}
 
-        /* .tag-values {
-            display: none;
-        } */
+/* .tag-values {
+  display: none;
+} */
 
-        .toggle {
-            cursor: pointer;
-            user-select: none;
-        }
+.toggle {
+  cursor: pointer;
+  user-select: none;
+}
 
-        .modal-header {
-            position: sticky;
-            top: 0;
-            background-color: #fefefe;
-            z-index: 100;
-            padding-bottom: 10px;
-        }
+.modal-header {
+  position: sticky;
+  top: 0;
+  background-color: #fefefe;
+  z-index: 100;
+  padding-bottom: 10px;
+}
 
-        .modal {
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.4);
-        }
+.modal {
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 3px solid #000000;
-            width: 40%;
-            max-height: 80vh;
-            overflow: hidden;
-        }
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 3px solid #000000;
+  width: 40%;
+  max-height: 80vh;
+  overflow: hidden;
+}
 
-        .modal-body {
-            max-height: calc(100vh - 250px);
-            overflow-y: auto;
-        }
+.modal-body {
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+}
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 35px;
-            font-weight: bold;
-        }
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 35px;
+  font-weight: bold;
+}
 
-        .close:hover {
-            color: black;
-            cursor: pointer;
-        }
+.close:hover {
+  color: black;
+  cursor: pointer;
+}
 
-        ul {
-            list-style-type: none;
-            /*
-            padding-left: 0; Remove default indentation 
-            */
-        }
+/* ul {
+  list-style-type: none;
+  padding-left: 0; Remove default indentation 
+} */
 
-        /* This is added for the selected tag area in  the manage tags  */
-        #dropzone {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px; /* Space between tags */
-          padding: 10px;
-          border: 2px solid #ddd; /* Light border around the dropzone */
-          border-radius: 12px; /* Rounded corners for the box */
-          background-color: #f9f9f9; /* Light background color */
-          max-width: 100%; /* Prevent it from stretching too wide */
-      }
+/* This is added for the selected tag area in  the manage tags  */
+#dropzone {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between tags */
+  padding: 10px;
+  border: 2px solid #ddd; /* Light border around the dropzone */
+  border-radius: 12px; /* Rounded corners for the box */
+  background-color: #f9f9f9; /* Light background color */
+  max-width: 100%; /* Prevent it from stretching too wide */
+}
+
+#contextMenu {
+  position: absolute;
+  background-color: #f8f9fa;
+  padding: 5px;
+  border: 1px solid #000000;
+  display: none;
+  cursor: pointer;
+  user-select: none; 
+}
       

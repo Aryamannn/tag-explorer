@@ -312,3 +312,55 @@ function clearTags(){
   safePairs.clear();
   handleQuery();
 }
+
+let selectedFileName;
+// Display context menu on right click of a tag or value
+function showContextMenu(e) {
+  e.preventDefault();
+  const contextMenu = document.getElementById("contextMenu");
+
+  // Get the file name from the clicked file element
+  const fileItem = e.target.closest(".file-item");
+  if (fileItem) {
+    selectedFileName = fileItem.querySelector(".col-4").textContent;
+  }
+
+  contextMenu.style.left = `${e.pageX}px`;
+  contextMenu.style.top = `${e.pageY}px`;
+
+  contextMenu.style.display = "block";
+}
+
+// Hide context menu on outside click
+window.addEventListener("click", function (e) {
+  const contextMenu = document.getElementById("contextMenu");
+  if (!contextMenu.contains(e.target)) {
+    contextMenu.style.display = "none";
+  }
+});
+
+document.addEventListener("contextmenu", function (e) {
+  if (e.target.closest(".file-item")) {
+    showContextMenu(e);
+  }
+});
+
+// Listen for Manage Tags click in the context menu
+document.getElementById("manageTags").addEventListener("click", function () {
+  const modalElement = document.getElementById("manageTagsModal");
+  const modal = new bootstrap.Modal(document.getElementById('manageTagsModal'));
+
+  const modalHeader = modalElement.querySelector(".modal-header");
+
+  // Apply header style to the file name
+  const headerElement = document.createElement('h4');
+  headerElement.textContent = `Manage Tags for: ${selectedFileName}`;
+
+  modalHeader.textContent = '';
+
+  // Append the h2 element to the modal header
+  modalHeader.appendChild(headerElement);
+
+  modal.show();
+
+});
