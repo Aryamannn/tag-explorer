@@ -1,9 +1,12 @@
 let dragged;
+// 3 Maps to help keep track of current tags that are selected
 const safePairs = new Map();
 const parentTags = new Map();
 const activePairs = new Map();
 let currentTag;
 
+//Event listener that runs after webpage has loaded 
+// Adds event listeners to all elements needed to be dragged
 document.addEventListener("DOMContentLoaded", () => {
   const draggables = document.querySelectorAll(".draggable, .nav-link"); // Include parent tags
   const dropzone = document.getElementById("dropzone");
@@ -21,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // Allow drop on the dropzone
+  // Allow drop on the Selected Area
   dropzone.addEventListener("dragover", (event) => {
     event.preventDefault(); // Allow drop
   });
@@ -34,25 +37,31 @@ document.addEventListener("DOMContentLoaded", () => {
     event.target.classList.remove("dragover");
   });
 
+  //Event that happens when draggable is dropped into the Selected Area
   dropzone.addEventListener("drop", (event) => {
     event.preventDefault();
     event.target.classList.remove("dragover");
 
+    // Checks if there is a value assigned to dragged
+    // There should be a value assigned to dragged if an element is currently being dragged
     if (dragged) {
+      //Gets attribute info from element being dragged
       let draggedText = dragged.textContent.trim();
       const tagName = dragged.getAttribute('data-tag-name');
       const tagId = dragged.getAttribute('data-tag-id');
       const valueId = dragged.getAttribute('data-subtag-id');
       
+      //Changes "Any" from Nav Bar to parent tag name if "Any" was selected
       if(dragged.getAttribute('any-tag')){
         draggedText = tagName;
       }
 
 
-      // Check for existing tags in the dropzone
+      // Check for existing tags in the selected area
       const existingTags = Array.from(dropzone.getElementsByClassName("tag-badge"));
       const tagExists = existingTags.some(tag => tag.id === draggedText);
       
+      //If the tag does not already exist in the selected area
       if (!tagExists) {
         let newTag;
         if(draggedText.includes("\n")){
@@ -61,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
           newTag = createTag(draggedText, tagName);
         }
         
+        //Adds tag element to selected area
         dropzone.querySelector('.tag-container').appendChild(newTag);
         updatesafePairs(newTag.id, tagName, draggedText, valueId, tagId);
         handleQuery();
@@ -76,27 +86,29 @@ function createTag(draggedText, tagName) {
   const newTag = document.createElement("span");
   newTag.className = "tag-badge";
   newTag.id = draggedText;
+  // If text of subtag does not match name of parent tag
+  // Ex. !(Brad Pitt == Actor)
   if (!(draggedText == tagName)){
+    //Make text content of new tag (Parent Tag name: subtag name)
+    // Content type: Video
     newTag.textContent = tagName + ": " + draggedText;
     console.log(draggedText);
   } else {
+    //Make text content of new tag in Selected Area the name of parent tag
+    // Actor
     newTag.textContent = draggedText;
   }
-  //  if (Array.isArray(draggedText) | draggedText.includes("\n")){
-  //   newTag.textContent = tagName;
-  //   draggedText = tagName;
-  //   console.log("text");
-  //  } else if(!(draggedText == tagName)) {
-  //   newTag.textContent = tagName + ": " + draggedText;
-  //   console.log(draggedText);
-  //  }
 
+  //Creating the remove "x" button for tag in Selected Area
   const closeBtn = document.createElement("span");
   closeBtn.className = "close-btn";
   closeBtn.textContent = "×";
+  // Delete tag from Selected Area and from maps
   closeBtn.onclick = () => {
     newTag.remove();
-    safePairs.delete(draggedText); // Remove from safePairs on deletion
+    // Attmept to remove tag's text from every map 
+    // Helps keep track when a tag is no longer being used
+    safePairs.delete(draggedText); 
     parentTags.delete(draggedText);
     activePairs.delete(draggedText);
     handleQuery();
@@ -108,6 +120,8 @@ function createTag(draggedText, tagName) {
 
 // Function to update active pairs
 function updatesafePairs(tagId, tagName, draggedText, valueId, parentId) {
+  // Text of tags not yet selected will have a '\n' if they are a parent tag
+  // This is because of the dropdown arrow next to the parent tag 
   if(draggedText == tagName | draggedText.includes('\n')){
     console.log('dupe added : ' + parentId + "booo: " + valueId);
     parentTags.set(tagName, parentId);
@@ -124,10 +138,10 @@ function updatesafePairs(tagId, tagName, draggedText, valueId, parentId) {
 const handleQuery = async () => {
 // Create list of selected tag/value pairs for the query from map
 const tagValuePairs = Array.from(safePairs.entries()).map(([tagId, tagName]) => {
-  return { tag_name: tagName, tag_value: tagId }; // Adjust based on your desired structure
+  return { tag_name: tagName, tag_value: tagId }; // subtags in created array will have the format Actor: Brad Pitt
 });
 const parentTagPairs = Array.from(parentTags.entries()).map(([tagName, type]) => {
-  return { tag_name: tagName, tag_value: type }; // Adjust based on your desired structure
+  return { tag_name: tagName, tag_value: type };  // parent tags in created array will have the format Actor: (Id of parent tag)
 });
 
 console.log(tagValuePairs);
@@ -231,24 +245,10 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
   }
 }
 
-// const response = await fetch('http://localhost:3000/files/combineTags', {
-//   method: 'POST',
-//   headers: {
-//       'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify({
-//       tagIds: [1, 2, 3], // Example tag_ids
-//       valueIds: [4, 5],  // Example value_ids
-//   }),
-// });
-
-// const data = await response.json();
-// console.log(data); // Process the response data
-
 };
 
 
-// Function to set the "results" DIV with the filtered files
+// Function to set the "file results" area with the filtered files 
 function setQueryResults(data) {
   const resultsContainer = document.getElementById('results');
 
@@ -267,19 +267,23 @@ function setQueryResults(data) {
     const fileNameCol = document.createElement('div');
     fileNameCol.className = 'col-4';
 
+    // Creating link to open file
     const fileLink = document.createElement('a');
     fileLink.href = `open/${file.file_path.split('/').pop()}`;
     fileLink.textContent = file.file_path.split('/').pop();
     fileNameCol.appendChild(fileLink);
 
+    // Date modified column
     const dateModifiedCol = document.createElement('div');
     dateModifiedCol.className = 'col-3';
     dateModifiedCol.textContent = file.metadata.modifiedDate ? new Date(file.metadata.modifiedDate).toLocaleDateString() : "N/A"; // Ensure valid date format
 
+    //File type column
     const typeCol = document.createElement('div');
     typeCol.className = 'col-3';
     typeCol.textContent = getFileType(file.file_path); 
 
+    //File size column
     const sizeCol = document.createElement('div');
     sizeCol.className = 'col-2';
     sizeCol.textContent = file.metadata.size < 1024 ? file.metadata.size + " bytes" : (file.metadata.size / 1024).toFixed(2) + " KB" || "0 KB"; 
@@ -293,6 +297,8 @@ function setQueryResults(data) {
   });
 }
 
+// Function to change file type after file name with full name
+// jpeg or jpg is renamed to "JPEG Image"
 function getFileType(filePath) {
   const extension = filePath.split('.').pop().toLowerCase();
   switch (extension) {
@@ -326,6 +332,8 @@ function getFileType(filePath) {
   }
 }
 
+// Function to reset and clear all tags in selected area
+// Only element in select area will just be the default text: "Tags"
 function clearTags(){
   const resultsContainer = document.getElementById('tag-container');
   resultsContainer.innerHTML = '<span class="tag-badge">Tags</span>';
@@ -335,6 +343,7 @@ function clearTags(){
   handleQuery();
 }
 
+//Depeciated function to get a random date
 function getDateModified(){
   return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
 }
@@ -396,19 +405,15 @@ function addTagOnClick(tagType, id, parentTag, tagText){
   console.log("clcikeddddd!!");
   console.log(tagType + " : " + id);
   let attribute = "data-tag-subtag";
+  //Assign whatever tag that was clicked to the dragged variable
   dragged = document.querySelector(`[${attribute}="${id}"]`);
-  // const draggedText = dragged.textContent.trim();
-  // const tagName = dragged.getAttribute('data-tag-name');
-  // const tagId = dragged.getAttribute('data-tag-id');
-  // const valueId = dragged.getAttribute('data-subtag-id');
-  
-
-
 
   // Check for existing tags in the dropzone
   const existingTags = Array.from(dropzone.getElementsByClassName("tag-badge"));
   const tagExists = existingTags.some(tag => tag.id === tagText);
   
+  // Slightly tweaked code from "drop" event listener
+  // See lines 47 - 80
   if (!tagExists) {
     let newTag;
     if(tagText.includes("\n")){
