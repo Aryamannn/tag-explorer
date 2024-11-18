@@ -5,7 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-  <% console.log(files); %>
+  <!-- <% console.log(files); %> -->
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -116,8 +116,8 @@
   <!-- Context Menu -->
   <div id="contextMenu" class="menu">
     <p id="manageTags">Manage Tags</p>
-    <p>More Like This</p>
-    <p>Add Tag</p>
+    <!-- <p>More Like This</p>
+    <p>Add Tag</p> -->
   </div>
 
       <!-- Modal window -->
@@ -150,11 +150,11 @@
                 </div>
             </div>
 
-         <strong style="text-align: center;">
+        <!-- <strong style="text-align: center;">
           Applied Tags
-        </strong>
-        <!-- this area will show all the tags attached to that file  for now I only have default tags  -->
-        <div class="filter-tags" id="dropzone" title="These are the tags and values already applied">
+        </strong> -->
+        <!-- this area will show all the tags attached to that file for now I only have default tags  -->
+        <div class="filter-tags" id="dropzone" title="These are the tags and values already applied to the file">
             <div id="tag-container" class="tag-container" style="display: inline-flex;">
                 <span class="tag-badge">
                     tags  
@@ -164,12 +164,12 @@
             </div>
         </div>
       
-            <strong>
+            <!-- <strong>
               <div style="text-align: center;">
                   All Tags
               </div>
-            </strong>  
-            <div  style="max-height: 30vh; overflow-y: auto;">
+            </strong>   -->
+            <div style="max-height: 30vh; overflow-y: auto;">
             <% tags.forEach(tag => { %>
                 <button class="dropdown-btn" >
                   <span><%= tag.tag_name || 'Untitled Tag' %></span>
@@ -187,9 +187,7 @@
               <% }); %>
             </div>
             <br>
-
-
-            <!-- Tags and values -->  
+ 
             <button id="saveChangesBtn" class="btn btn-success" title="Save changes you have made">
                 Save Changes
             </button>

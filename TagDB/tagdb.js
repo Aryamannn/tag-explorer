@@ -658,13 +658,13 @@ app.post('/files/combineTags', (req, res) => {
           return res.status(500).json({ error: 'Database error' });
       }
       res.json(results);
-      console.log(results)
+      // console.log(results)
   });
 });
 
 app.post('/files/searchByTagId', (req, res) => {
   const { tagIds } = req.body; // Expecting an array of tag_ids
-  console.log("API " + tagIds);
+  // console.log("API " + tagIds);
   if (!Array.isArray(tagIds)) {
       return res.status(400).json({ error: 'tagIds must be an array' });
   }

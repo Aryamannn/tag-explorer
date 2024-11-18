@@ -199,14 +199,10 @@ outline: none;
 box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
 }
 
-/* Alex  */
+/* Manage Tags window */
 .tag-container {
   margin-bottom: 10px;
 }
-
-/* .tag-values {
-  display: none;
-} */
 
 .toggle {
   cursor: pointer;
@@ -253,12 +249,7 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   cursor: pointer;
 }
 
-/* ul {
-  list-style-type: none;
-  padding-left: 0; Remove default indentation 
-} */
-
-/* This is added for the selected tag area in  the manage tags  */
+/* This is added for the selected tag area in the manage tags  */
 #dropzone {
   display: flex;
   flex-wrap: wrap;
@@ -279,4 +270,4 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   cursor: pointer;
   user-select: none; 
 }
-      
+/* Manage Tags window end */

@@ -74,8 +74,8 @@ router.get("/", (req, res) => {
                     return res.status(500).send("Database error");
                 }
 
-                console.log(JSON.stringify(tagsWithValues, null, 2));
-                console.log(JSON.stringify(fileResults, null, 2)); // Log files for debugging
+                // console.log(JSON.stringify(tagsWithValues, null, 2));
+                // console.log(JSON.stringify(fileResults, null, 2)); // Log files for debugging
                 
                 // Render the view with both tags and files
                 res.render("tag-explorer", { tags: tagsWithValues, files: fileResults, getFileType });

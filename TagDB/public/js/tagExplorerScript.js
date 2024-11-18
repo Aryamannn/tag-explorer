@@ -97,8 +97,8 @@ function updatesafePairs(tagId, tagName, draggedText, valueId, parentId) {
     safePairs.set(tagId, tagName);
     activePairs.set(draggedText, valueId)
   }
-  console.log(Array.from(activePairs.entries()));
-  console.log(Array.from(parentTags.entries()));
+  // console.log(Array.from(activePairs.entries()));
+  // console.log(Array.from(parentTags.entries()));
 
 }
 
@@ -111,8 +111,8 @@ const parentTagPairs = Array.from(parentTags.entries()).map(([tagName, type]) =>
   return { tag_name: tagName, tag_value: type }; // Adjust based on your desired structure
 });
 
-console.log(tagValuePairs);
-console.log(parentTagPairs);
+// console.log(tagValuePairs);
+// console.log(parentTagPairs);
 
 // If no values are selected, do not perform the query
 if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
@@ -132,7 +132,7 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
     const data = await response.json();
     setQueryResults(data);  // Call setQueryResults with the fetched data
     console.log("helllppp");
-    console.log(data);
+    // console.log(data);
   } catch (error) {
     console.error('Error querying files', error);
   }
@@ -153,12 +153,12 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
 
   const data = await response.json();
   setQueryResults(data);  // You need to define how to handle the results
-  console.log(data);
+  // console.log(data);
   console.log("hellooo");
 } catch (error) {
   console.error('Error querying files', error);
 }} else if(parentTagPairs.length > 0 && tagValuePairs.length === 0){
-  console.log("Parent tags " + JSON.stringify( Array.from(parentTags.entries()).map(subArray => subArray[1]) ));
+  // console.log("Parent tags " + JSON.stringify( Array.from(parentTags.entries()).map(subArray => subArray[1]) ));
   try {
     const response = await fetch('http://localhost:3000/files/searchByTagId', {
         method: 'POST',
@@ -175,7 +175,7 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
     }
 
     const data = await response.json();
-    console.log('Files found:', data); // Process the data as needed
+    // console.log('Files found:', data); // Process the data as needed
     setQueryResults(data);
 } catch (error) {
     console.error('Error searching for files:', error);
@@ -199,11 +199,11 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
     }
 
     const data = await response.json();
-    console.log('Response data:', data); // Log the entire response
+    // console.log('Response data:', data); // Log the entire response
 
     if (Array.isArray(data)) {
       const fileIds = data.map(item => item.file_id);
-      console.log(fileIds); // Now this should print
+      // console.log(fileIds); // Now this should print
     } else {
       console.error('Unexpected response format:', data);
     }
@@ -339,7 +339,7 @@ window.addEventListener("click", function (e) {
   }
 });
 
-document.addEventListener("contextmenu", function (e) {
+document.getElementById('results').addEventListener("contextmenu", function (e) {
   if (e.target.closest(".file-item")) {
     showContextMenu(e);
   }
@@ -356,11 +356,44 @@ document.getElementById("manageTags").addEventListener("click", function () {
   const headerElement = document.createElement('h4');
   headerElement.textContent = `Manage Tags for: ${selectedFileName}`;
 
-  modalHeader.textContent = '';
+  // modalHeader.textContent = '';
 
   // Append the h2 element to the modal header
   modalHeader.appendChild(headerElement);
 
   modal.show();
+});
 
+var modal = document.getElementById("manageTagsModal");
+// Close modal on outside click
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Close modal on 'X' click
+document.getElementsByClassName("close")[0].onclick = function () {
+  modal.style.display = "none";
+}
+
+// Dropdown toggle functionality insdie modal window
+document.querySelectorAll('.dropdown-btn').forEach(button => {
+  button.addEventListener('click', function () {
+    // Toggle the display of the related dropdown content
+    const dropdownContent = this.nextElementSibling;
+    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+  });
+});
+
+document.getElementById("saveChangesBtn").onclick = function () {
+  // modal.style.display = "none";
+  alert("Changes confirmed");
+}
+
+// Prevent 'Enter' key from closing the modal window
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+  }
 });
