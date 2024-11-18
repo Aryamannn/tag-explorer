@@ -313,8 +313,8 @@ function clearTags(){
   handleQuery();
 }
 
-let selectedFileName;
 // Display context menu on right click of a tag or value
+let selectedFileName;
 function showContextMenu(e) {
   e.preventDefault();
   const contextMenu = document.getElementById("contextMenu");
@@ -323,6 +323,19 @@ function showContextMenu(e) {
   const fileItem = e.target.closest(".file-item");
   if (fileItem) {
     selectedFileName = fileItem.querySelector(".col-4").textContent;
+
+    const fileId = fileItem.getAttribute('data-file-id');
+    console.log("Right clicked on file with ID:", fileId);
+
+    // Fetch tags for the selected file
+    fetch(`/files/${fileId}/tags`)
+    .then(response => response.json())
+    .then(tags => {
+      console.log("Tags and values for file ID " + fileId + ":", tags);
+    })
+    .catch(error => {
+      console.error("Error fetching tags:", error);
+    });
   }
 
   contextMenu.style.left = `${e.pageX}px`;
@@ -397,3 +410,28 @@ document.addEventListener('keydown', function(event) {
     event.preventDefault();
   }
 });
+
+// Function to filter tags and values based on search input
+// Renamed this function for clarity to differentiate between what interface we are searching in
+function filterTagsInWindow() {
+  const searchInput = document.getElementById('searchInput').value.toLowerCase();
+  const tagButtons = document.querySelectorAll('.dropdown-btn');  // Filter based on dropdown buttons
+  const tagLinks = document.querySelectorAll('.dropdown-content a');  // Filter based on tag values in dropdown content
+
+  tagButtons.forEach(button => {
+    const tagName = button.querySelector('span').innerText.toLowerCase();  // Get the tag name
+    const matchingTagValues = Array.from(button.nextElementSibling.querySelectorAll('a')).filter(link => {
+      const tagValue = link.textContent.toLowerCase();
+      return tagValue.includes(searchInput);  // Check if the tag value matches the search term
+    });
+
+    // Show or hide the tag button and the corresponding dropdown items
+    if (tagName.includes(searchInput) || matchingTagValues.length > 0) {
+      button.style.display = 'block'; // Show matching tag
+      button.nextElementSibling.style.display = 'block'; // Show the dropdown content if it has matching values
+    } else {
+      button.style.display = 'none'; // Hide non-matching tag
+      button.nextElementSibling.style.display = 'none'; // Hide dropdown content if no values match
+    }
+  });
+}

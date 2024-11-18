@@ -100,7 +100,7 @@
               <div class="col-2">691 KB</div>
             </div>
             <% files.forEach(file => { %>
-              <div class="file-item row">
+              <div class="file-item row" data-file-id="<%= file.file_id %>">
                   <div class="col-4"><%= file.file_path.split('/').pop() %></div> <!-- Extracts the file name -->
                   <div class="col-3"> <!-- Date Modified (You might want to add this field in your DB) --></div>
                   <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
@@ -135,10 +135,10 @@
 
             <br>
 
-            <!-- Search field and buttons (part of the header) -->
+            <!-- Search field and Tag Edit (+) buttons (part of the header) -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <form class="d-flex flex-grow-1 me-2" role="search">
-                    <input class="form-control me-2 p-2" type="search" id="searchInput" placeholder="Search tags or values" aria-label="Search" oninput="filterTags()">
+                    <input class="form-control me-2 p-2" type="search" id="searchInput" placeholder="Search tags or values" aria-label="Search" oninput="filterTagsInWindow()">
                 </form>
                 <div class="d-flex">
                     <!-- Tag Edit button -->
