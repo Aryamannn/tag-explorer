@@ -313,9 +313,16 @@ function clearTags(){
   handleQuery();
 }
 
-// Display context menu on right click of a tag or value
+// Display the file's tags and values in the modal-tag-container area
+function displayTagsAndValues(tags) {
+  tags.forEach(tag => {
+    selectValue(tag.tag_name, tag.tag_value);
+  });
+}
+
+// Display context menu on right-click of file element and retrieve file tags and values
 let selectedFileName;
-function showContextMenu(e) {
+async function showContextMenu(e) {
   e.preventDefault();
   const contextMenu = document.getElementById("contextMenu");
 
@@ -325,17 +332,18 @@ function showContextMenu(e) {
     selectedFileName = fileItem.querySelector(".col-4").textContent;
 
     const fileId = fileItem.getAttribute('data-file-id');
-    console.log("Right clicked on file with ID:", fileId);
+    // console.log("Right clicked on file with ID:", fileId);
 
-    // Fetch tags for the selected file
-    fetch(`/files/${fileId}/tags`)
-    .then(response => response.json())
-    .then(tags => {
-      console.log("Tags and values for file ID " + fileId + ":", tags);
-    })
-    .catch(error => {
+    try {
+      // Fetch tags and values for the selected file
+      const response = await fetch(`/files/${fileId}/tags`);
+      const tags = await response.json();
+
+      // Pass the tags to the function that displays them
+      displayTagsAndValues(tags);
+    } catch (error) {
       console.error("Error fetching tags:", error);
-    });
+    }
   }
 
   contextMenu.style.left = `${e.pageX}px`;
@@ -352,6 +360,7 @@ window.addEventListener("click", function (e) {
   }
 });
 
+// Detect right click on a file
 document.getElementById('results').addEventListener("contextmenu", function (e) {
   if (e.target.closest(".file-item")) {
     showContextMenu(e);
@@ -390,7 +399,7 @@ document.getElementsByClassName("close")[0].onclick = function () {
   modal.style.display = "none";
 }
 
-// Dropdown toggle functionality insdie modal window
+// Dropdown toggle functionality inside modal window
 document.querySelectorAll('.dropdown-btn').forEach(button => {
   button.addEventListener('click', function () {
     // Toggle the display of the related dropdown content
@@ -399,9 +408,15 @@ document.querySelectorAll('.dropdown-btn').forEach(button => {
   });
 });
 
-document.getElementById("saveChangesBtn").onclick = function () {
-  // modal.style.display = "none";
+// Apply the changes in tags or values to a file
+// Add and remove tags or values on button click
+function applyChangesToFile() {
+
   alert("Changes confirmed");
+
+  // else {
+  //   alert("No changes were made");
+  // }
 }
 
 // Prevent 'Enter' key from closing the modal window
@@ -411,7 +426,7 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
-// Function to filter tags and values based on search input
+// Function to filter tags and values based on search input in Manage Tags
 // Renamed this function for clarity to differentiate between what interface we are searching in
 function filterTagsInWindow() {
   const searchInput = document.getElementById('searchInput').value.toLowerCase();
@@ -435,3 +450,80 @@ function filterTagsInWindow() {
     }
   });
 }
+
+// Function to reset dropdowns to their normal state when search is cleared in Manage Tags
+function resetDropdowns() {
+  document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+    dropdown.style.display = 'none'; // Reset the dropdown visibility
+  });
+
+  document.querySelectorAll('.dropdown-btn').forEach(button => {
+    button.style.display = 'flex';          // Set display to flex for justify-content to work
+    button.style.justifyContent = "space-between"; // Space items within each button element
+    button.style.alignItems = "center";     // Optional: Align items vertically centered if needed
+});
+}
+
+let selectedValues = [];
+// Function to handle the value selection
+function selectValue(tagName, value) {
+  const formattedValue = `${tagName}: ${value}`;
+
+  // Check if the value has already been selected
+  if (selectedValues.includes(formattedValue)) {
+    alert('This value has already been selected!');
+    return; // Do not add it again
+  }
+
+  // Add the selected value to the list
+  selectedValues.push(formattedValue);
+
+  // Create a new element to display the selected tag
+  const tagContainer = document.getElementById('modal-tag-container');
+  const tagElement = document.createElement('span');
+  tagElement.classList.add('tag-badge');
+  tagElement.textContent = formattedValue;
+
+  // Create a button (X) to remove the tag
+  const removeButton = document.createElement('button');
+  removeButton.classList.add('remove-tag');
+  removeButton.textContent = 'X';
+
+  // Add the remove button click handler
+  removeButton.addEventListener('click', function () {
+    // Remove the tag element from the tag container
+    tagContainer.removeChild(tagElement);
+
+    // Also remove the value from the selectedValues array
+    const index = selectedValues.indexOf(formattedValue);
+    if (index > -1) {
+      selectedValues.splice(index, 1); // Remove the value
+    }
+  });
+
+  // Append the remove button to the tag element
+  tagElement.appendChild(removeButton);
+
+  // Append the new tag to the container
+  tagContainer.appendChild(tagElement);
+}
+
+// Bind the selectValue function to each link in the dropdown in Manage Tags
+document.querySelectorAll('.dropdown-content a').forEach(link => {
+  link.addEventListener('click', function (e) {
+    e.preventDefault(); // Prevent default anchor behavior
+    const tagName = this.closest('.dropdown-content').previousElementSibling.querySelector('span').textContent; // Get the tag name from the button
+    const value = e.target.textContent; // Get the value from the clicked link
+    selectValue(tagName, value); // Call the function to handle the selection
+  });
+});
+
+// Detect when the search input is cleared in Manage Tags
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', function () {
+  if (this.value.trim() === '') {
+    resetDropdowns(); // Reset dropdowns to normal state when search is cleared
+  } else {
+    filterTags(); // Otherwise, filter the tags based on the input
+  }
+});

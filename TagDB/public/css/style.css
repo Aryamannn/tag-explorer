@@ -200,10 +200,14 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
 }
 
 /* Manage Tags window */
-.tag-container {
-  margin-bottom: 10px;
+
+/* Renamed for clarity when container is referenced */
+.modal-tag-container {
+  display: inline-flex; /* Align items horizontally in a single line */
+  gap: 10px; /* Space between tags */
 }
 
+/* Only applies to manage-tags.ejs */
 .toggle {
   cursor: pointer;
   user-select: none;
@@ -261,6 +265,18 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   max-width: 100%; /* Prevent it from stretching too wide */
 }
 
+/* Copied and renamed to reference the Manage Tags dropzone */
+#modal-dropzone {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between tags */
+  padding: 10px;
+  border: 2px solid #ddd; /* Light border around the dropzone */
+  border-radius: 12px; /* Rounded corners for the box */
+  background-color: #f9f9f9; /* Light background color */
+  max-width: 100%; /* Prevent it from stretching too wide */
+}
+
 #contextMenu {
   position: absolute;
   background-color: #f8f9fa;
@@ -268,6 +284,7 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   border: 1px solid #000000;
   display: none;
   cursor: pointer;
-  user-select: none; 
+  user-select: none;
+  text-align: center;
 }
 /* Manage Tags window end */

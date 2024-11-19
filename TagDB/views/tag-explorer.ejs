@@ -5,7 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-  <!-- <% console.log(files); %> -->
+  <% console.log(files); %>
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -120,13 +120,12 @@
     <p>Add Tag</p> -->
   </div>
 
-      <!-- Modal window -->
+    <!-- Modal window -->
     <div id="manageTagsModal" class="modal">
         <div class="modal-content">
 
             <!-- Header -->
             <div class="modal-header">
-                <!-- <h2 style="flex-grow: 1;">Manage Tags for file_name</h2> -->
                  <!-- Close (X) button -->
                 <span class="close" style="cursor: pointer;" title="Close the window - changes won't be saved">
                     &times;
@@ -142,7 +141,7 @@
                 </form>
                 <div class="d-flex">
                     <!-- Tag Edit button -->
-                    <button class="btn btn-outline-primary rounded-circle" id="addTagBtn" title="Go to Tag Edit to create new tags">
+                    <button class="btn btn-outline-primary rounded-circle" id="addTagBtn" title="Go to Tag Edit to create new tags - changes won't be saved">
                         <a href="/tag-editor">
                             <i class="bi bi-plus fs-5"></i>
                         </a>
@@ -150,12 +149,10 @@
                 </div>
             </div>
 
-        <!-- <strong style="text-align: center;">
-          Applied Tags
-        </strong> -->
         <!-- this area will show all the tags attached to that file for now I only have default tags  -->
-        <div class="filter-tags" id="dropzone" title="These are the tags and values already applied to the file">
-            <div id="tag-container" class="tag-container" style="display: inline-flex;">
+        <div class="filter-tags" id="modal-dropzone" title="Tags and values are applied to the file here">
+          <!-- Changed to 'modal-tag-container' to differentiate between which tag container id and class is referenced -->
+            <div id="modal-tag-container" class="modal-tag-container" style="display: inline-flex;">
                 <span class="tag-badge">
                     tags  
                     <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
@@ -164,12 +161,7 @@
             </div>
         </div>
       
-            <!-- <strong>
-              <div style="text-align: center;">
-                  All Tags
-              </div>
-            </strong>   -->
-            <div style="max-height: 30vh; overflow-y: auto;">
+            <div style="max-height: 30vh; overflow-y: auto;" title="These dropdowns contain all existing tags">
             <% tags.forEach(tag => { %>
                 <button class="dropdown-btn" >
                   <span><%= tag.tag_name || 'Untitled Tag' %></span>
@@ -188,7 +180,7 @@
             </div>
             <br>
  
-            <button id="saveChangesBtn" class="btn btn-success" title="Save changes you have made">
+            <button id="saveChangesBtn" class="btn btn-success" title="Save changes you have made" onclick="applyChangesToFile()">
                 Save Changes
             </button>
         </div>
