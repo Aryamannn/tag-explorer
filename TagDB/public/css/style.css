@@ -207,7 +207,6 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   gap: 10px; /* Space between tags */
 }
 
-/* Only applies to manage-tags.ejs */
 .toggle {
   cursor: pointer;
   user-select: none;
@@ -243,9 +242,11 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
 
 .close {
   color: #aaa;
-  float: right;
+  position: absolute;
   font-size: 35px;
   font-weight: bold;
+  right: 1px;
+  top: 1px;
 }
 
 .close:hover {
@@ -286,5 +287,11 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   cursor: pointer;
   user-select: none;
   text-align: center;
+}
+
+.modal-dialog {
+  max-width: 1500px;
+  width: 100%;
+  margin: 1.75rem auto;
 }
 /* Manage Tags window end */

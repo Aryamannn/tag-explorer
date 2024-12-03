@@ -313,42 +313,28 @@ function clearTags(){
   handleQuery();
 }
 
-// Display the file's tags and values in the modal-tag-container area
-function displayTagsAndValues(tags) {
-  tags.forEach(tag => {
-    selectValue(tag.tag_name, tag.tag_value);
-  });
-}
+// Detect right click on a file
+document.getElementById('results').addEventListener("contextmenu", function (e) {
+  if (e.target.closest(".file-item")) {
+    showContextMenu(e);
+  }
+});
 
-// Display context menu on right-click of file element and retrieve file tags and values
+// Display context menu on right-click of file element
+// Store file name and file ID of clicked element
 let selectedFileName;
+let selectedFileId;
 async function showContextMenu(e) {
   e.preventDefault();
   const contextMenu = document.getElementById("contextMenu");
-
-  // Get the file name from the clicked file element
   const fileItem = e.target.closest(".file-item");
   if (fileItem) {
+    // Store selected file details for later use
     selectedFileName = fileItem.querySelector(".col-4").textContent;
-
-    const fileId = fileItem.getAttribute('data-file-id');
-    // console.log("Right clicked on file with ID:", fileId);
-
-    try {
-      // Fetch tags and values for the selected file
-      const response = await fetch(`/files/${fileId}/tags`);
-      const tags = await response.json();
-
-      // Pass the tags to the function that displays them
-      displayTagsAndValues(tags);
-    } catch (error) {
-      console.error("Error fetching tags:", error);
-    }
+    selectedFileId = fileItem.getAttribute("data-file-id");
   }
-
   contextMenu.style.left = `${e.pageX}px`;
   contextMenu.style.top = `${e.pageY}px`;
-
   contextMenu.style.display = "block";
 }
 
@@ -360,44 +346,64 @@ window.addEventListener("click", function (e) {
   }
 });
 
-// Detect right click on a file
-document.getElementById('results').addEventListener("contextmenu", function (e) {
-  if (e.target.closest(".file-item")) {
-    showContextMenu(e);
-  }
-});
-
 // Listen for Manage Tags click in the context menu
-document.getElementById("manageTags").addEventListener("click", function () {
+document.getElementById("manageTags").addEventListener("click", async function () {
+  await getTagsAndValues();
   const modalElement = document.getElementById("manageTagsModal");
-  const modal = new bootstrap.Modal(document.getElementById('manageTagsModal'));
-
+  const modal = new bootstrap.Modal(modalElement, {
+    backdrop: true,
+    keyboard: true,
+  });
   const modalHeader = modalElement.querySelector(".modal-header");
+
+  // Remove any existing header elements
+  const existingHeader = modalHeader.querySelector('h4');
+  if (existingHeader) {
+      modalHeader.removeChild(existingHeader);
+  }
 
   // Apply header style to the file name
   const headerElement = document.createElement('h4');
-  headerElement.textContent = `Manage Tags for: ${selectedFileName}`;
-
-  // modalHeader.textContent = '';
+  // headerElement.textContent = `Manage Tags for: ${selectedFileName}`;
+  headerElement.innerHTML = `Manage Tags for: ${selectedFileName} 
+  <span style="cursor: help; margin-left: 8px;" title="This window allows you to manage tags for the selected file. You can add or remove tags here. Changes won't be saved unless you click 'Save Changes'. Hover over an element to see more information.">
+    <i class="bi bi-info-circle" style="font-size: 1.0rem; color: #007bff;"></i>
+  </span>`;
 
   // Append the h2 element to the modal header
   modalHeader.appendChild(headerElement);
 
+  // Close modal on X click
+  // Clear selectedValues[], deletedValues[], clear modal content
+  const closeButton = modalHeader.querySelector('.close');
+  closeButton.addEventListener('click', () => {
+    modal.hide();
+    selectedFileName = '';
+    selectedFileId = '';
+    selectedValuesInWindow.length = 0;
+    deletedValues.length = 0;
+    const modalTagContainer = modalElement.querySelector('#modal-tag-container');
+    modalTagContainer.innerHTML = '';
+    headerElement.textContent = '';
+  });
+
+  // Close modal on outside click
+  // Clear selectedValues[], deletedValues[], clear modal content
+  modalElement.addEventListener('click', (event) => {
+  if (event.target === modalElement) {
+    modal.hide();
+    selectedFileName = '';
+    selectedFileId = '';
+    selectedValuesInWindow.length = 0;
+    deletedValues.length = 0;
+    const modalTagContainer = modalElement.querySelector('#modal-tag-container');
+    modalTagContainer.innerHTML = '';
+    headerElement.textContent = '';
+  }
+  });
+
   modal.show();
 });
-
-var modal = document.getElementById("manageTagsModal");
-// Close modal on outside click
-window.onclick = function (event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-
-// Close modal on 'X' click
-document.getElementsByClassName("close")[0].onclick = function () {
-  modal.style.display = "none";
-}
 
 // Dropdown toggle functionality inside modal window
 document.querySelectorAll('.dropdown-btn').forEach(button => {
@@ -407,17 +413,6 @@ document.querySelectorAll('.dropdown-btn').forEach(button => {
     dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
   });
 });
-
-// Apply the changes in tags or values to a file
-// Add and remove tags or values on button click
-function applyChangesToFile() {
-
-  alert("Changes confirmed");
-
-  // else {
-  //   alert("No changes were made");
-  // }
-}
 
 // Prevent 'Enter' key from closing the modal window
 document.addEventListener('keydown', function(event) {
@@ -464,19 +459,41 @@ function resetDropdowns() {
 });
 }
 
-let selectedValues = [];
-// Function to handle the value selection
-function selectValue(tagName, value) {
+// Retrieve the tags and values of the file based on the file id when clicking 'Manage Tags' option
+async function getTagsAndValues() {
+  if (selectedFileId) {
+    try {
+      const response = await fetch(`/files/${selectedFileId}/tags`);
+      const tags = await response.json();
+      console.log("file id: ", selectedFileId);
+      displayTagsAndValues(tags);
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+    }
+  }
+}
+
+// Send the file's tags and values to the modal-tag-container area
+function displayTagsAndValues(tags) {
+  tags.forEach(tag => {
+    selectValueInWindow(tag.tag_name, tag.tag_value, tag.value_id);
+  });
+}
+
+let selectedValuesInWindow = [];
+let deletedValues = [];
+// Renamed function to differentiate between values in Tag Explorer vs Manage Tags
+function selectValueInWindow(tagName, value, valueId) {
   const formattedValue = `${tagName}: ${value}`;
 
   // Check if the value has already been selected
-  if (selectedValues.includes(formattedValue)) {
+  if (selectedValuesInWindow.some(item => item.formattedValue === formattedValue)) {
     alert('This value has already been selected!');
     return; // Do not add it again
   }
 
   // Add the selected value to the list
-  selectedValues.push(formattedValue);
+  selectedValuesInWindow.push({ formattedValue, valueId });
 
   // Create a new element to display the selected tag
   const tagContainer = document.getElementById('modal-tag-container');
@@ -494,10 +511,11 @@ function selectValue(tagName, value) {
     // Remove the tag element from the tag container
     tagContainer.removeChild(tagElement);
 
-    // Also remove the value from the selectedValues array
-    const index = selectedValues.indexOf(formattedValue);
+    const index = selectedValuesInWindow.findIndex(item => item.formattedValue === formattedValue);
     if (index > -1) {
-      selectedValues.splice(index, 1); // Remove the value
+      // Store the valueId in deletedValues along with the formatted value
+      deletedValues.push({ formattedValue, valueId });
+      selectedValuesInWindow.splice(index, 1); // Remove the value
     }
   });
 
@@ -514,7 +532,7 @@ document.querySelectorAll('.dropdown-content a').forEach(link => {
     e.preventDefault(); // Prevent default anchor behavior
     const tagName = this.closest('.dropdown-content').previousElementSibling.querySelector('span').textContent; // Get the tag name from the button
     const value = e.target.textContent; // Get the value from the clicked link
-    selectValue(tagName, value); // Call the function to handle the selection
+    selectValueInWindow(tagName, value); // Call the function to handle the selection
   });
 });
 
@@ -524,6 +542,126 @@ searchInput.addEventListener('input', function () {
   if (this.value.trim() === '') {
     resetDropdowns(); // Reset dropdowns to normal state when search is cleared
   } else {
-    filterTags(); // Otherwise, filter the tags based on the input
+    filterTagsInWindow(); // Otherwise, filter the tags based on the input
   }
 });
+
+// Tags removed are added to an array and sent to API for removal from the file
+async function removeTagsFromFile() {
+  // Get existing tags applied to the file when the window is opened
+  const existingResponse = await fetch(`/files/${selectedFileId}/tags`);
+  if (!existingResponse.ok) {
+    throw new Error(`Failed to fetch existing tags: ${existingResponse.statusText}`);
+  }
+  const tagsAlreadyApplied = await existingResponse.json();
+
+  // Get value_ids from the tags
+  const existingValueIds = tagsAlreadyApplied.map(tag => tag.value_id);
+
+  // Filter deletedValues array to only include those that are actually present in existingValueIds
+  // Handle case where a user opens the window, selects a tag, then removes the tag, and clicks 'Save Changes'
+  // The tag that was selected and removed was never applied to the file so the user didn't actually remove that tag
+  const validDeletedValues = deletedValues.filter(item => existingValueIds.includes(item.valueId));
+
+  // Prepare the request body with the valid value_ids
+  const body = {
+    value_ids: validDeletedValues.map(item => item.valueId)
+  };
+
+  // Check if there are any valid deletions
+  // Check if deletedValues[] is empty
+  if (body.value_ids.length === 0 || deletedValues.length === 0) {
+    alert("No tags were removed.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`/files/${selectedFileId}/tags`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete tags: ${response.statusText}`);
+    }
+
+    alert("Tags successfully removed");
+
+  } catch (error) {
+    console.error("Error removing file tags:", error);
+  }
+}
+
+async function addTagsToFile() {
+  // Get existing tags applied to the file when the window is opened
+  const existingResponse = await fetch(`/files/${selectedFileId}/tags`);
+  if (!existingResponse.ok) {
+    throw new Error(`Failed to fetch existing tags: ${existingResponse.statusText}`);
+  }
+  const existingTags = await existingResponse.json();
+
+  // Get value_ids from the tags
+  const existingValueIds = existingTags.map(tag => tag.value_id);
+
+  // Create a mapping from tag value to value_id
+  const tagValuesResponse = await fetch('/tag_values');
+  if (!tagValuesResponse.ok) {
+    throw new Error(`Failed to fetch tag values: ${tagValuesResponse.statusText}`);
+  }
+  const allTagValues = await tagValuesResponse.json();
+
+  // Create a mapping from tag value to value_id
+  const valueIdMap = {};
+  allTagValues.forEach(tag => {
+    valueIdMap[tag.tag_value] = tag.value_id;
+  });
+
+  // Extract value_ids from selectedValues
+  const newValueIds = selectedValuesInWindow.map(item => {
+    return valueIdMap[item.formattedValue.split(": ")[1]];
+  });
+
+  // Filter out any undefined value_ids
+  const validNewValueIds = newValueIds.filter(valueId => valueId !== undefined);
+
+  // Check for new tags to insert
+  const newTagsToInsert = validNewValueIds.filter(valueId => !existingValueIds.includes(valueId));
+
+  if (newTagsToInsert.length === 0) {
+    alert("No new tags were selected to add to the file.");
+    return;
+  }
+
+  // Prepare the request body with the newly selected value_ids
+  const body = {
+    value_ids: newTagsToInsert,
+  };
+
+  try {
+    const response = await fetch(`/files/${selectedFileId}/tags`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add tags: ${response.statusText}`);
+    }
+    alert("Tags added successfully.");
+
+  } catch (error) {
+    console.error("Error inserting file tags:", error);
+    alert("Failed to add tags.");
+  }
+}
+
+// Call when the 'Save Changes' button is clicked
+async function handleSaveChanges() {
+  await removeTagsFromFile();
+  await addTagsToFile();
+}
