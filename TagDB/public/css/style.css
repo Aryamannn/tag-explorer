@@ -19,20 +19,20 @@
   border-bottom: none;
 }
 
-/* .filter-tags {
+.filter-tags {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
-} */
+}
 
-/* .tag-badge {
+.tag-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   background-color: #e9ecef;
   padding: 5px 10px;
   border-radius: 20px;
-} */
+}
 
 .tag-badge .close-btn {
   cursor: pointer;
@@ -97,9 +97,9 @@
 }
 
 /* Main button for each dropdown */
-.dropdown-btn {
+/* .dropdown-btn {
     width: 100%;
-    background-color: #e7e7e7; /* Slightly darker gray for buttons */
+    background-color: #e7e7e7; 
     color: black;
     padding: 12px;
     font-size: 15px;
@@ -110,12 +110,12 @@
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.3s;
-}
+} */
 
 /* Hover effect for dropdown button */
-.dropdown-btn:hover {
-    background-color: #cce6ff; /* Light blue for hover */
-}
+/* .dropdown-btn:hover {
+    background-color: #cce6ff; 
+} */
 
 /* Dropdown content (hidden by default) */
 .dropdown-content {
@@ -142,13 +142,13 @@
 }
 
 /*  selected area style */
-
+/* 
 .filter-tags {
   max-height: 15vh;
-  overflow-x: auto; /* Enables horizontal scrolling */
-  overflow-y: hidden; /* Disables vertical scrolling */
-  white-space: nowrap; /* Prevents items from wrapping to the next line */
-}
+  overflow-x: auto; 
+  overflow-y: hidden;
+  white-space: nowrap; 
+} */
 
 .tag-container {
   display: inline-flex; /* Align items horizontally in a single line */
@@ -156,12 +156,11 @@
 }
 /* Style for each tag badge */
 .tag-badge {
-  display: inline-flex;  /* Ensure the items inside are in a row */
-  align-items: center;  /* Align text and "X" vertically in the center */
-  background-color: #007bff;  /* Blue background */
-  color: white;
+  display: inline-flex;  
+  align-items: center;  
+  background-color: #007bff;  
   padding: 5px 10px;  
-  border-radius: 20px;  /* Rounded corners for tags */
+  border-radius: 20px; 
 }
 
 /* .tag-container {
@@ -219,6 +218,8 @@
   font-size: 14px;
   font-weight: bold;
   white-space: nowrap; 
+  
+
 }
 
 /* Style for the "X" button */

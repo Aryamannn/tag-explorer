@@ -331,73 +331,6 @@ function getFileType(filePath) {
           return 'Unknown File Type';
   }
 }
-
-// Function to reset and clear all tags in selected area
-// Only element in select area will just be the default text: "Tags"
-function clearTags(){
-  const resultsContainer = document.getElementById('tag-container');
-  resultsContainer.innerHTML = '<span class="tag-badge">Tags</span>';
-  parentTags.clear();
-  activePairs.clear();
-  safePairs.clear();
-  handleQuery();
-}
-
-//Depeciated function to get a random date
-function getDateModified(){
-  return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
-}
-
-document.querySelectorAll('.dropdown-btn').forEach(button => {
-  button.addEventListener('click', function () {
-    // Toggle the display of the related dropdown content
-    const dropdownContent = this.nextElementSibling;
-    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
-  });
-});
-
-function addTagOnClick(tagType, id, parentTag, tagText){
-  console.log("clcikeddddd!!");
-  console.log(tagType + " : " + id);
-  let attribute = "data-tag-subtag";
-  //Assign whatever tag that was clicked to the dragged variable
-  dragged = document.querySelector(`[${attribute}="${id}"]`);
-
-  // Check for existing tags in the dropzone
-  const existingTags = Array.from(dropzone.getElementsByClassName("tag-badge"));
-  const tagExists = existingTags.some(tag => tag.id === tagText);
-  
-  // Slightly tweaked code from "drop" event listener
-  // See lines 47 - 80
-  if (!tagExists) {
-    let newTag;
-    if(tagText.includes("\n")){
-      newTag = createTag(parentTag, parentTag);
-    } else {
-      newTag = createTag(tagText, parentTag);
-    }
-    
-    dropzone.querySelector('.tag-container').appendChild(newTag);
-    if(tagType == "subtag"){
-      updatesafePairs(newTag.id, parentTag, tagText, id, null);
-    } else if (tagType == "tag"){
-      updatesafePairs(newTag.id, parentTag, tagText, null, id);
-    }
-    
-    handleQuery();
-  } else {
-    alert("This tag is already added!");
-  }
-}
-// Dropdown toggle functionality
-document.querySelectorAll('.dropdown-btn').forEach(button => {
-  button.addEventListener('click', function () {
-    // Toggle the display of the related dropdown content
-    const dropdownContent = this.nextElementSibling;
-    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
-  });
-});
-
 let selectedValues = [];
 
 // Function to handle the value selection
@@ -442,6 +375,78 @@ function selectValue(tagName, value) {
   // Append the new tag to the container
   tagContainer.appendChild(tagElement);
 }
+
+
+// Function to reset and clear all tags in selected area
+// Only element in select area will just be the default text: "Tags"
+function clearTags(){
+  const resultsContainer = document.getElementById('tag-container');
+  resultsContainer.innerHTML = '<span class="tag-badge">Tags</span>';
+  selectedValues = []; 
+  parentTags.clear();
+  activePairs.clear();
+  safePairs.clear();
+  handleQuery();
+}
+
+//Depeciated function to get a random date
+function getDateModified(){
+  return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
+}
+
+// document.querySelectorAll('.dropdown-btn').forEach(button => {
+//   button.addEventListener('click', function () {
+//     // Toggle the display of the related dropdown content
+//     const dropdownContent = this.nextElementSibling;
+//     dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+//   });
+// });
+
+function addTagOnClick(tagType, id, parentTag, tagText){
+  console.log("clcikeddddd!!");
+  console.log(tagType + " : " + id);
+  let attribute = "data-tag-subtag";
+  //Assign whatever tag that was clicked to the dragged variable
+  dragged = document.querySelector(`[${attribute}="${id}"]`);
+
+  // Check for existing tags in the dropzone
+  const existingTags = Array.from(dropzone.getElementsByClassName("tag-badge"));
+  const tagExists = existingTags.some(tag => tag.id === tagText);
+  
+  // Slightly tweaked code from "drop" event listener
+  // See lines 47 - 80
+  if (!tagExists) {
+    let newTag;
+    if(tagText.includes("\n")){
+      newTag = createTag(parentTag, parentTag);
+    } else {
+      newTag = createTag(tagText, parentTag);
+    }
+    
+    dropzone.querySelector('.tag-container').appendChild(newTag);
+    if(tagType == "subtag"){
+      updatesafePairs(newTag.id, parentTag, tagText, id, null);
+    } else if (tagType == "tag"){
+      updatesafePairs(newTag.id, parentTag, tagText, null, id);
+    }
+    
+    handleQuery();
+  } else {
+    alert("This tag is already added!");
+  }
+}
+
+// Tamana code 
+// Dropdown toggle functionality
+document.querySelectorAll('.dropdown-btn').forEach(button => {
+  button.addEventListener('click', function () {
+    // Toggle the display of the related dropdown content
+    const dropdownContent = this.nextElementSibling;
+    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+  });
+});
+
+
 
 // Function to filter tags and values based on search input
 function filterTags() {

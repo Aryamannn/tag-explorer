@@ -15,7 +15,7 @@
                 <h1 class="text-left">Tag Explorer</h1>
             </header>
         </div>
-    </div>
+      </div>
 
 
   
@@ -77,29 +77,24 @@
      
         </div>
 
-      
+   
+   <!-- Main Content Area -->
+   <div class="col-9 p-3">
+    <!-- <div class="filter-tags mb-3" id="filterTagsArea">
+  </div> -->
 
-      <!-- Main Content Area -->
-      <div class="col-9 p-3">
-        <!-- <div class="filter-tags mb-3" id="filterTagsArea">
-      </div> -->
-
-      <div class="filter-tags" id="dropzone">
-        <div id ="tag-container" class="tag-container">
-          <span class="tag-badge">
-            <%= defaultTags[0].tag_name %>: *  
-            <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
-          </span>
+  <div class="filter-tags-and-icons d-flex align-items-center">
+    <div class="filter-tags" id="dropzone">
+      <div id="tag-container" class="tag-container">
+        <span class="tag-badge">
+          <%= defaultTags[0].tag_name %>: *  
+          <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
+        </span>
       </div>
-      <!-- <div id="tag-container" class="tag-container">
-        <% defaultTags.forEach(tag => { %>
-            <span class="tag-badge">
-                <%= tag.tag_name %>: <%= tag.tag_value %>
-            </span>
-        <% }); %>
-    </div> -->
+    </div>
+  
     <div class="icon-buttons" style="margin-left: 10px;">
-      <a href = "#" onclick="clearTags()">
+      <a href="#" onclick="clearTags()">
         <img src="/images/x_symbol.png" alt="X symbol" />
       </a>
       <a href="#">
@@ -109,82 +104,71 @@
         <img src="/images/gear_symbol.png" alt="Gear symbol" />
       </a>
     </div>
+  </div>
+    <!-- File List -->
+    <div class="file-list" id = "results">
+      <div class="file-list-header row">
+        <div class="col-4">File Name</div>
+        <div class="col-3">Date Modified</div>
+        <div class="col-3">Type</div>
+        <div class="col-2">Size</div>
       </div>
+      <% files.forEach(file => { %>
+        <div class="file-item row">
+            <div class="col-4"> <a href="open/<%=file.file_path.split('/').pop()%>"> <%= file.file_path.split('/').pop() %> </a></div> <!-- Extracts the file name -->
+            <div class="col-3">  <%= file.modifiedDate.toLocaleDateString() %></div>
+            <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
+            <div class="col-2"> <%= file.size < 1024 ? file.size + " bytes" : (file.size / 1024).toFixed(2) + " KB" %></div>
+        </div>
+      <% }); %>
       
-        <!-- File List -->
-        <div class="file-list" id = "results">
-          <div class="file-list-header row">
-            <div class="col-4">File Name</div>
-            <div class="col-3">Date Modified</div>
-            <div class="col-3">Type</div>
-            <div class="col-2">Size</div>
-          </div>
-          <% files.forEach(file => { %>
-            <div class="file-item row">
-                <div class="col-4"> <a href="open/<%=file.file_path.split('/').pop()%>"> <%= file.file_path.split('/').pop() %> </a></div> <!-- Extracts the file name -->
-                <div class="col-3">  <%= file.modifiedDate.toLocaleDateString() %></div>
-                <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
-                <div class="col-2"> <%= file.size < 1024 ? file.size + " bytes" : (file.size / 1024).toFixed(2) + " KB" %></div>
-            </div>
-          <% }); %>
-          
-        </div>
-      </div>
-
-        <!-- Buttons (Settings and Actions) -->
-        <div class="d-flex justify-content-end mt-3">
-          <button class="btn btn-secondary me-2">
-            <i class="bi bi-x"></i>
-          </button>
-          <button class="btn btn-secondary me-2">
-            <i class="bi bi-plus"></i>
-          </button>
-          <button class="btn btn-secondary">
-            <i class="bi bi-gear"></i>
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
-  <script src="/js/tagExplorerScript.js"> 
-//     <% 
-// function getFileType(filePath) {
-//     const extension = filePath.split('.').pop().toLowerCase();
-//     switch (extension) {
-//         case 'pdf':
-//             return 'PDF Document';
-//         case 'doc':
-//         case 'docx':
-//             return 'Word Document';
-//         case 'xls':
-//         case 'xlsx':
-//             return 'Excel Spreadsheet';
-//         case 'ppt':
-//         case 'pptx':
-//             return 'PowerPoint Presentation';
-//         case 'txt':
-//             return 'Text File';
-//         case 'jpg':
-//         case 'jpeg':
-//             return 'JPEG Image';
-//         case 'png':
-//             return 'PNG Image';
-//         case 'gif':
-//             return 'GIF Image';
-//         case 'zip':
-//         case 'rar':
-//             return 'Compressed File';
-//         case 'mp4':
-//             return 'Multimedia Video';
-//         default:
-//             return 'Unknown File Type';
-//     }
-// }
-// %>
-  </script>
+   
+   
+  </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+<script src="/js/tagExplorerScript.js"> 
+    <% 
+function getFileType(filePath) {
+    const extension = filePath.split('.').pop().toLowerCase();
+    switch (extension) {
+        case 'pdf':
+            return 'PDF Document';
+        case 'doc':
+        case 'docx':
+            return 'Word Document';
+        case 'xls':
+        case 'xlsx':
+            return 'Excel Spreadsheet';
+        case 'ppt':
+        case 'pptx':
+            return 'PowerPoint Presentation';
+        case 'txt':
+            return 'Text File';
+        case 'jpg':
+        case 'jpeg':
+            return 'JPEG Image';
+        case 'png':
+            return 'PNG Image';
+        case 'gif':
+            return 'GIF Image';
+        case 'zip':
+        case 'rar':
+            return 'Compressed File';
+        case 'mp4':
+            return 'Multimedia Video';
+        default:
+            return 'Unknown File Type';
+    }
+}
+%>
+</script>
 
 </body>
 </html>
