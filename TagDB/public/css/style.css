@@ -1,68 +1,67 @@
 .sidebar {
-    height: 100vh;
-    background-color: #f8f9fa;
-  }
+  height: 100vh;
+  background-color: #f8f9fa;
+}
 
-  .file-list {
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-  }
+.file-list {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
 
-  .file-item {
-    padding: 10px;
-    border-bottom: 1px solid #dee2e6;
-    cursor: pointer;
-  }
+.file-item {
+  padding: 10px;
+  border-bottom: 1px solid #dee2e6;
+  cursor: pointer;
+}
 
-  .file-item:last-child {
-    border-bottom: none;
-  }
+.file-item:last-child {
+  border-bottom: none;
+}
 
-  .filter-tags {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+/* .filter-tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+} */
 
-  .tag-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background-color: #e9ecef;
-    padding: 5px 10px;
-    border-radius: 20px;
-  }
+/* .tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 20px;
+} */
 
-  .tag-badge .close-btn {
-    cursor: pointer;
-  }
+.tag-badge .close-btn {
+  cursor: pointer;
+}
 
-  .file-list-header {
-    background-color: #f1f3f5;
-    padding: 10px;
-    font-weight: bold;
-    border-bottom: 1px solid #dee2e6;
-  }
+.file-list-header {
+  background-color: #f1f3f5;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #dee2e6;
+}
 
-  .file-item.active {
-    background-color: #ffecb3;
-  }
+.file-item.active {
+  background-color: #ffecb3;
+}
 
-  .dropdown:hover > .dropdown-menu,  .dropend:hover > .dropdown-menu {
-        display: block;
-        margin-top: .125em;
-        margin-left: .125em;
+.dropdown:hover > .dropdown-menu, .dropend:hover > .dropdown-menu {
+  display: block;
+  margin-top: .125em;
+  margin-left: .125em;
+}
 
-  }
-  @media screen and (min-width:769px) {
-    .dropend:hover > .dropdown-menu{
+@media screen and (min-width:769px) {
+  .dropend:hover > .dropdown-menu {
       position: absolute;
       top: 0;
       left: 100%;
-    }
-    
   }
+}
   .collapse {
     display: none; /* Initially hidden */
 }
@@ -163,9 +162,63 @@
   color: white;
   padding: 5px 10px;  
   border-radius: 20px;  /* Rounded corners for tags */
+}
+
+/* .tag-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  flex-grow: 1;
+  max-width: calc(100% - 80px);
+} */
+
+.icon-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.top-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  padding: 10px;
+}
+
+#dropzone {
+  flex-grow: 1;
+  border: 1px dashed #ccc;
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;   /* Vertical scrolling when needed */
+  overflow-x: auto;   /* Horizontal scrolling when needed */
+  box-sizing: border-box; /* Includes padding in the total width/height */
+}
+
+.icon-buttons img {
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+}
+
+/* Prevent the tags from shrinking or growing when inside the dropzone */
+#dropzone .tag-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;  /* Allows scrolling horizontally */
+  gap: 10px;  /* Space between tags */
+  flex-wrap: nowrap;  /* Ensure tags don't wrap to the next line */
+}
+
+#dropzone .tag-badge {
+  flex-shrink: 0;  
+  flex-grow: 0; 
+  background-color: #007bff; 
+  color: white;
+  padding: 5px 10px;  
+  border-radius: 10px;  
   font-size: 14px;
   font-weight: bold;
-  white-space: nowrap;  /* Prevent text from wrapping to the next line */
+  white-space: nowrap; 
 }
 
 /* Style for the "X" button */
@@ -209,3 +262,45 @@
       background-color: #f3f3f3; /* Light background color */
       max-width: 100%; /* Prevent it from stretching too wide */
   }
+.dropdown-btn {
+  width: 100%;
+  background-color: #e7e7e7; /* Slightly darker gray for buttons */
+  color: black;
+  padding: 12px;
+  font-size: 15px;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for dropdown button */
+.dropdown-btn:hover {
+  background-color: #cce6ff; /* Light blue for hover */
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  background-color: #f3f3f3; /* Same light gray as main container */
+  padding-left: 20px; /* Indent for sub-items */
+  border-left: 2px solid #cce6ff; /* Blue line for active dropdown */
+}
+
+/* Dropdown items */
+.dropdown-content a {
+  color: #333;
+  padding: 8px 10px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
