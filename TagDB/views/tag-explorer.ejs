@@ -98,41 +98,38 @@
             </span>
         <% }); %>
     </div> -->
+    <div class="icon-buttons" style="margin-left: 10px;">
+      <a href = "#" onclick="clearTags()">
+        <img src="/images/x_symbol.png" alt="X symbol" />
+      </a>
+      <a href="#">
+        <img src="/images/plus_symbol.png" alt="Plus symbol" />
+      </a>
+      <a href="/manage-tags">
+        <img src="/images/gear_symbol.png" alt="Gear symbol" />
+      </a>
+    </div>
       </div>
       
         <!-- File List -->
-        <div class="file-list">
+        <div class="file-list" id = "results">
           <div class="file-list-header row">
             <div class="col-4">File Name</div>
             <div class="col-3">Date Modified</div>
             <div class="col-3">Type</div>
             <div class="col-2">Size</div>
           </div>
-          <div class="file-item row">
-            <div class="col-4">File1.pdf</div>
-            <div class="col-3">10/2/2024</div>
-            <div class="col-3">PDF File</div>
-            <div class="col-2">45 KB</div>
-          </div>
-          <div class="file-item row active">
-            <div class="col-4">File2.txt</div>
-            <div class="col-3">10/1/2024</div>
-            <div class="col-3">Text Document</div>
-            <div class="col-2">2 KB</div>
-          </div>
-          <div class="file-item row">
-            <div class="col-4">File3.xlsx</div>
-            <div class="col-3">9/29/2024</div>
-            <div class="col-3">Microsoft Excel Workbook</div>
-            <div class="col-2">10 KB</div>
-          </div>
-          <div class="file-item row">
-            <div class="col-4">File4.exe</div>
-            <div class="col-3">8/12/2024</div>
-            <div class="col-3">Application</div>
-            <div class="col-2">691 KB</div>
-          </div>
+          <% files.forEach(file => { %>
+            <div class="file-item row">
+                <div class="col-4"> <a href="open/<%=file.file_path.split('/').pop()%>"> <%= file.file_path.split('/').pop() %> </a></div> <!-- Extracts the file name -->
+                <div class="col-3">  <%= file.modifiedDate.toLocaleDateString() %></div>
+                <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
+                <div class="col-2"> <%= file.size < 1024 ? file.size + " bytes" : (file.size / 1024).toFixed(2) + " KB" %></div>
+            </div>
+          <% }); %>
+          
         </div>
+      </div>
 
         <!-- Buttons (Settings and Actions) -->
         <div class="d-flex justify-content-end mt-3">
@@ -153,40 +150,40 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
   <script src="/js/tagExplorerScript.js"> 
-    <% 
-function getFileType(filePath) {
-    const extension = filePath.split('.').pop().toLowerCase();
-    switch (extension) {
-        case 'pdf':
-            return 'PDF Document';
-        case 'doc':
-        case 'docx':
-            return 'Word Document';
-        case 'xls':
-        case 'xlsx':
-            return 'Excel Spreadsheet';
-        case 'ppt':
-        case 'pptx':
-            return 'PowerPoint Presentation';
-        case 'txt':
-            return 'Text File';
-        case 'jpg':
-        case 'jpeg':
-            return 'JPEG Image';
-        case 'png':
-            return 'PNG Image';
-        case 'gif':
-            return 'GIF Image';
-        case 'zip':
-        case 'rar':
-            return 'Compressed File';
-        case 'mp4':
-            return 'Multimedia Video';
-        default:
-            return 'Unknown File Type';
-    }
-}
-%>
+//     <% 
+// function getFileType(filePath) {
+//     const extension = filePath.split('.').pop().toLowerCase();
+//     switch (extension) {
+//         case 'pdf':
+//             return 'PDF Document';
+//         case 'doc':
+//         case 'docx':
+//             return 'Word Document';
+//         case 'xls':
+//         case 'xlsx':
+//             return 'Excel Spreadsheet';
+//         case 'ppt':
+//         case 'pptx':
+//             return 'PowerPoint Presentation';
+//         case 'txt':
+//             return 'Text File';
+//         case 'jpg':
+//         case 'jpeg':
+//             return 'JPEG Image';
+//         case 'png':
+//             return 'PNG Image';
+//         case 'gif':
+//             return 'GIF Image';
+//         case 'zip':
+//         case 'rar':
+//             return 'Compressed File';
+//         case 'mp4':
+//             return 'Multimedia Video';
+//         default:
+//             return 'Unknown File Type';
+//     }
+// }
+// %>
   </script>
 
 </body>
