@@ -102,7 +102,7 @@ function createTag(draggedText, tagName) {
   //Creating the remove "x" button for tag in Selected Area
   const closeBtn = document.createElement("span");
   closeBtn.className = "close-btn";
-  closeBtn.textContent = "×";
+  closeBtn.textContent = "X";
   // Delete tag from Selected Area and from maps
   closeBtn.onclick = () => {
     newTag.remove();
@@ -331,50 +331,6 @@ function getFileType(filePath) {
           return 'Unknown File Type';
   }
 }
-let selectedValues = [];
-
-// Function to handle the value selection
-function selectValue(tagName, value) {
-  const formattedValue = `${tagName}: ${value}`;
-
-  // Check if the value has already been selected
-  if (selectedValues.includes(formattedValue)) {
-    alert('This value has already been selected!');
-    return; // Do not add it again
-  }
-
-  // Add the selected value to the list
-  selectedValues.push(formattedValue);
-
-  // Create a new element to display the selected tag
-  const tagContainer = document.getElementById('tag-container');
-  const tagElement = document.createElement('span');
-  tagElement.classList.add('tag-badge');
-  tagElement.textContent = formattedValue;
-
-  // Create a button (X) to remove the tag
-  const removeButton = document.createElement('button');
-  removeButton.classList.add('remove-tag');
-  removeButton.textContent = 'X';
-
-  // Add the remove button click handler
-  removeButton.addEventListener('click', function () {
-    // Remove the tag element from the tag container
-    tagContainer.removeChild(tagElement);
-
-    // Also remove the value from the selectedValues array
-    const index = selectedValues.indexOf(formattedValue);
-    if (index > -1) {
-      selectedValues.splice(index, 1); // Remove the value
-    }
-  });
-
-  // Append the remove button to the tag element
-  tagElement.appendChild(removeButton);
-
-  // Append the new tag to the container
-  tagContainer.appendChild(tagElement);
-}
 
 
 // Function to reset and clear all tags in selected area
@@ -382,7 +338,6 @@ function selectValue(tagName, value) {
 function clearTags(){
   const resultsContainer = document.getElementById('tag-container');
   resultsContainer.innerHTML = '<span class="tag-badge">Tags</span>';
-  selectedValues = []; 
   parentTags.clear();
   activePairs.clear();
   safePairs.clear();
@@ -393,14 +348,6 @@ function clearTags(){
 function getDateModified(){
   return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
 }
-
-// document.querySelectorAll('.dropdown-btn').forEach(button => {
-//   button.addEventListener('click', function () {
-//     // Toggle the display of the related dropdown content
-//     const dropdownContent = this.nextElementSibling;
-//     dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
-//   });
-// });
 
 function addTagOnClick(tagType, id, parentTag, tagText){
   console.log("clcikeddddd!!");
@@ -447,7 +394,6 @@ document.querySelectorAll('.dropdown-btn').forEach(button => {
 });
 
 
-
 // Function to filter tags and values based on search input
 function filterTags() {
   const searchInput = document.getElementById('searchInput').value.toLowerCase();
@@ -486,15 +432,6 @@ function resetDropdowns() {
 });
 }
 
-// Bind the selectValue function to each link in the dropdown
-document.querySelectorAll('.dropdown-content a').forEach(link => {
-  link.addEventListener('click', function (e) {
-    e.preventDefault(); // Prevent default anchor behavior
-    const tagName = this.closest('.dropdown-content').previousElementSibling.querySelector('span').textContent; // Get the tag name from the button
-    const value = e.target.textContent; // Get the value from the clicked link
-    selectValue(tagName, value); // Call the function to handle the selection
-  });
-});
 
 // Detect when the search input is cleared
 const searchInput = document.getElementById('searchInput');

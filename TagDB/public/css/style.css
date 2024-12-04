@@ -223,31 +223,31 @@
 }
 
 /* Style for the "X" button */
-.remove-tag {
+.close-btn {
   background: #f44336;  /* Red background for the "X" */
   color: white;
   border: none;
-  border-radius: 50%;  /* Circular shape for the "X" */
-  width: 20px;
-  height: 20px;
+  border-radius: 50%; 
+  width: 30px;
+  height: 30px;
   
   align-items: center;
   justify-content: center;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  margin-left: 8px;  /* Space between text and "X" */
-  padding: 0;  /* Remove any extra padding */
+  margin-left: 10px;  /* Space between text and "X" */
+  padding: 10;  /* Remove any extra padding */
 }
 
 /* Hover effect for the "X" button */
-.remove-tag:hover {
+.close-btn:hover {
   background-color: #d32f2f;  /* Darker red when hovered */
   transform: scale(1.1);  /* Slightly grow the "X" when hovered */
 }
 
 /* Focus effect for accessibility */
-.remove-tag:focus {
+.close-btn:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
 }

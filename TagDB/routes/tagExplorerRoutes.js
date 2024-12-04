@@ -73,16 +73,23 @@ router.get("/", async  (req, res) => {
 });
 });
 router.get("/autocomplete", async (req, res) => {
-    try {
-        const tagsResponse = await axios.get('http://localhost:3000/tags');
-        const tagNames = tagsResponse.data.map(tag => tag.tag_name); // Extract tag names only
-        res.json(tagNames);
-    } catch (error) {
-        console.error("Error fetching autocomplete tags:", error);
-        res.status(500).send("Server error");
-    }
-});       
-   
+  try {
+    const tagsResponse = await axios.get('http://localhost:3000/tags');
+    
+    // Extract the necessary information (tag name, id, and description)
+    const tagDetails = tagsResponse.data.map(tag => ({
+      id: tag.id,
+      name: tag.tag_name,   // Assuming tag_name is the field for the name
+      description: tag.description // Assuming description is another field for each tag
+    }));
+    
+    res.json(tagDetails);  // Return the full tag details in the response
+  } catch (error) {
+    console.error("Error fetching autocomplete tags:", error);
+    res.status(500).send("Server error");
+  }
+});
+
 router.get('/open/:filename', (req, res) => {
     const fileName = req.params.filename;
     const filePath = path.join(filesDirectory, fileName);
