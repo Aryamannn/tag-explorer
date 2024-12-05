@@ -485,7 +485,7 @@ function storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
     tagText: tagText,
     tagId: tagId
   };
-  // console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:"  + tagId);
+  console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:"  + tagId);
 
   // Add the new tag object to the recent selections
   recentSelections.push(tagObject);
@@ -497,12 +497,12 @@ function storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
 
   // Update the Recent Tags dropdown
   if (tagType == "tag"){
-    // renderRecentTags();
+    renderRecentTags();
     alert("Tag clicked ")
   }
 
   else if (tagType == "subtag") {
-    // renderRecentSubTags();
+    renderRecentSubTags();
     alert("Value clicked ")
 
   }
@@ -561,6 +561,7 @@ function renderRecentSubTags() {
 // Function to render recent tags in the dropdown
 function renderRecentTags() {
   console.log("Rendering recent tags...");
+  alert( "Rendering recent tags...");
 
   const dropdown = document.getElementById("recentTagsDropdown");
   const recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
@@ -613,16 +614,14 @@ function renderRecentTags() {
 // Load recent tags on page load
 document.addEventListener("DOMContentLoaded", renderRecentTags);
 
-// Add recent tags to localStorage when a tag is clicked (this could be from your tag buttons)
-document.getAnimations("recentTagsDropdown").forEach(tagElement => {
+// Add event listeners to tag elements (assuming they have class 'draggable')
+document.querySelectorAll(".draggable").forEach(tagElement => {
   tagElement.addEventListener("click", function () {
     const tagName = this.getAttribute("data-tag-name");
     const tagId = this.getAttribute("data-tag-id");
     const parentTag = this.getAttribute("data-tag-parent"); // Adjust as needed
-    console.log("call times")
-    alert("the outside functio is called")
+
     storeTagInLocalStorage("tag", tagId, parentTag, tagName, tagId);  // Add the clicked tag to the recent tags
-  
   });
 });
 function clearRecentTags() {
