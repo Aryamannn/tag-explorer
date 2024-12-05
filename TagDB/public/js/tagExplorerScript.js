@@ -558,79 +558,80 @@ function renderRecentSubTags() {
   });
 }
 
-// Function to render recent tags in the dropdown
-function renderRecentTags() {
-  console.log("Rendering recent tags...");
-  alert( "Rendering recent tags...");
+document.addEventListener("DOMContentLoaded", function () {
+  // Render recent tags dropdown on page load
+  renderRecentTags();
 
-  const dropdown = document.getElementById("recentTagsDropdown");
-  const recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
-  
-  // Debugging the retrieved recent selections
-  console.log("Recent selections retrieved: ", recentSelections);
-  
-  // Clear current content of the dropdown
-  dropdown.innerHTML = "";
-  
-  // Check if recentSelections is empty
-  if (recentSelections.length === 0) {
-    console.log("No recent selections to display.");
+  // Add event listeners to all draggable elements
+  document.querySelectorAll(".draggable").forEach(tagElement => {
+    tagElement.addEventListener("click", function (event) {
+      const tagType = this.getAttribute("data-tag-type");
+      const tagName = this.getAttribute("data-tag-name");
+      const tagId = this.getAttribute("data-tag-id");
+      const parentTag = this.getAttribute("data-tag-parent");
+
+      // Skip if it's a subtag (or any other condition you define)
+      if (tagType === "subtag") {
+        console.log("Subtag clicked; skipping tag storage.");
+        return;
+      }
+
+      // Store tag in localStorage
+      storeTagInLocalStorage(tagType, tagId, parentTag, tagName);
+    });
+  });
+
+  // Clear recent tags on button click (optional, based on UI)
+  const clearButton = document.getElementById("clearRecentTagsButton");
+  if (clearButton) {
+    clearButton.addEventListener("click", clearRecentTags);
+  }
+});
+
+function storeTagInLocalStorage(tagType, id, parentTag, tagText) {
+  let recentSelections = JSON.parse(localStorage.getItem("recentSelections")) || [];
+
+  const tagObject = { tagType, id, parentTag, tagText };
+
+  // Avoid storing duplicates
+  const isDuplicate = recentSelections.some(
+    selection => selection.id === id && selection.tagType === tagType
+  );
+  if (isDuplicate) {
+    console.log("Duplicate tag detected; skipping storage.");
     return;
   }
 
-  // Add each recent tag as a button
-  recentSelections.forEach(selection => {
-    console.log("Creating button for:", selection);
+  recentSelections.push(tagObject);
+  localStorage.setItem("recentSelections", JSON.stringify(recentSelections));
+  console.log("Tag added:", tagObject);
 
-    // Create a new button for the dropdown
-    const button = document.createElement('button');
-    button.classList.add('dropdown-btn');
-    button.classList.add('draggable');
-    button.setAttribute('draggable', 'true');
-    button.setAttribute('data-tag-name', selection.tagText);
-    button.setAttribute('data-tag-id', selection.id);
-    const buttonText = selection.tagText || "Unnamed Tag"; // Fallback if parentTag is undefined or empty
-    button.textContent = buttonText;
-    console.log("Created new button:", button);
-
-    // Create the first span for the tag name
-    const tagNameSpan = document.createElement('span');
-    tagNameSpan.textContent = selection.parentTag;
-  
-    // Create the second span for the down arrow
-    const arrowSpan = document.createElement('span');
-    arrowSpan.innerHTML = '&#9662;'; // Down arrow symbol
-  
-    // Append both spans to the button
-    button.appendChild(tagNameSpan);
-    button.appendChild(arrowSpan);
-  
-    // Append the button to the dropdown (assuming dropdown is already defined)
-    dropdown.appendChild(button);
-  
-  });
+  // Update the dropdown
+  renderRecentTags();
 }
 
-// Load recent tags on page load
-document.addEventListener("DOMContentLoaded", renderRecentTags);
-
-// Add event listeners to tag elements (assuming they have class 'draggable')
-document.querySelectorAll(".draggable").forEach(tagElement => {
-  tagElement.addEventListener("click", function () {
-    const tagName = this.getAttribute("data-tag-name");
-    const tagId = this.getAttribute("data-tag-id");
-    const parentTag = this.getAttribute("data-tag-parent"); // Adjust as needed
-
-    storeTagInLocalStorage("tag", tagId, parentTag, tagName, tagId);  // Add the clicked tag to the recent tags
-  });
-});
-function clearRecentTags() {
-  // Clear the dropdown content
+function renderRecentTags() {
   const dropdown = document.getElementById("recentTagsDropdown");
-  dropdown.innerHTML = "";  // Clears the existing content in the dropdown
-  
-  // Clear the recent selections in local storage
-  localStorage.removeItem('recentSelections');  // Remove the recentSelections from localStorage
-  
-  console.log("Recent tags have been cleared!");
+  if (!dropdown) return;
+
+  // Clear existing content
+  dropdown.innerHTML = "";
+
+  const recentSelections = JSON.parse(localStorage.getItem("recentSelections")) || [];
+
+  // Add each tag to the dropdown
+  recentSelections.forEach(tag => {
+    const option = document.createElement("option");
+    option.value = tag.id;
+    option.textContent = tag.tagText;
+    dropdown.appendChild(option);
+  });
+
+  console.log("Dropdown updated with recent tags.");
+}
+
+function clearRecentTags() {
+  localStorage.removeItem("recentSelections");
+  renderRecentTags();
+  console.log("Recent tags cleared.");
 }
