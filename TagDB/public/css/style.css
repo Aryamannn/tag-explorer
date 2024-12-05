@@ -1,6 +1,12 @@
 .sidebar {
   height: 100vh;
   background-color: #f8f9fa;
+  position: sticky; /* Makes the sidebar stick to its position */
+  top: 0; /* Adjust as needed to offset from the top */
+  max-height: 95vh; /* Restrict sidebar height */
+  overflow-y: auto; /* Add vertical scrolling for the sidebar content */
+  background-color: #f8f9fa; /* Optional: Background color for better visibility */
+  border-right: 1px solid #ddd; /* Optional: Add a right border for separation */
 }
 
 .file-list {
@@ -96,26 +102,6 @@
     padding: 10px;
 }
 
-/* Main button for each dropdown */
-/* .dropdown-btn {
-    width: 100%;
-    background-color: #e7e7e7; 
-    color: black;
-    padding: 12px;
-    font-size: 15px;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.3s;
-} */
-
-/* Hover effect for dropdown button */
-/* .dropdown-btn:hover {
-    background-color: #cce6ff; 
-} */
 
 /* Dropdown content (hidden by default) */
 .dropdown-content {
@@ -141,15 +127,6 @@
     color: black;
 }
 
-/*  selected area style */
-/* 
-.filter-tags {
-  max-height: 15vh;
-  overflow-x: auto; 
-  overflow-y: hidden;
-  white-space: nowrap; 
-} */
-
 .tag-container {
   display: inline-flex; /* Align items horizontally in a single line */
   gap: 10px; /* Space between tags */
@@ -162,14 +139,6 @@
   padding: 5px 10px;  
   border-radius: 20px; 
 }
-
-/* .tag-container {
-  display: flex;
-  align-items: center;
-  overflow-x: auto;
-  flex-grow: 1;
-  max-width: calc(100% - 80px);
-} */
 
 .icon-buttons {
   display: flex;
@@ -304,4 +273,74 @@
 a {
   text-decoration: none;
   color: black;
+}
+
+/* Basic styling for the page */
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  position: relative; /* So we can position elements relative to this container */
+}
+
+/* Container for the file count display */
+.file-count-box {
+  font-weight: bold;
+  margin: 20px 0;
+  font-size: 1.2em;
+}
+
+/* Container for individual file items */
+.file-item {
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.file-item p {
+  margin: 5px 0;
+}
+
+/* Styling for the file link */
+.file-item a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.file-item a:hover {
+  text-decoration: underline;
+}
+
+/* Styling for the small window at the top-right corner */
+.small-window {
+  position: fixed;
+  bottom: 20px; /* Distance from the bottom */
+  right: 20px;  /* Distance from the right */
+  background-color: #d6e9ff; /* Clean white background */
+  border: 1px solid #ddd; /* Light gray border for subtle separation */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  z-index: 9999; /* Ensure it appears above other elements */
+  padding: 15px; /* Comfortable spacing around text */
+  display: inline-block; /* Size dynamically based on content */
+  max-width: 90%; /* Limit width for better visual balance */
+  word-wrap: break-word; /* Wrap long text to fit */
+  font-family: Arial, sans-serif; /* Clean and modern font */
+  font-size: 14px; /* Legible text size */
+  color: #333; /* Dark gray text for good contrast */
+}
+
+.small-window h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+header {
+  position: sticky; /* Keeps the header in place while scrolling */
+  top: 0; /* Ensures it stays at the top of the viewport */
+  z-index: 1000; /* Ensures it stays above other content */
+  background-color: #f8f9fa; /* Matches the background for consistency */
+  border-bottom: 1px solid #ddd; /* Optional: Add a border for visual separation */
+  padding: 15px; /* Maintain padding for better spacing */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }

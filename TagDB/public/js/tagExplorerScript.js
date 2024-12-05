@@ -3,6 +3,8 @@ let dragged;
 const safePairs = new Map();
 const parentTags = new Map();
 const activePairs = new Map();
+const recentTagMap = new Map();
+
 let currentTag;
 
 //Event listener that runs after webpage has loaded 
@@ -92,7 +94,7 @@ function createTag(draggedText, tagName) {
     //Make text content of new tag (Parent Tag name: subtag name)
     // Content type: Video
     newTag.textContent = tagName + ": " + draggedText;
-    console.log(draggedText);
+    // console.log(draggedText);
   } else {
     //Make text content of new tag in Selected Area the name of parent tag
     // Actor
@@ -123,15 +125,15 @@ function updatesafePairs(tagId, tagName, draggedText, valueId, parentId) {
   // Text of tags not yet selected will have a '\n' if they are a parent tag
   // This is because of the dropdown arrow next to the parent tag 
   if(draggedText == tagName | draggedText.includes('\n')){
-    console.log('dupe added : ' + parentId + "booo: " + valueId);
+    // console.log('dupe added : ' + parentId + "booo: " + valueId);
     parentTags.set(tagName, parentId);
   } else {
-    console.log("subtag added");
+    // console.log("subtag added");
     safePairs.set(tagId, tagName);
     activePairs.set(draggedText, valueId)
   }
-  console.log("Actve Pairs" + Array.from(activePairs.entries()));
-  console.log("Parent tags" + Array.from(parentTags.entries()));
+  // console.log("Actve Pairs" + Array.from(activePairs.entries()));
+  // console.log("Parent tags" + Array.from(parentTags.entries()));
 
 }
 
@@ -144,12 +146,12 @@ const parentTagPairs = Array.from(parentTags.entries()).map(([tagName, type]) =>
   return { tag_name: tagName, tag_value: type };  // parent tags in created array will have the format Actor: (Id of parent tag)
 });
 
-console.log(tagValuePairs);
-console.log(parentTagPairs);
+// console.log(tagValuePairs);
+// console.log(parentTagPairs);
 
 // If no values are selected, do not perform the query
 if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
-  console.log('No tags selected for query.');
+  // console.log('No tags selected for query.');
   try {
     const response = await fetch('http://localhost:3000/allFiles', { // Update to your correct API endpoint
       method: 'GET',
@@ -164,8 +166,8 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
 
     const data = await response.json();
     setQueryResults(data);  // Call setQueryResults with the fetched data
-    console.log("helllppp");
-    console.log(data);
+    // console.log("helllppp");
+    // console.log(data);
   } catch (error) {
     console.error('Error querying files', error);
   }
@@ -187,11 +189,11 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
   const data = await response.json();
   setQueryResults(data);  // You need to define how to handle the results
   // console.log(data);
-  console.log("hellooo");
+  // console.log("hellooo");
 } catch (error) {
   console.error('Error querying files', error);
 }} else if(parentTagPairs.length > 0 && tagValuePairs.length === 0){
-  console.log("Parent tags " + JSON.stringify( Array.from(parentTags.entries()).map(subArray => subArray[1]) ));
+  // console.log("Parent tags " + JSON.stringify( Array.from(parentTags.entries()).map(subArray => subArray[1]) ));
   try {
     const response = await fetch('http://localhost:3000/files/searchByTagId', {
         method: 'POST',
@@ -254,11 +256,12 @@ function setQueryResults(data) {
 
   // Clear previous results except the header
   const existingResults = resultsContainer.querySelectorAll('.file-item');
+  let count = 0;
   existingResults.forEach(result => result.remove());
-
+//  console.log("Count"  + count +1)
   // Populate the results container with new data
-  console.log("THIS IS DATAAA:");
-  console.log(data);
+  // console.log("THIS IS DATAAA:");
+  // console.log(data);
   data.forEach(file => {
     const fileItem = document.createElement('div');
     fileItem.className = 'file-item row';
@@ -294,7 +297,11 @@ function setQueryResults(data) {
     fileItem.appendChild(sizeCol);
     
     resultsContainer.appendChild(fileItem);
+    count++; 
   });
+  // console.log("Count: " + count);
+  document.querySelector("#count").innerText = "Result: " + count; // Set the count
+  
 }
 
 // Function to change file type after file name with full name
@@ -350,8 +357,17 @@ function getDateModified(){
 }
 
 function addTagOnClick(tagType, id, parentTag, tagText){
-  console.log("clcikeddddd!!");
-  console.log(tagType + " : " + id);
+
+  const clickedElement = event.target;
+
+  // Retrieve tag ID from the clicked element's data attribute
+  const tagId = clickedElement.getAttribute('data-tag-id');
+
+
+
+
+  // console.log("clcikeddddd!!");
+  // console.log(tagType + " : " + id);
   let attribute = "data-tag-subtag";
   //Assign whatever tag that was clicked to the dragged variable
   dragged = document.querySelector(`[${attribute}="${id}"]`);
@@ -378,6 +394,14 @@ function addTagOnClick(tagType, id, parentTag, tagText){
     }
     
     handleQuery();
+     // Store the selected tag in localStorage
+   
+      console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:"  + tagId);
+    console.log("testtttttttttttttttt")
+     storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId);
+  
+
+
   } else {
     alert("This tag is already added!");
   }
@@ -442,3 +466,172 @@ searchInput.addEventListener('input', function () {
     filterTags(); // Otherwise, filter the tags based on the input
   }
 });
+
+// browser local storage  part
+
+const RECENT_TAGS_KEY = "recentTags";  // Key to store recent tags in local storage
+const MAX_RECENT_TAGS = 5;  // Maximum number of recent tags to store
+
+// Function to store a tag in local storage
+function storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
+  // Retrieve the existing recent selections or initialize an empty array
+  let recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
+
+  // Create the tag object
+  const tagObject = {
+    tagType: tagType,
+    id: id,
+    parentTag: parentTag,
+    tagText: tagText,
+    tagId: tagId
+  };
+  // console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:"  + tagId);
+
+  // Add the new tag object to the recent selections
+  recentSelections.push(tagObject);
+
+  // Store the updated array back into localStorage
+  localStorage.setItem('recentSelections', JSON.stringify(recentSelections));
+
+  console.log("Tag added to recent selections:", tagObject);
+
+  // Update the Recent Tags dropdown
+  if (tagType == "tag"){
+    // renderRecentTags();
+    alert("Tag clicked ")
+  }
+
+  else if (tagType == "subtag") {
+    // renderRecentSubTags();
+    alert("Value clicked ")
+
+  }
+}
+function renderRecentSubTags() {
+  
+  console.log("Rendering recent Sub tags...");
+
+  const dropdown = document.getElementById("recentSubTagsDropdown");
+  const recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
+  
+  // Debugging the retrieved recent selections
+  console.log("Recent selections retrieved: ", recentSelections);
+  
+  // Clear current content of the dropdown
+  dropdown.innerHTML = "";
+  
+  // Check if recentSelections is empty
+  if (recentSelections.length === 0) {
+    console.log("No recent selections to display.");
+    return;
+  }
+
+  // Add each recent tag as a button
+  recentSelections.forEach(selection => {
+    console.log("Creating button for:", selection);
+
+    // Create a new button for the dropdown
+    const aTag = document.createElement('a');
+    // Set the href attribute
+    aTag.setAttribute('href', '#subitem1');
+    
+    // Set the class and other attributes
+    aTag.setAttribute('class', 'draggable');
+    aTag.setAttribute('draggable', 'true');
+    aTag.setAttribute('data-tag-name', selection.parentTag); // Using the provided tag name
+    aTag.setAttribute('data-tag-value', selection.tagText); // Tag value from the object
+    aTag.setAttribute('data-tag-id', selection.tagId); // Tag ID from the object
+    aTag.setAttribute('data-subtag-id', selection.id); // Subtag ID
+
+    const aTagValue = selection.tagText || "No Value"; // Fallback if parentTag is undefined or empty
+    aTag.textContent = aTagValue;
+    console.log("Created new button:", aTag);
+
+   // Find the dropdown-content div and append the created link
+    const dropdownContent = document.querySelector('.dropdown-content');
+    dropdownContent.appendChild(aTag);
+    // Append the button to the dropdown (assuming dropdown is already defined)
+    dropdown.appendChild(aTag);
+  
+    // Optionally, you can add the click event listener here
+    // button.onclick = () => addTagOnClick(selection.tagType, selection.id, selection.parentTag, selection.tagText);
+  });
+}
+
+// Function to render recent tags in the dropdown
+function renderRecentTags() {
+  console.log("Rendering recent tags...");
+
+  const dropdown = document.getElementById("recentTagsDropdown");
+  const recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
+  
+  // Debugging the retrieved recent selections
+  console.log("Recent selections retrieved: ", recentSelections);
+  
+  // Clear current content of the dropdown
+  dropdown.innerHTML = "";
+  
+  // Check if recentSelections is empty
+  if (recentSelections.length === 0) {
+    console.log("No recent selections to display.");
+    return;
+  }
+
+  // Add each recent tag as a button
+  recentSelections.forEach(selection => {
+    console.log("Creating button for:", selection);
+
+    // Create a new button for the dropdown
+    const button = document.createElement('button');
+    button.classList.add('dropdown-btn');
+    button.classList.add('draggable');
+    button.setAttribute('draggable', 'true');
+    button.setAttribute('data-tag-name', selection.tagText);
+    button.setAttribute('data-tag-id', selection.id);
+    const buttonText = selection.tagText || "Unnamed Tag"; // Fallback if parentTag is undefined or empty
+    button.textContent = buttonText;
+    console.log("Created new button:", button);
+
+    // Create the first span for the tag name
+    const tagNameSpan = document.createElement('span');
+    tagNameSpan.textContent = selection.parentTag;
+  
+    // Create the second span for the down arrow
+    const arrowSpan = document.createElement('span');
+    arrowSpan.innerHTML = '&#9662;'; // Down arrow symbol
+  
+    // Append both spans to the button
+    button.appendChild(tagNameSpan);
+    button.appendChild(arrowSpan);
+  
+    // Append the button to the dropdown (assuming dropdown is already defined)
+    dropdown.appendChild(button);
+  
+  });
+}
+
+// Load recent tags on page load
+document.addEventListener("DOMContentLoaded", renderRecentTags);
+
+// Add recent tags to localStorage when a tag is clicked (this could be from your tag buttons)
+document.getAnimations("recentTagsDropdown").forEach(tagElement => {
+  tagElement.addEventListener("click", function () {
+    const tagName = this.getAttribute("data-tag-name");
+    const tagId = this.getAttribute("data-tag-id");
+    const parentTag = this.getAttribute("data-tag-parent"); // Adjust as needed
+    console.log("call times")
+    alert("the outside functio is called")
+    storeTagInLocalStorage("tag", tagId, parentTag, tagName, tagId);  // Add the clicked tag to the recent tags
+  
+  });
+});
+function clearRecentTags() {
+  // Clear the dropdown content
+  const dropdown = document.getElementById("recentTagsDropdown");
+  dropdown.innerHTML = "";  // Clears the existing content in the dropdown
+  
+  // Clear the recent selections in local storage
+  localStorage.removeItem('recentSelections');  // Remove the recentSelections from localStorage
+  
+  console.log("Recent tags have been cleared!");
+}

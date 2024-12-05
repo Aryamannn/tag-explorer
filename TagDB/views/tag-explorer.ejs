@@ -21,7 +21,7 @@
   
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-3 sidebar p-3" style="max-height: 95vh; overflow-y: auto;">
+        <div class="col-3 sidebar p-3" style="max-height: 94vh; overflow-y: auto;">
           <!-- Search -->
           <form class="d-flex mb-3" role="search">
             <input class="form-control me-2" type="search" id="searchInput" placeholder="Search" aria-label="Search" oninput="filterTags()">
@@ -37,7 +37,7 @@
             <% tags.forEach(tag => { %>
               <button class="dropdown-btn draggable" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%= tag.tag_id%>">
                   <span><%= tag.tag_name || 'Untitled Tag' %></span>
-                  <!-- <span>&#9662;</span> Down arrow symbol -->
+                   <span>&#9662;</span> <!-- Down arrow symbol -->
               </button>
               <div class="dropdown-content">
                 <a onclick="addTagOnClick('tag', '<%=tag.tag_id%>', '<%=tag.tag_name%>', '<%=tag.tag_name%>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%=tag.tag_id%>" any-tag="True">Any</a>
@@ -53,13 +53,57 @@
           <% }); %>
           </div>
           <br>
+          <button class="dropdown-btn">
+            <span>Recent</span>
+            <span>&#9662;</span> <!-- Down arrow symbol -->
+          </button>
+          <div class = "dropdown-content">
+           <% tags.forEach(tag => { %>   
+              <button class="dropdown-btn draggable" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%= tag.tag_id%>">
+                  <span><%= tag.tag_name || 'Untitled Tag' %></span>
+                  <!-- <span>&#9662;</span> Down arrow symbol -->
+              </button>
+              <div class="dropdown-content">
+                <a onclick="addTagOnClick('tag', '<%=tag.tag_id%>', '<%=tag.tag_name%>', '<%=tag.tag_name%>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%=tag.tag_id%>" any-tag="True">Any</a>
+                  <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
+                  <% if (filteredValues && filteredValues.length > 0) { %>
+                       <% filteredValues.forEach(value => { %>  <!-- these are the tag value -->
+                        <a onclick="addTagOnClick('subtag', '<%=value.value_id%>', '<%=tag.tag_name%>', '<%= value.tag_value %>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-subtag-id="<%=value.value_id%>"><%= value.tag_value %></a>
+                        <% }); %>
+                  <% } else { %>
+                      <a href="#subitem2">No values</a>
+                  <% } %>
+              </div>
+          <% }); %>
+          </div>
+          <br>
+          
+          <button onclick="clearRecentTags()">Clear Recent Tags</button>
+
+          <button class="dropdown-btn">
+            <span>Recent</span>
+            <span>&#9662;</span> <!-- Down arrow symbol -->
+          </button>
+          <div class = "dropdown-content">
+            <div  id="recentTagsDropdown">
+              <div id ="recentSubTagsDropdown">
+
+              </div>
+            </div>
+          </div>
+
+          
+            <!-- Recent tags will be dynamically added here -->
+          
+
+
           <hr>
           <br>
    
    
              <!-- Dropdown List Section -->
           
-               <% tags.forEach(tag => { %>
+               <% tags.forEach(tag => { %> <!-- this is all the tags  -->
                  <button class="dropdown-btn draggable" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%= tag.tag_id%>">
                    <span><%= tag.tag_name || 'Untitled Tag' %></span>
                    <span>&#9662;</span> <!-- Down arrow symbol -->
@@ -67,11 +111,11 @@
                  
                  <div class="dropdown-content">
                   <a onclick="addTagOnClick('tag', '<%=tag.tag_id%>', '<%=tag.tag_name%>', '<%=tag.tag_name%>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%=tag.tag_id%>" any-tag="True">Any</a>
-                   <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
+                  <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
                    <% if (filteredValues && filteredValues.length > 0) { %>
                      <% filteredValues.forEach(value => { %>
-                       <a onclick="addTagOnClick('subtag', '<%=value.value_id%>', '<%=tag.tag_name%>', '<%= value.tag_value %>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-subtag-id="<%=value.value_id%>"><%= value.tag_value %></a>
-                     <% }); %>
+                      <a onclick="addTagOnClick('subtag', '<%=value.value_id%>', '<%=tag.tag_name%>', '<%= value.tag_value %>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-value="<%= value.tag_value %>" data-tag-id="<%= tag.tag_id %>" data-subtag-id="<%=value.value_id%>"><%= value.tag_value %></a>
+                      <% }); %>
                    <% } else { %>
                      <a href="#subitem2">No values</a>
                    <% } %>
@@ -129,6 +173,9 @@
    
    
   </div>
+</div>
+<div class="small-window">
+  <h5 id="count">result: </h5>
 </div>
 </div>
 
