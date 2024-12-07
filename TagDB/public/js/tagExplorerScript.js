@@ -549,3 +549,8 @@ function renderRecentTags() {
 
   console.log("Dropdown updated with recent tags.");
 }
+function clearRecentTags() {
+  localStorage.removeItem("recentSelections");
+  renderRecentTags();
+  console.log("Recent tags cleared.");
+}
