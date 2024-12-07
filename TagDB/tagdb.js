@@ -156,8 +156,29 @@ app.get('/tag_values', (req, res) => {
     const sql = 'SELECT * FROM tag_values';
     db.query(sql, (err, results) => {
         if (err) return res.status(500).send(err);
+        console.log('Database Results:', results);
+
         res.send(results);
     });
+});
+
+
+app.get('/default-tags', (req, res) => {
+  const sql = `
+    SELECT t.tag_name, tv.tag_value, tv.value_id
+    FROM tags t
+    LEFT JOIN tag_values tv ON t.tag_id = tv.tag_id
+    WHERE t.tag_name IN ('Content Type', 'LocalFile')
+  `;
+  db.query(sql, (err, results) => {
+      if (err) return res.status(500).send(err);
+
+      // Log the results to see the structure
+      console.log('Database Results:', results);
+
+      // If results are an array of objects, return them as is
+      res.send(results);
+  });
 });
 
 // API to list all tag values for a given tag name
@@ -802,5 +823,5 @@ function returnMetadata(data){
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    // ensureDefaultTags();
+    ensureDefaultTags();
 });

@@ -1,6 +1,12 @@
 .sidebar {
   height: 100vh;
   background-color: #f8f9fa;
+  position: sticky; /* Makes the sidebar stick to its position */
+  top: 0; /* Adjust as needed to offset from the top */
+  max-height: 95vh; /* Restrict sidebar height */
+  overflow-y: auto; /* Add vertical scrolling for the sidebar content */
+  background-color: #f8f9fa; /* Optional: Background color for better visibility */
+  border-right: 1px solid #ddd; /* Optional: Add a right border for separation */
 }
 
 .file-list {
@@ -62,13 +68,79 @@
       left: 100%;
   }
 }
+  .collapse {
+    display: none; /* Initially hidden */
+}
+.collapse.show {
+    display: block; /* Show when expanded */
+}
+.dropdown-header {
+    cursor: pointer; /* Change cursor to pointer for dropdown headers */
+    background-color: #f8f9fa; /* Light background for header */
+    border: 1px solid #ddd; /* Add border */
+    padding: 10px; /* Add padding */
+    margin-bottom: 5px; /* Space between dropdowns */
+}
+.filter-tags .tag-badge {
+  display: inline-block;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+.close-btn {
+  cursor: pointer;
+  color: white;
+}
+  /* Container for the dropdown */
+  .dropdown {
+    width: 200px;
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3; /* Light gray background */
+    color: black;
+    border: 1px solid #d4d4d4; /* Subtle border for container */
+    padding: 10px;
+}
+#recentTagsDropdown{
+  font-family: Arial, sans-serif;
+}
+
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    background-color: #f3f3f3; /* Same light gray as main container */
+    padding-left: 20px; /* Indent for sub-items */
+    border-left: 2px solid #cce6ff; /* Blue line for active dropdown */
+}
+
+/* Dropdown items */
+.dropdown-content a {
+    color: #333;
+    padding: 8px 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+/* Hover effect for items */
+.dropdown-content a:hover {
+    background-color: #d6e9ff; /* Very light blue on hover */
+    color: black;
+}
 
 .tag-container {
-  display: flex;
-  align-items: center;
-  overflow-x: auto;
-  flex-grow: 1;
-  max-width: calc(100% - 80px);
+  display: inline-flex; /* Align items horizontally in a single line */
+  gap: 10px; /* Space between tags */
+}
+/* Style for each tag badge */
+.tag-badge {
+  display: inline-flex;  
+  align-items: center;  
+  background-color: #007bff;  
+  padding: 5px 10px;  
+  border-radius: 20px; 
 }
 
 .icon-buttons {
@@ -109,17 +181,60 @@
 }
 
 #dropzone .tag-badge {
-  flex-shrink: 0;  /* Prevent the tags from shrinking */
-  flex-grow: 0;  /* Prevent the tags from growing */
-  background-color: #007bff;  /* Blue background */
+  flex-shrink: 0;  
+  flex-grow: 0; 
+  background-color: #007bff; 
   color: white;
   padding: 5px 10px;  
   border-radius: 10px;  
   font-size: 14px;
   font-weight: bold;
-  white-space: nowrap;  /* Prevent text from wrapping to the next line */
+  white-space: nowrap; 
+  
+
 }
 
+/* Style for the "X" button */
+.close-btn {
+  background: #f44336;  /* Red background for the "X" */
+  color: white;
+  border: none;
+  border-radius: 50%; 
+  width: 30px;
+  height: 30px;
+  
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;  /* Space between text and "X" */
+  padding: 10;  /* Remove any extra padding */
+}
+
+/* Hover effect for the "X" button */
+.close-btn:hover {
+  background-color: #d32f2f;  /* Darker red when hovered */
+  transform: scale(1.1);  /* Slightly grow the "X" when hovered */
+}
+
+/* Focus effect for accessibility */
+.close-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
+}
+
+    /* This is added for the selected tag area in  the manage tags  */
+    #dropzone {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Space between tags */
+      padding: 10px;
+      border: 2px solid #ddd; /* Light border around the dropzone */
+      border-radius: 12px; /* Rounded corners for the box */
+      background-color: #f3f3f3; /* Light background color */
+      max-width: 100%; /* Prevent it from stretching too wide */
+  }
 .dropdown-btn {
   width: 100%;
   background-color: #e7e7e7; /* Slightly darker gray for buttons */
@@ -161,4 +276,74 @@
 a {
   text-decoration: none;
   color: black;
+}
+
+/* Basic styling for the page */
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  position: relative; /* So we can position elements relative to this container */
+}
+
+/* Container for the file count display */
+.file-count-box {
+  font-weight: bold;
+  margin: 20px 0;
+  font-size: 1.2em;
+}
+
+/* Container for individual file items */
+.file-item {
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.file-item p {
+  margin: 5px 0;
+}
+
+/* Styling for the file link */
+.file-item a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.file-item a:hover {
+  text-decoration: underline;
+}
+
+/* Styling for the small window at the top-right corner */
+.small-window {
+  position: fixed;
+  bottom: 20px; /* Distance from the bottom */
+  right: 20px;  /* Distance from the right */
+  background-color: #d6e9ff; /* Clean white background */
+  border: 1px solid #ddd; /* Light gray border for subtle separation */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  z-index: 9999; /* Ensure it appears above other elements */
+  padding: 15px; /* Comfortable spacing around text */
+  display: inline-block; /* Size dynamically based on content */
+  max-width: 90%; /* Limit width for better visual balance */
+  word-wrap: break-word; /* Wrap long text to fit */
+  font-family: Arial, sans-serif; /* Clean and modern font */
+  font-size: 14px; /* Legible text size */
+  color: #333; /* Dark gray text for good contrast */
+}
+
+.small-window h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+header {
+  position: sticky; /* Keeps the header in place while scrolling */
+  top: 0; /* Ensures it stays at the top of the viewport */
+  z-index: 1000; /* Ensures it stays above other content */
+  background-color: #f8f9fa; /* Matches the background for consistency */
+  border-bottom: 1px solid #ddd; /* Optional: Add a border for visual separation */
+  padding: 15px; /* Maintain padding for better spacing */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }

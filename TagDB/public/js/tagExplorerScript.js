@@ -3,6 +3,8 @@ let dragged;
 const safePairs = new Map();
 const parentTags = new Map();
 const activePairs = new Map();
+const recentTagMap = new Map();
+
 let currentTag;
 
 //Event listener that runs after webpage has loaded 
@@ -92,7 +94,7 @@ function createTag(draggedText, tagName) {
     //Make text content of new tag (Parent Tag name: subtag name)
     // Content type: Video
     newTag.textContent = tagName + ": " + draggedText;
-    console.log(draggedText);
+    // console.log(draggedText);
   } else {
     //Make text content of new tag in Selected Area the name of parent tag
     // Actor
@@ -102,7 +104,7 @@ function createTag(draggedText, tagName) {
   //Creating the remove "x" button for tag in Selected Area
   const closeBtn = document.createElement("span");
   closeBtn.className = "close-btn";
-  closeBtn.textContent = "×";
+  closeBtn.textContent = "X";
   // Delete tag from Selected Area and from maps
   closeBtn.onclick = () => {
     newTag.remove();
@@ -123,15 +125,15 @@ function updatesafePairs(tagId, tagName, draggedText, valueId, parentId) {
   // Text of tags not yet selected will have a '\n' if they are a parent tag
   // This is because of the dropdown arrow next to the parent tag 
   if(draggedText == tagName | draggedText.includes('\n')){
-    console.log('dupe added : ' + parentId + "booo: " + valueId);
+    // console.log('dupe added : ' + parentId + "booo: " + valueId);
     parentTags.set(tagName, parentId);
   } else {
-    console.log("subtag added");
+    // console.log("subtag added");
     safePairs.set(tagId, tagName);
     activePairs.set(draggedText, valueId)
   }
-  console.log("Actve Pairs" + Array.from(activePairs.entries()));
-  console.log("Parent tags" + Array.from(parentTags.entries()));
+  // console.log("Actve Pairs" + Array.from(activePairs.entries()));
+  // console.log("Parent tags" + Array.from(parentTags.entries()));
 
 }
 
@@ -144,12 +146,12 @@ const parentTagPairs = Array.from(parentTags.entries()).map(([tagName, type]) =>
   return { tag_name: tagName, tag_value: type };  // parent tags in created array will have the format Actor: (Id of parent tag)
 });
 
-console.log(tagValuePairs);
-console.log(parentTagPairs);
+// console.log(tagValuePairs);
+// console.log(parentTagPairs);
 
 // If no values are selected, do not perform the query
 if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
-  console.log('No tags selected for query.');
+  // console.log('No tags selected for query.');
   try {
     const response = await fetch('http://localhost:3000/allFiles', { // Update to your correct API endpoint
       method: 'GET',
@@ -164,8 +166,8 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
 
     const data = await response.json();
     setQueryResults(data);  // Call setQueryResults with the fetched data
-    console.log("helllppp");
-    console.log(data);
+    // console.log("helllppp");
+    // console.log(data);
   } catch (error) {
     console.error('Error querying files', error);
   }
@@ -187,11 +189,11 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
   const data = await response.json();
   setQueryResults(data);  // You need to define how to handle the results
   // console.log(data);
-  console.log("hellooo");
+  // console.log("hellooo");
 } catch (error) {
   console.error('Error querying files', error);
 }} else if(parentTagPairs.length > 0 && tagValuePairs.length === 0){
-  console.log("Parent tags " + JSON.stringify( Array.from(parentTags.entries()).map(subArray => subArray[1]) ));
+  // console.log("Parent tags " + JSON.stringify( Array.from(parentTags.entries()).map(subArray => subArray[1]) ));
   try {
     const response = await fetch('http://localhost:3000/files/searchByTagId', {
         method: 'POST',
@@ -254,11 +256,12 @@ function setQueryResults(data) {
 
   // Clear previous results except the header
   const existingResults = resultsContainer.querySelectorAll('.file-item');
+  let count = 0;
   existingResults.forEach(result => result.remove());
-
+//  console.log("Count"  + count +1)
   // Populate the results container with new data
-  console.log("THIS IS DATAAA:");
-  console.log(data);
+  // console.log("THIS IS DATAAA:");
+  // console.log(data);
   data.forEach(file => {
     const fileItem = document.createElement('div');
     fileItem.className = 'file-item row';
@@ -294,7 +297,11 @@ function setQueryResults(data) {
     fileItem.appendChild(sizeCol);
     
     resultsContainer.appendChild(fileItem);
+    count++; 
   });
+  // console.log("Count: " + count);
+  document.querySelector("#count").innerText = "Result: " + count; // Set the count
+  
 }
 
 // Function to change file type after file name with full name
@@ -332,6 +339,7 @@ function getFileType(filePath) {
   }
 }
 
+
 // Function to reset and clear all tags in selected area
 // Only element in select area will just be the default text: "Tags"
 function clearTags(){
@@ -348,62 +356,18 @@ function getDateModified(){
   return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
 }
 
-document.querySelectorAll('.dropdown-btn').forEach(button => {
-  button.addEventListener('click', function () {
-    // Toggle the display of the related dropdown content
-    const dropdownContent = this.nextElementSibling;
-    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
-  });
-});
-
-let selectedValues = [];
-
-// Function to handle the value selection
-function selectValue(tagName, value) {
-  const formattedValue = `${tagName}: ${value}`;
-
-  // Check if the value has already been selected
-  if (selectedValues.includes(formattedValue)) {
-    alert('This value has already been selected!');
-    return; // Do not add it again
-  }
-
-  // Add the selected value to the list
-  selectedValues.push(formattedValue);
-
-  // Create a new element to display the selected tag
-  const tagContainer = document.getElementById('tag-container');
-  const tagElement = document.createElement('span');
-  tagElement.classList.add('tag-badge');
-  tagElement.textContent = formattedValue;
-
-  // Create a button (X) to remove the tag
-  const removeButton = document.createElement('button');
-  removeButton.classList.add('remove-tag');
-  removeButton.textContent = 'X';
-
-  // Add the remove button click handler
-  removeButton.addEventListener('click', function () {
-    // Remove the tag element from the tag container
-    tagContainer.removeChild(tagElement);
-
-    // Also remove the value from the selectedValues array
-    const index = selectedValues.indexOf(formattedValue);
-    if (index > -1) {
-      selectedValues.splice(index, 1); // Remove the value
-    }
-  });
-
-  // Append the remove button to the tag element
-  tagElement.appendChild(removeButton);
-
-  // Append the new tag to the container
-  tagContainer.appendChild(tagElement);
-}
-
 function addTagOnClick(tagType, id, parentTag, tagText){
-  console.log("clcikeddddd!!");
-  console.log(tagType + " : " + id);
+
+  const clickedElement = event.target;
+
+  // Retrieve tag ID from the clicked element's data attribute
+  const tagId = clickedElement.getAttribute('data-tag-id');
+
+
+
+
+  // console.log("clcikeddddd!!");
+  // console.log(tagType + " : " + id);
   let attribute = "data-tag-subtag";
   //Assign whatever tag that was clicked to the dragged variable
   dragged = document.querySelector(`[${attribute}="${id}"]`);
@@ -430,7 +394,158 @@ function addTagOnClick(tagType, id, parentTag, tagText){
     }
     
     handleQuery();
+     // Store the selected tag in localStorage
+   
+      console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:"  + tagId);
+    console.log("testtttttttttttttttt")
+     storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId);
+  
+
+
   } else {
     alert("This tag is already added!");
   }
+}
+
+// Tamana code 
+// Dropdown toggle functionality
+document.querySelectorAll('.dropdown-btn').forEach(button => {
+  button.addEventListener('click', function () {
+    // Toggle the display of the related dropdown content
+    const dropdownContent = this.nextElementSibling;
+    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+  });
+});
+
+
+// Function to filter tags and values based on search input
+function filterTags() {
+  const searchInput = document.getElementById('searchInput').value.toLowerCase();
+  const tagButtons = document.querySelectorAll('.dropdown-btn');  // Filter based on dropdown buttons
+  const tagLinks = document.querySelectorAll('.dropdown-content a');  // Filter based on tag values in dropdown content
+
+  tagButtons.forEach(button => {
+    const tagName = button.querySelector('span').innerText.toLowerCase();  // Get the tag name
+    const matchingTagValues = Array.from(button.nextElementSibling.querySelectorAll('a')).filter(link => {
+      const tagValue = link.textContent.toLowerCase();
+      return tagValue.includes(searchInput);  // Check if the tag value matches the search term
+    });
+
+    // Show or hide the tag button and the corresponding dropdown items
+    if (tagName.includes(searchInput) || matchingTagValues.length > 0) {
+      button.style.display = 'block'; // Show matching tag
+      button.nextElementSibling.style.display = 'block'; // Show the dropdown content if it has matching values
+    } else {
+      button.style.display = 'none'; // Hide non-matching tag
+      button.nextElementSibling.style.display = 'none'; // Hide dropdown content if no values match
+    }
+  });
+}
+
+// Function to reset dropdowns to their normal state when search is cleared
+// Function to reset dropdowns to their normal state when search is cleared
+function resetDropdowns() {
+  document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+    dropdown.style.display = 'none'; // Reset the dropdown visibility
+  });
+
+  document.querySelectorAll('.dropdown-btn').forEach(button => {
+    button.style.display = 'flex';          // Set display to flex for justify-content to work
+    button.style.justifyContent = "space-between"; // Space items within each button element
+    button.style.alignItems = "center";     // Optional: Align items vertically centered if needed
+});
+}
+
+
+// Detect when the search input is cleared
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', function () {
+  if (this.value.trim() === '') {
+    resetDropdowns(); // Reset dropdowns to normal state when search is cleared
+  } else {
+    filterTags(); // Otherwise, filter the tags based on the input
+  }
+});
+
+// browser local storage  part
+
+const RECENT_TAGS_KEY = "recentTags";  // Key to store recent tags in local storage
+const MAX_RECENT_TAGS = 5;  // Maximum number of recent tags to store
+
+// Function to store a tag in local storage
+function storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
+  // Retrieve the existing recent selections or initialize an empty array
+  let recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
+
+  // Create the tag object
+  const tagObject = {
+    tagType: tagType,
+    id: id,
+    parentTag: parentTag,
+    tagText: tagText,
+    tagId: tagId
+  };
+  console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:"  + tagId);
+
+  // Add the new tag object to the recent selections
+  recentSelections.push(tagObject);
+
+  // Store the updated array back into localStorage
+  localStorage.setItem('recentSelections', JSON.stringify(recentSelections));
+
+  console.log("Tag added to recent selections:", tagObject);
+  storeTagInLocalStorage(tagType, tagId, parentTag, tagName);
+
+
+}
+
+function storeTagInLocalStorage(tagType, id, parentTag, tagText) {
+  let recentSelections = JSON.parse(localStorage.getItem("recentSelections")) || [];
+
+  const tagObject = { tagType, id, parentTag, tagText };
+
+  // Avoid storing duplicates
+  const isDuplicate = recentSelections.some(
+    selection => selection.id === id && selection.tagType === tagType
+  );
+  if (isDuplicate) {
+    console.log("Duplicate tag detected; skipping storage.");
+    return;
+  }
+
+  recentSelections.push(tagObject);
+  localStorage.setItem("recentSelections", JSON.stringify(recentSelections));
+  console.log("Tag added:", tagObject);
+
+  // Update the dropdown
+  renderRecentTags();
+}
+
+function renderRecentTags() {
+  const dropdown = document.getElementById("recentTagsDropdown");
+  if (!dropdown) return;
+
+  // Clear existing content
+  dropdown.innerHTML = "";
+
+  const recentSelections = JSON.parse(localStorage.getItem("recentSelections")) || [];
+
+  // Add each tag as a link (`<a>` element)
+  recentSelections.forEach(tag => {
+    const link = document.createElement("a");
+    link.className = "draggable";
+    link.href = "#subitem1";
+    link.draggable = true;
+    link.dataset.tagName = tag.parentTag;
+    link.dataset.tagValue = tag.tagText;
+    link.dataset.tagId = tag.tagId;
+    link.dataset.subtagId = tag.id;
+    link.onclick = () =>
+      addTagOnClick(tag.tagType, tag.id, tag.parentTag, tag.tagText);
+
+    link.textContent = tag.tagText;
+    dropdown.appendChild(link);
+  });
+
+  console.log("Dropdown updated with recent tags.");
 }
