@@ -101,6 +101,9 @@
     border: 1px solid #d4d4d4; /* Subtle border for container */
     padding: 10px;
 }
+#recentTagsDropdown{
+  font-family: Arial, sans-serif;
+}
 
 
 /* Dropdown content (hidden by default) */

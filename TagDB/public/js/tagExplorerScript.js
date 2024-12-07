@@ -494,99 +494,10 @@ function storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
   localStorage.setItem('recentSelections', JSON.stringify(recentSelections));
 
   console.log("Tag added to recent selections:", tagObject);
+  storeTagInLocalStorage(tagType, tagId, parentTag, tagName);
 
-  // Update the Recent Tags dropdown
-  if (tagType == "tag"){
-    renderRecentTags();
-    alert("Tag clicked ")
-  }
 
-  else if (tagType == "subtag") {
-    renderRecentSubTags();
-    alert("Value clicked ")
-
-  }
 }
-function renderRecentSubTags() {
-  
-  console.log("Rendering recent Sub tags...");
-
-  const dropdown = document.getElementById("recentSubTagsDropdown");
-  const recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
-  
-  // Debugging the retrieved recent selections
-  console.log("Recent selections retrieved: ", recentSelections);
-  
-  // Clear current content of the dropdown
-  dropdown.innerHTML = "";
-  
-  // Check if recentSelections is empty
-  if (recentSelections.length === 0) {
-    console.log("No recent selections to display.");
-    return;
-  }
-
-  // Add each recent tag as a button
-  recentSelections.forEach(selection => {
-    console.log("Creating button for:", selection);
-
-    // Create a new button for the dropdown
-    const aTag = document.createElement('a');
-    // Set the href attribute
-    aTag.setAttribute('href', '#subitem1');
-    
-    // Set the class and other attributes
-    aTag.setAttribute('class', 'draggable');
-    aTag.setAttribute('draggable', 'true');
-    aTag.setAttribute('data-tag-name', selection.parentTag); // Using the provided tag name
-    aTag.setAttribute('data-tag-value', selection.tagText); // Tag value from the object
-    aTag.setAttribute('data-tag-id', selection.tagId); // Tag ID from the object
-    aTag.setAttribute('data-subtag-id', selection.id); // Subtag ID
-
-    const aTagValue = selection.tagText || "No Value"; // Fallback if parentTag is undefined or empty
-    aTag.textContent = aTagValue;
-    console.log("Created new button:", aTag);
-
-   // Find the dropdown-content div and append the created link
-    const dropdownContent = document.querySelector('.dropdown-content');
-    dropdownContent.appendChild(aTag);
-    // Append the button to the dropdown (assuming dropdown is already defined)
-    dropdown.appendChild(aTag);
-  
-    // Optionally, you can add the click event listener here
-    // button.onclick = () => addTagOnClick(selection.tagType, selection.id, selection.parentTag, selection.tagText);
-  });
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  // Render recent tags dropdown on page load
-  renderRecentTags();
-
-  // Add event listeners to all draggable elements
-  document.querySelectorAll(".draggable").forEach(tagElement => {
-    tagElement.addEventListener("click", function (event) {
-      const tagType = this.getAttribute("data-tag-type");
-      const tagName = this.getAttribute("data-tag-name");
-      const tagId = this.getAttribute("data-tag-id");
-      const parentTag = this.getAttribute("data-tag-parent");
-
-      // Skip if it's a subtag (or any other condition you define)
-      if (tagType === "subtag") {
-        console.log("Subtag clicked; skipping tag storage.");
-        return;
-      }
-
-      // Store tag in localStorage
-      storeTagInLocalStorage(tagType, tagId, parentTag, tagName);
-    });
-  });
-
-  // Clear recent tags on button click (optional, based on UI)
-  const clearButton = document.getElementById("clearRecentTagsButton");
-  if (clearButton) {
-    clearButton.addEventListener("click", clearRecentTags);
-  }
-});
 
 function storeTagInLocalStorage(tagType, id, parentTag, tagText) {
   let recentSelections = JSON.parse(localStorage.getItem("recentSelections")) || [];
@@ -619,19 +530,22 @@ function renderRecentTags() {
 
   const recentSelections = JSON.parse(localStorage.getItem("recentSelections")) || [];
 
-  // Add each tag to the dropdown
+  // Add each tag as a link (`<a>` element)
   recentSelections.forEach(tag => {
-    const option = document.createElement("option");
-    option.value = tag.id;
-    option.textContent = tag.tagText;
-    dropdown.appendChild(option);
+    const link = document.createElement("a");
+    link.className = "draggable";
+    link.href = "#subitem1";
+    link.draggable = true;
+    link.dataset.tagName = tag.parentTag;
+    link.dataset.tagValue = tag.tagText;
+    link.dataset.tagId = tag.tagId;
+    link.dataset.subtagId = tag.id;
+    link.onclick = () =>
+      addTagOnClick(tag.tagType, tag.id, tag.parentTag, tag.tagText);
+
+    link.textContent = tag.tagText;
+    dropdown.appendChild(link);
   });
 
   console.log("Dropdown updated with recent tags.");
-}
-
-function clearRecentTags() {
-  localStorage.removeItem("recentSelections");
-  renderRecentTags();
-  console.log("Recent tags cleared.");
 }
