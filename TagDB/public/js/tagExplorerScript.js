@@ -469,38 +469,13 @@ searchInput.addEventListener('input', function () {
 
 // browser local storage  part
 
-const RECENT_TAGS_KEY = "recentTags";  // Key to store recent tags in local storage
+const RECENT_TAGS_KEY = "recentSelections";  // Key to store recent tags in local storage
 const MAX_RECENT_TAGS = 5;  // Maximum number of recent tags to store
 
 // Function to store a tag in local storage
-function storeTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
-  // Retrieve the existing recent selections or initialize an empty array
-  let recentSelections = JSON.parse(localStorage.getItem('recentSelections')) || [];
-
-  // Create the tag object
-  const tagObject = {
-    tagType: tagType,
-    id: id,
-    parentTag: parentTag,
-    tagText: tagText,
-    tagId: tagId
-  };
-  console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:"  + tagId);
-
-  // Add the new tag object to the recent selections
-  recentSelections.push(tagObject);
-
-  // Store the updated array back into localStorage
-  localStorage.setItem('recentSelections', JSON.stringify(recentSelections));
-
-  console.log("Tag added to recent selections:", tagObject);
-  storeTagInLocalStorage(tagType, tagId, parentTag, tagName);
-
-
-}
 
 function storeTagInLocalStorage(tagType, id, parentTag, tagText) {
-  let recentSelections = JSON.parse(localStorage.getItem("recentSelections")) || [];
+  let recentSelections = JSON.parse(localStorage.getItem(RECENT_TAGS_KEY)) || [];
 
   const tagObject = { tagType, id, parentTag, tagText };
 
@@ -512,9 +487,13 @@ function storeTagInLocalStorage(tagType, id, parentTag, tagText) {
     console.log("Duplicate tag detected; skipping storage.");
     return;
   }
+  // If the number of favorites exceeds the maximum limit, remove the oldest
+  if (recentSelections.length >= MAX_RECENT_TAGS) {
+    recentSelections.shift();  // Remove the oldest tag to make space
+  }
 
   recentSelections.push(tagObject);
-  localStorage.setItem("recentSelections", JSON.stringify(recentSelections));
+  localStorage.setItem(RECENT_TAGS_KEY, JSON.stringify(recentSelections));
   console.log("Tag added:", tagObject);
 
   // Update the dropdown
@@ -716,4 +695,9 @@ function toggleFavoriteTag(tagType, id, parentTag, tagText) {
   // Update the favorite tags dropdown
   renderFavoriteTags();
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  renderRecentTags();  // Render recent tags from localStorage on page load
+  renderFavoriteTags();  // Render favorite tags from localStorage on page load
+});
 
