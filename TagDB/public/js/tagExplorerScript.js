@@ -551,7 +551,7 @@ function renderRecentTags() {
 }
 function clearRecentTags() {
   localStorage.removeItem("recentSelections");
-  alert("cleared ")
+  alert("Click OK to delete all your recent favorite tags. ")
   renderRecentTags();
   console.log("Recent tags cleared.");
 }
