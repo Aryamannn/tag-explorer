@@ -101,9 +101,6 @@
     border: 1px solid #d4d4d4; /* Subtle border for container */
     padding: 10px;
 }
-#recentTagsDropdown{
-  font-family: Arial, sans-serif;
-}
 
 
 /* Dropdown content (hidden by default) */
@@ -346,4 +343,41 @@ header {
   border-bottom: 1px solid #ddd; /* Optional: Add a border for visual separation */
   padding: 15px; /* Maintain padding for better spacing */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+/* .popup {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  z-index: 1000;
+  width: 200px;
+  display: none;
+}
+
+.d-none {
+  display: none !important;
+} */
+
+/* Style the dropdown item container */
+.dropdown-item-wrapper {
+  display: flex;
+  justify-content: space-between; /* Push the star to the right */
+  align-items: center; /* Vertically center both the text and the star */
+  padding: 5px 0; /* Optional: Add space around the text */
+}
+
+/* Style for the star icon */
+.favorite-btn {
+  font-size: 18px; /* Adjust the size of the star */
+  cursor: pointer;
+  color: #ffcc00; /* Yellow color for the star */
+}
+
+/* Optionally, change the color when the star is filled */
+.favorite-btn.bi-star-fill {
+  color: #ffcc00; /* Filled star color */
+}
+
+/* Optional: change the color of the star when hovered */
+.favorite-btn:hover {
+  color: #ffd700; /* Brighter yellow on hover */
 }

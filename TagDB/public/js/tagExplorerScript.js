@@ -549,3 +549,171 @@ function renderRecentTags() {
 
   console.log("Dropdown updated with recent tags.");
 }
+function clearRecentTags() {
+  localStorage.removeItem("recentSelections");
+  alert("cleared ")
+  renderRecentTags();
+  console.log("Recent tags cleared.");
+}
+// // Toggle popup visibility
+// function togglePopup() {
+//     const popup = document.getElementById("popup");
+//     popup.classList.toggle("d-none");
+//     clearRecentTags()
+// }
+
+const FAVORITE_TAGS_KEY = "favoriteTags";  // Key to store favorite tags in localStorage
+const MAX_FAVORITE_TAGS = 5;  // Maximum number of favorite tags to store
+
+// Function to store a tag in local storage
+function storeFavoriteTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
+  // Retrieve the existing favorite selections or initialize an empty array
+  let favoriteSelections = JSON.parse(localStorage.getItem(FAVORITE_TAGS_KEY)) || [];
+
+  // Create the tag object
+  const tagObject = {
+    tagType: tagType,
+    id: id,
+    parentTag: parentTag,
+    tagText: tagText,
+    tagId: tagId
+  };
+
+  console.log("Tag Type: " + tagType + ", ID: " + id + ", Tag Name: " + parentTag + ", Selected Value: " + tagText + ", Tag ID from clicked element:" + tagId);
+
+  // Avoid storing duplicates
+  const isDuplicate = favoriteSelections.some(
+    selection => selection.id === id && selection.tagType === tagType
+  );
+  if (isDuplicate) {
+    console.log("Duplicate tag detected; skipping storage.");
+    return;
+  }
+
+  // If the number of favorites exceeds the maximum limit, remove the oldest
+  if (favoriteSelections.length >= MAX_FAVORITE_TAGS) {
+    favoriteSelections.shift();  // Remove the oldest tag to make space
+  }
+
+  // Add the new tag object to the favorite selections
+  favoriteSelections.push(tagObject);
+
+  // Store the updated array back into localStorage
+  localStorage.setItem(FAVORITE_TAGS_KEY, JSON.stringify(favoriteSelections));
+
+  console.log("Tag added to favorite selections:", tagObject);
+
+  // Update the favorite tags dropdown
+  renderFavoriteTags();
+}
+
+// Function to render favorite tags in the dropdown
+function renderFavoriteTags() {
+  const dropdown = document.getElementById("favoriteTagsDropdown");
+  if (!dropdown) return;
+
+  // Clear existing content
+  dropdown.innerHTML = "";
+
+  // Retrieve the favorite selections from localStorage
+  const favoriteSelections = JSON.parse(localStorage.getItem(FAVORITE_TAGS_KEY)) || [];
+
+  // Add each tag as a link (`<a>` element) in the dropdown
+  favoriteSelections.forEach(tag => {
+    const link = document.createElement("a");
+    link.className = "draggable";
+    link.href = "#subitem1";
+    link.draggable = true;
+    link.dataset.tagName = tag.parentTag;
+    link.dataset.tagValue = tag.tagText;
+    link.dataset.tagId = tag.tagId;
+    link.dataset.subtagId = tag.id;
+    link.onclick = () =>
+      addTagOnClick(tag.tagType, tag.id, tag.parentTag, tag.tagText);
+
+    link.textContent = tag.tagText;
+    dropdown.appendChild(link);
+  });
+
+  console.log("Dropdown updated with favorite tags.");
+}
+
+// Function to add a tag to the favorite list (triggered by clicking the star icon)
+// Function to add a tag to the favorite list (triggered by clicking the star icon)
+// Function to add a tag to the favorite list (triggered by clicking the star icon)
+function addTagToFavorite(tagType, id, parentTag, tagText) {
+  // Store the tag in localStorage
+  storeFavoriteTagInLocalStorage(tagType, id, parentTag, tagText, id);
+
+  // Get the star element by its ID
+  const starElement = document.getElementById(`star-${id}`);
+  
+  if (starElement) {
+    // Change the star to a filled state
+    if (starElement.classList.contains("bi-star")) {
+      starElement.classList.remove("bi-star");
+      starElement.classList.add("bi-star-fill");
+    } else {
+      // Toggle back to empty state if already filled (optional behavior)
+      starElement.classList.remove("bi-star-fill");
+      starElement.classList.add("bi-star");
+    }
+  }
+}
+// Function to remove a tag from the favorite list (triggered by clicking the filled star icon)
+function removeTagFromFavorite(tagId) {
+  let favoriteSelections = JSON.parse(localStorage.getItem(FAVORITE_TAGS_KEY)) || [];
+  
+  // Remove the tag with the given tagId
+  favoriteSelections = favoriteSelections.filter(tag => tag.tagId !== tagId);
+
+  // Save the updated list back to localStorage
+  localStorage.setItem(FAVORITE_TAGS_KEY, JSON.stringify(favoriteSelections));
+
+  // Update the UI
+  const starElement = document.getElementById(`star-${tagId}`);
+  starElement.classList.remove("bi-star-fill");
+  
+  // Re-render the favorite tags dropdown
+  renderFavoriteTags();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const favoriteSelections = JSON.parse(localStorage.getItem(FAVORITE_TAGS_KEY)) || [];
+  favoriteSelections.forEach(fav => {
+    const starElement = document.getElementById(`star-${fav.id}`);
+    if (starElement) {
+      starElement.classList.add("bi-star-fill");
+      starElement.classList.remove("bi-star");
+    }
+  });
+});
+
+// function clearFavoriteTags() {
+//   localStorage.removeItem("favoriteTags");
+//   alert("cleared favorite ")
+//   renderFavoriteTags();
+//   console.log("Recent tags cleared.");
+// }
+
+
+function toggleFavoriteTag(tagType, id, parentTag, tagText) {
+  const starElement = document.getElementById(`star-${id}`);
+  const isFilled = starElement.classList.contains("bi-star-fill");
+
+  if (isFilled) {
+    // If the star is filled, remove the tag from favorites
+    removeTagFromFavorite(id);
+    starElement.classList.remove("bi-star-fill");
+    starElement.classList.add("bi-star");
+  } else {
+    // If the star is empty, add the tag to favorites
+    storeFavoriteTagInLocalStorage(tagType, id, parentTag, tagText, id);
+    starElement.classList.add("bi-star-fill");
+    starElement.classList.remove("bi-star");
+  }
+
+  // Update the favorite tags dropdown
+  renderFavoriteTags();
+}
+
