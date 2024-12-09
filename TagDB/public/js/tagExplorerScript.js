@@ -470,7 +470,7 @@ searchInput.addEventListener('input', function () {
 // browser local storage  part
 
 const RECENT_TAGS_KEY = "recentSelections";  // Key to store recent tags in local storage
-const MAX_RECENT_TAGS = 5;  // Maximum number of recent tags to store
+const MAX_RECENT_TAGS = 10;  // Maximum number of recent tags to store
 
 // Function to store a tag in local storage
 
@@ -542,7 +542,7 @@ function clearRecentTags() {
 // }
 
 const FAVORITE_TAGS_KEY = "favoriteTags";  // Key to store favorite tags in localStorage
-const MAX_FAVORITE_TAGS = 5;  // Maximum number of favorite tags to store
+const MAX_FAVORITE_TAGS = 10;  // Maximum number of favorite tags to store
 
 // Function to store a tag in local storage
 function storeFavoriteTagInLocalStorage(tagType, id, parentTag, tagText, tagId) {
