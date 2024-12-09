@@ -424,7 +424,7 @@ document.addEventListener('keydown', function(event) {
 // Function to filter tags and values based on search input in Manage Tags
 // Renamed this function for clarity to differentiate between what interface we are searching in
 function filterTagsInWindow() {
-  const searchInput = document.getElementById('searchInput').value.toLowerCase();
+  const searchInput = document.getElementById('searchInputInModal').value.toLowerCase();
   const tagButtons = document.querySelectorAll('.dropdown-btn');  // Filter based on dropdown buttons
   const tagLinks = document.querySelectorAll('.dropdown-content a');  // Filter based on tag values in dropdown content
 
@@ -447,7 +447,7 @@ function filterTagsInWindow() {
 }
 
 // Function to reset dropdowns to their normal state when search is cleared in Manage Tags
-function resetDropdowns() {
+function resetDropdownsInWindow() {
   document.querySelectorAll('.dropdown-content').forEach(dropdown => {
     dropdown.style.display = 'none'; // Reset the dropdown visibility
   });
@@ -537,16 +537,16 @@ document.querySelectorAll('.dropdown-content a').forEach(link => {
 });
 
 // Detect when the search input is cleared in Manage Tags
-const searchInput = document.getElementById('searchInput');
+const searchInput = document.getElementById('searchInputInModal');
 searchInput.addEventListener('input', function () {
   if (this.value.trim() === '') {
-    resetDropdowns(); // Reset dropdowns to normal state when search is cleared
+    resetDropdownsInWindow(); // Reset dropdowns to normal state when search is cleared
   } else {
     filterTagsInWindow(); // Otherwise, filter the tags based on the input
   }
 });
 
-// Tags removed are added to an array and sent to API for removal from the file
+// Remove tags from a file in the window
 async function removeTagsFromFile() {
   // Get existing tags applied to the file when the window is opened
   const existingResponse = await fetch(`/files/${selectedFileId}/tags`);
@@ -588,13 +588,14 @@ async function removeTagsFromFile() {
       throw new Error(`Failed to delete tags: ${response.statusText}`);
     }
 
-    alert("Tags successfully removed");
+    alert("Tags successfully removed.");
 
   } catch (error) {
     console.error("Error removing file tags:", error);
   }
 }
 
+// Add tags to a file in the window
 async function addTagsToFile() {
   // Get existing tags applied to the file when the window is opened
   const existingResponse = await fetch(`/files/${selectedFileId}/tags`);
