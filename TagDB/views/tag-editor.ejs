@@ -8,94 +8,175 @@
         body {
             margin: 0;
             padding: 20px;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start; /* Align to top */
+            justify-content: center; /* Center horizontally */
         }
 
         .editor-container {
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
+            width: 100%;
+            max-width: 800px; /* Fixed maximum width */
             background: white;
-            max-width: 800px;
-            margin: 0 auto;
-            max-height: 95vh;
-            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px; /* Fixed height */
+            margin-top: 40px; /* Add some space from top */
+            overflow: hidden;
+            position: relative;
         }
 
+        .header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #111827;
+        }
         /* Search styling */
         .search-container {
-            padding: 12px;
+            padding: 16px;
             border-bottom: 1px solid #e5e7eb;
+            background: white;
         }
 
         .search-input {
             width: 100%;
-            padding: 8px 12px;
+            padding: 8px 16px;
             border: 1px solid #e5e7eb;
-            border-radius: 4px;
+            border-radius: 24px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: all 0.2s;
+            background: white;
         }
 
         .search-input:focus {
             outline: none;
             border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
 
-        /* Dropdown styling */
-        .dropdown-btn {
-            width: 100%;
-            padding: 10px 15px;
-            text-align: left;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid #e5e7eb;
+        /* Content area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: white;
+        }
+
+        /* Tag container styling */
+        .tag-container {
+            margin-bottom: 4px;
+        }
+
+        .subtag-container {
+            margin-left: 24px;
+            border-left: 2px solid #e5e7eb;
+            margin-top: 2px;
+            padding-left: 8px;
+        }
+
+        .tag-row {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
-            color: #374151;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s;
         }
 
-        .dropdown-btn:hover {
+        .tag-row:hover {
             background: #e3f2fd;
         }
 
-        .dropdown-content {
-            display: none;
-            padding-left: 15px;
-            background: #fff;
+        /* Button styling */
+        .add-tag-button {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 8px 0;
+            margin-bottom: 16px;
+            font-weight: 500;
+            transition: color 0.2s;
         }
 
-        .dropdown-content.active {
-            display: block;
+        .add-tag-button:hover {
+            color: #0056b3;
         }
 
-        /* Tag menu styling */
+        .expand-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px 4px;
+            color: #6b7280;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+
+        .expand-button:hover {
+            color: #007bff;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .menu-toggle:hover {
+            color: #007bff;
+            background: #e3f2fd;
+        }
+
+        /* Menu styling */
         .tag-menu {
             position: absolute;
             right: 0;
             margin-top: 4px;
-            width: 120px;
+            width: 160px;
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             z-index: 10;
         }
 
         .menu-button {
             width: 100%;
-            padding: 8px 12px;
+            padding: 8px 16px;
             text-align: left;
-            font-size: 13px;
+            font-size: 14px;
             background: transparent;
             border: none;
             border-bottom: 1px solid #e5e7eb;
             color: #374151;
             cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+            transition: all 0.2s;
+        }
+
+        .menu-button:last-child {
+            border-bottom: none;
         }
 
         .menu-button:hover {
@@ -112,98 +193,44 @@
             background: #fee2e2;
         }
 
-        /* Tag container styling */
-        .tag-container {
-            margin-bottom: 2px;
-        }
-
-        .subtag-container {
-            margin-left: 20px;
-            border-left: 1px solid #e5e7eb;
-            margin-top: 2px;
-        }
-
-        .tag-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .tag-row:hover {
-            background: #e3f2fd;
-        }
-
         /* Edit styling */
         .edit-container {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .edit-input {
-            padding: 4px 8px;
+            padding: 6px 12px;
             border: 1px solid #e5e7eb;
             border-radius: 4px;
-            font-size: 13px;
-            transition: border-color 0.3s;
+            font-size: 14px;
+            transition: all 0.2s;
         }
 
         .edit-input:focus {
             outline: none;
             border-color: #007bff;
-        }
-
-        /* Button styling */
-        .expand-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 2px 4px;
-            color: #6b7280;
-            font-size: 11px;
-            transition: color 0.3s;
-        }
-
-        .expand-button:hover {
-            color: #007bff;
-        }
-
-        .menu-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 2px 6px;
-            color: #6b7280;
-            font-size: 16px;
-            line-height: 1;
-            transition: color 0.3s;
-        }
-
-        .menu-toggle:hover {
-            color: #007bff;
-        }
-
-        .add-tag-button {
-            background: none;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 13px;
-            padding: 8px 12px;
-            margin-bottom: 8px;
-            transition: color 0.3s;
-        }
-
-        .add-tag-button:hover {
-            color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
 
         /* Utility classes */
-        .button-green { color: #16a34a; }
-        .button-red { color: #6b7280; }
+        .button-green { 
+            color: #16a34a;
+            transition: color 0.2s;
+        }
+        .button-green:hover {
+            color: #15803d;
+        }
+        
+        .button-red { 
+            color: #6b7280;
+            transition: color 0.2s;
+        }
+        .button-red:hover {
+            color: #dc2626;
+        }
+        
         .hidden { display: none; }
         .flex { display: flex; }
         .items-center { align-items: center; }
@@ -213,33 +240,36 @@
 
         /* Text styling */
         span {
-            font-size: 13px;
+            font-size: 14px;
             color: #374151;
         }
 
         /* Scrollbar styling */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
-            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #007bff;
-            border-radius: 4px;
+            background: #c5c5c5;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #0056b3;
+            background: #a3a3a3;
         }
     </style>
 </head>
 <body>
     <div class="editor-container">
+        <div class="header">
+            <span class="header-title">Tag Editor</span>
+        </div>
+
         <div class="search-container">
             <input type="text" 
                    class="search-input" 
@@ -248,7 +278,7 @@
                    oninput="filterTags()">
         </div>
         
-        <div style="padding: 12px;">
+        <div class="content-area">
             <button onclick="addMainTag()" class="add-tag-button">
                 + Add Tag
             </button>
@@ -431,7 +461,7 @@ function addMainTag() {
                     </div>
                 </div>
                 <div class="relative">
-                    <button onclick="toggleMenu('${newTagId}', false)" data-menu-toggle class="menu-toggle">•••</button>
+                    <button onclick="toggleMenu('${newTagId}', false)" data-menu-toggle class="menu-toggle">•</button>
                     <div id="menu-${newTagId}" class="tag-menu hidden">
                         <button class="menu-button" onclick="startEditing('${newTagId}', '', false)">Edit Tag</button>
                         <button class="menu-button" onclick="addSubTag('${newTagId}')">+ Add Tag</button>
@@ -468,7 +498,7 @@ function addSubTag(parentId) {
                 </div>
             </div>
             <div class="relative">
-                <button onclick="toggleMenu('${newSubTagId}', true, '${parentId}')" data-menu-toggle class="menu-toggle">•••</button>
+                <button onclick="toggleMenu('${newSubTagId}', true, '${parentId}')" data-menu-toggle class="menu-toggle">•</button>
                 <div id="menu-${newSubTagId}" class="tag-menu hidden">
                     <button class="menu-button" onclick="startEditing('${newSubTagId}', '', true, '${parentId}')">Edit Tag</button>
                     <button class="menu-button delete-button" onclick="deleteTag('${newSubTagId}', true, '${parentId}')">- Delete Tag</button>
@@ -666,6 +696,5 @@ function filterTags() {
 }    </script>
 </body>
 </html>
-
 
 
