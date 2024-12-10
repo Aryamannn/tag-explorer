@@ -132,6 +132,7 @@ function updatesafePairs(tagId, tagName, draggedText, valueId, parentId) {
     safePairs.set(tagId, tagName);
     activePairs.set(draggedText, valueId)
   }
+
   // console.log("Actve Pairs" + Array.from(activePairs.entries()));
   // console.log("Parent tags" + Array.from(parentTags.entries()));
 
@@ -166,6 +167,7 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
 
     const data = await response.json();
     setQueryResults(data);  // Call setQueryResults with the fetched data
+
     // console.log("helllppp");
     // console.log(data);
   } catch (error) {
@@ -239,6 +241,7 @@ if (tagValuePairs.length === 0 && parentTagPairs.length === 0) {
     if (Array.isArray(data)) {
       const fileIds = data.map(item => item.file_id);
       // console.log(fileIds);
+
     } else {
       console.error('Unexpected response format:', data);
     }
@@ -351,6 +354,98 @@ function clearTags(){
   handleQuery();
 }
 
+// Detect right click on a file
+document.getElementById('results').addEventListener("contextmenu", function (e) {
+  if (e.target.closest(".file-item")) {
+    showContextMenu(e);
+  }
+});
+
+// Display context menu on right-click of file element
+// Store file name and file ID of clicked element
+let selectedFileName;
+let selectedFileId;
+async function showContextMenu(e) {
+  e.preventDefault();
+  const contextMenu = document.getElementById("contextMenu");
+  const fileItem = e.target.closest(".file-item");
+  if (fileItem) {
+    // Store selected file details for later use
+    selectedFileName = fileItem.querySelector(".col-4").textContent;
+    selectedFileId = fileItem.getAttribute("data-file-id");
+  }
+  contextMenu.style.left = `${e.pageX}px`;
+  contextMenu.style.top = `${e.pageY}px`;
+  contextMenu.style.display = "block";
+}
+
+// Hide context menu on outside click
+window.addEventListener("click", function (e) {
+  const contextMenu = document.getElementById("contextMenu");
+  if (!contextMenu.contains(e.target)) {
+    contextMenu.style.display = "none";
+  }
+});
+
+// Listen for Manage Tags click in the context menu
+document.getElementById("manageTags").addEventListener("click", async function () {
+  await getTagsAndValues();
+  const modalElement = document.getElementById("manageTagsModal");
+  const modal = new bootstrap.Modal(modalElement, {
+    backdrop: true,
+    keyboard: true,
+  });
+  const modalHeader = modalElement.querySelector(".modal-header");
+
+  // Remove any existing header elements
+  const existingHeader = modalHeader.querySelector('h4');
+  if (existingHeader) {
+      modalHeader.removeChild(existingHeader);
+  }
+
+  // Apply header style to the file name
+  const headerElement = document.createElement('h4');
+  // headerElement.textContent = `Manage Tags for: ${selectedFileName}`;
+  headerElement.innerHTML = `Manage Tags for: ${selectedFileName} 
+  <span style="cursor: help; margin-left: 8px;" title="This window allows you to manage tags for the selected file. You can add or remove tags here. Changes won't be saved unless you click 'Save Changes'. Hover over an element to see more information.">
+    <i class="bi bi-info-circle" style="font-size: 1.0rem; color: #007bff;"></i>
+  </span>`;
+
+  // Append the h2 element to the modal header
+  modalHeader.appendChild(headerElement);
+
+  // Close modal on X click
+  // Clear selectedValues[], deletedValues[], clear modal content
+  const closeButton = modalHeader.querySelector('.close');
+  closeButton.addEventListener('click', () => {
+    modal.hide();
+    selectedFileName = '';
+    selectedFileId = '';
+    selectedValuesInWindow.length = 0;
+    deletedValues.length = 0;
+    const modalTagContainer = modalElement.querySelector('#modal-tag-container');
+    modalTagContainer.innerHTML = '';
+    headerElement.textContent = '';
+  });
+
+  // Close modal on outside click
+  // Clear selectedValues[], deletedValues[], clear modal content
+  modalElement.addEventListener('click', (event) => {
+  if (event.target === modalElement) {
+    modal.hide();
+    selectedFileName = '';
+    selectedFileId = '';
+    selectedValuesInWindow.length = 0;
+    deletedValues.length = 0;
+    const modalTagContainer = modalElement.querySelector('#modal-tag-container');
+    modalTagContainer.innerHTML = '';
+    headerElement.textContent = '';
+  }
+  });
+
+  modal.show();
+});
+
 //Depeciated function to get a random date
 function getDateModified(){
   return(Math.floor(Math.random() * 28) + 1) + "/" + (Math.floor(Math.random() * 12) + 1) + "/" + (Math.floor(Math.random() * 24) + 2001);
@@ -407,6 +502,18 @@ function addTagOnClick(tagType, id, parentTag, tagText){
   }
 }
 
+
+
+// Duplicate and renamed reference to specify the modal window
+// Dropdown toggle functionality inside modal window
+document.querySelectorAll('.modal-dropdown-btn').forEach(button => {
+  button.addEventListener('click', function () {
+    // Toggle the display of the related dropdown content
+    const dropdownContent = this.nextElementSibling;
+    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+  });
+});
+
 // Tamana code 
 // Dropdown toggle functionality
 document.querySelectorAll('.dropdown-btn').forEach(button => {
@@ -417,6 +524,38 @@ document.querySelectorAll('.dropdown-btn').forEach(button => {
   });
 });
 
+
+// Prevent 'Enter' key from closing the modal window
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+  }
+});
+
+// Function to filter tags and values based on search input in Manage Tags
+// Renamed this function for clarity to differentiate between what interface we are searching in
+function filterTagsInWindow() {
+  const searchInput = document.getElementById('searchInputInModal').value.toLowerCase();
+  const tagButtons = document.querySelectorAll('.modal-dropdown-btn');  // Filter based on dropdown buttons
+  const tagLinks = document.querySelectorAll('.modal-dropdown-content a');  // Filter based on tag values in dropdown content
+
+  tagButtons.forEach(button => {
+    const tagName = button.querySelector('span').innerText.toLowerCase();  // Get the tag name
+    const matchingTagValues = Array.from(button.nextElementSibling.querySelectorAll('a')).filter(link => {
+      const tagValue = link.textContent.toLowerCase();
+      return tagValue.includes(searchInput);  // Check if the tag value matches the search term
+    });
+
+    // Show or hide the tag button and the corresponding dropdown items
+    if (tagName.includes(searchInput) || matchingTagValues.length > 0) {
+      button.style.display = 'block'; // Show matching tag
+      button.nextElementSibling.style.display = 'block'; // Show the dropdown content if it has matching values
+    } else {
+      button.style.display = 'none'; // Hide non-matching tag
+      button.nextElementSibling.style.display = 'none'; // Hide dropdown content if no values match
+    }
+  });
+}
 
 // Function to filter tags and values based on search input
 function filterTags() {
@@ -442,6 +581,20 @@ function filterTags() {
   });
 }
 
+
+// Function to reset dropdowns to their normal state when search is cleared in Manage Tags
+function resetDropdownsInWindow() {
+  document.querySelectorAll('.modal-dropdown-content').forEach(dropdown => {
+    dropdown.style.display = 'none'; // Reset the dropdown visibility
+  });
+
+  document.querySelectorAll('.modal-dropdown-btn').forEach(button => {
+    button.style.display = 'flex';          // Set display to flex for justify-content to work
+    button.style.justifyContent = "space-between"; // Space items within each button element
+    button.style.alignItems = "center";     // Optional: Align items vertically centered if needed
+});
+}
+
 // Function to reset dropdowns to their normal state when search is cleared
 // Function to reset dropdowns to their normal state when search is cleared
 function resetDropdowns() {
@@ -456,6 +609,224 @@ function resetDropdowns() {
 });
 }
 
+// Retrieve the tags and values of the file based on the file id when clicking 'Manage Tags' option
+async function getTagsAndValues() {
+  if (selectedFileId) {
+    try {
+      const response = await fetch(`/files/${selectedFileId}/tags`);
+      const tags = await response.json();
+      console.log("file id: ", selectedFileId);
+      displayTagsAndValues(tags);
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+    }
+  }
+}
+
+// Send the file's tags and values to the modal-tag-container area
+function displayTagsAndValues(tags) {
+  tags.forEach(tag => {
+    selectValueInWindow(tag.tag_name, tag.tag_value, tag.value_id);
+  });
+}
+
+let selectedValuesInWindow = [];
+let deletedValues = [];
+// Renamed function to differentiate between values in Tag Explorer vs Manage Tags
+function selectValueInWindow(tagName, value, valueId) {
+  const formattedValue = `${tagName}: ${value}`;
+
+  // Check if the value has already been selected
+  if (selectedValuesInWindow.some(item => item.formattedValue === formattedValue)) {
+    alert('This value has already been selected!');
+    return; // Do not add it again
+  }
+
+  // Add the selected value to the list
+  selectedValuesInWindow.push({ formattedValue, valueId });
+
+  // Create a new element to display the selected tag
+  const tagContainer = document.getElementById('modal-tag-container');
+  const tagElement = document.createElement('span');
+  tagElement.classList.add('tag-badge');
+  tagElement.textContent = formattedValue;
+
+  // Create a button (X) to remove the tag
+  const removeButton = document.createElement('button');
+  removeButton.classList.add('remove-tag');
+  removeButton.textContent = 'X';
+
+  // Add the remove button click handler
+  removeButton.addEventListener('click', function () {
+    // Remove the tag element from the tag container
+    tagContainer.removeChild(tagElement);
+
+    const index = selectedValuesInWindow.findIndex(item => item.formattedValue === formattedValue);
+    if (index > -1) {
+      // Store the valueId in deletedValues along with the formatted value
+      deletedValues.push({ formattedValue, valueId });
+      selectedValuesInWindow.splice(index, 1); // Remove the value
+    }
+  });
+
+  // Append the remove button to the tag element
+  tagElement.appendChild(removeButton);
+
+  // Append the new tag to the container
+  tagContainer.appendChild(tagElement);
+}
+
+// Bind the selectValue function to each link in the dropdown in Manage Tags
+document.querySelectorAll('.dropdown-content a').forEach(link => {
+  link.addEventListener('click', function (e) {
+    e.preventDefault(); // Prevent default anchor behavior
+    const tagName = this.closest('.dropdown-content').previousElementSibling.querySelector('span').textContent; // Get the tag name from the button
+    const value = e.target.textContent; // Get the value from the clicked link
+    selectValueInWindow(tagName, value); // Call the function to handle the selection
+  });
+});
+
+// Bind the selectValue function to each link in the dropdown in Manage Tags
+// Duplicate to rename references to be safe
+document.querySelectorAll('.modal-dropdown-content a').forEach(link => {
+  link.addEventListener('click', function (e) {
+    e.preventDefault(); // Prevent default anchor behavior
+    const tagName = this.closest('.modal-dropdown-content').previousElementSibling.querySelector('span').textContent; // Get the tag name from the button
+    const value = e.target.textContent; // Get the value from the clicked link
+    selectValueInWindow(tagName, value); // Call the function to handle the selection
+  });
+});
+
+// Detect when the search input is cleared in Manage Tags
+const searchInputModal = document.getElementById('searchInputInModal');
+searchInputModal.addEventListener('input', function () {
+  if (this.value.trim() === '') {
+    resetDropdownsInWindow(); // Reset dropdowns to normal state when search is cleared
+  } else {
+    filterTagsInWindow(); // Otherwise, filter the tags based on the input
+  }
+});
+
+// Remove tags from a file in the window
+async function removeTagsFromFile() {
+  // Get existing tags applied to the file when the window is opened
+  const existingResponse = await fetch(`/files/${selectedFileId}/tags`);
+  if (!existingResponse.ok) {
+    throw new Error(`Failed to fetch existing tags: ${existingResponse.statusText}`);
+  }
+  const tagsAlreadyApplied = await existingResponse.json();
+
+  // Get value_ids from the tags
+  const existingValueIds = tagsAlreadyApplied.map(tag => tag.value_id);
+
+  // Filter deletedValues array to only include those that are actually present in existingValueIds
+  // Handle case where a user opens the window, selects a tag, then removes the tag, and clicks 'Save Changes'
+  // The tag that was selected and removed was never applied to the file so the user didn't actually remove that tag
+  const validDeletedValues = deletedValues.filter(item => existingValueIds.includes(item.valueId));
+
+  // Prepare the request body with the valid value_ids
+  const body = {
+    value_ids: validDeletedValues.map(item => item.valueId)
+  };
+
+  // Check if there are any valid deletions
+  // Check if deletedValues[] is empty
+  if (body.value_ids.length === 0 || deletedValues.length === 0) {
+    alert("No tags were removed.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`/files/${selectedFileId}/tags`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete tags: ${response.statusText}`);
+    }
+
+    alert("Tags successfully removed.");
+
+  } catch (error) {
+    console.error("Error removing file tags:", error);
+  }
+}
+
+// Add tags to a file in the window
+async function addTagsToFile() {
+  // Get existing tags applied to the file when the window is opened
+  const existingResponse = await fetch(`/files/${selectedFileId}/tags`);
+  if (!existingResponse.ok) {
+    throw new Error(`Failed to fetch existing tags: ${existingResponse.statusText}`);
+  }
+  const existingTags = await existingResponse.json();
+
+  // Get value_ids from the tags
+  const existingValueIds = existingTags.map(tag => tag.value_id);
+
+  // Create a mapping from tag value to value_id
+  const tagValuesResponse = await fetch('/tag_values');
+  if (!tagValuesResponse.ok) {
+    throw new Error(`Failed to fetch tag values: ${tagValuesResponse.statusText}`);
+  }
+  const allTagValues = await tagValuesResponse.json();
+
+  // Create a mapping from tag value to value_id
+  const valueIdMap = {};
+  allTagValues.forEach(tag => {
+    valueIdMap[tag.tag_value] = tag.value_id;
+  });
+
+  // Extract value_ids from selectedValues
+  const newValueIds = selectedValuesInWindow.map(item => {
+    return valueIdMap[item.formattedValue.split(": ")[1]];
+  });
+
+  // Filter out any undefined value_ids
+  const validNewValueIds = newValueIds.filter(valueId => valueId !== undefined);
+
+  // Check for new tags to insert
+  const newTagsToInsert = validNewValueIds.filter(valueId => !existingValueIds.includes(valueId));
+
+  if (newTagsToInsert.length === 0) {
+    alert("No new tags were selected to add to the file.");
+    return;
+  }
+
+  // Prepare the request body with the newly selected value_ids
+  const body = {
+    value_ids: newTagsToInsert,
+  };
+
+  try {
+    const response = await fetch(`/files/${selectedFileId}/tags`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add tags: ${response.statusText}`);
+    }
+    alert("Tags added successfully.");
+
+  } catch (error) {
+    console.error("Error inserting file tags:", error);
+    alert("Failed to add tags.");
+  }
+}
+
+// Call when the 'Save Changes' button is clicked
+async function handleSaveChanges() {
+  await removeTagsFromFile();
+  await addTagsToFile();
+}
 
 // Detect when the search input is cleared
 const searchInput = document.getElementById('searchInput');
@@ -700,4 +1071,3 @@ document.addEventListener("DOMContentLoaded", function() {
   renderRecentTags();  // Render recent tags from localStorage on page load
   renderFavoriteTags();  // Render favorite tags from localStorage on page load
 });
-

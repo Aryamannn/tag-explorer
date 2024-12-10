@@ -11,6 +11,39 @@ const filesDirectory = path.join(__dirname, '..', 'test_dir');
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
+function getFileType(filePath) {
+    const extension = filePath.split('.').pop().toLowerCase();
+    switch (extension) {
+        case 'pdf':
+            return 'PDF Document';
+        case 'doc':
+        case 'docx':
+            return 'Word Document';
+        case 'xls':
+        case 'xlsx':
+            return 'Excel Spreadsheet';
+        case 'ppt':
+        case 'pptx':
+            return 'PowerPoint Presentation';
+        case 'txt':
+            return 'Text File';
+        case 'jpg':
+        case 'jpeg':
+            return 'JPEG Image';
+        case 'png':
+            return 'PNG Image';
+        case 'gif':
+            return 'GIF Image';
+        case 'zip':
+        case 'rar':
+            return 'Compressed File';
+        case 'mp4':
+            return 'Multimedia Video';
+        default:
+            return 'Unknown File Type';
+    }
+  }
+
 
 // Route to render the tag explorer page
 // Route to render the tag explorer page
@@ -60,7 +93,7 @@ router.get("/", async  (req, res) => {
         const tags = tagsResponse.data;
         const tagValues = tagValuesResponse.data;
         const defaultTags = defaultTagsResponse.data;
-
+           
         console.log("tags:", tags); // Logs the full tags array
         console.log("tag-values:", tagValues); // Logs the full tagValues array
         console.log("default tags:", defaultTags); // Logs the full defaultTags array

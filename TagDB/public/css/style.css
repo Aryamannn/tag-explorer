@@ -55,18 +55,52 @@
   background-color: #ffecb3;
 }
 
-.dropdown:hover > .dropdown-menu, .dropend:hover > .dropdown-menu {
-  display: block;
-  margin-top: .125em;
-  margin-left: .125em;
-}
+.dropdown:hover > .dropdown-menu,  .dropend:hover > .dropdown-menu {
+      display: block;
+      margin-top: .125em;
+      margin-left: .125em;
 
+}
 @media screen and (min-width:769px) {
-  .dropend:hover > .dropdown-menu {
-      position: absolute;
-      top: 0;
-      left: 100%;
+  .dropend:hover > .dropdown-menu{
+    position: absolute;
+    top: 0;
+    left: 100%;
   }
+  
+}
+.collapse {
+  display: none; /* Initially hidden */
+}
+.collapse.show {
+  display: block; /* Show when expanded */
+}
+.dropdown-header {
+  cursor: pointer; /* Change cursor to pointer for dropdown headers */
+  background-color: #f8f9fa; /* Light background for header */
+  border: 1px solid #ddd; /* Add border */
+  padding: 10px; /* Add padding */
+  margin-bottom: 5px; /* Space between dropdowns */
+}
+.filter-tags .tag-badge {
+display: inline-block;
+padding: 0.4rem 0.6rem;
+border-radius: 0.4rem;
+font-size: 0.9rem;
+margin-bottom: 0.3rem;
+}
+.close-btn {
+cursor: pointer;
+color: white;
+}
+/* Container for the dropdown */
+.dropdown {
+  width: 200px;
+  font-family: Arial, sans-serif;
+  background-color: #f3f3f3; /* Light gray background */
+  color: black;
+  border: 1px solid #d4d4d4; /* Subtle border for container */
+  padding: 10px;
 }
   .collapse {
     display: none; /* Initially hidden */
@@ -127,6 +161,44 @@
     color: black;
 }
 
+
+/* Main button for each dropdown */
+.dropdown-btn {
+  width: 100%;
+  background-color: #e7e7e7; /* Slightly darker gray for buttons */
+  color: black;
+  padding: 12px;
+  font-size: 15px;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+/* Main button for each dropdown in modal window*/
+.modal-dropdown-btn {
+  width: 100%;
+  background-color: #e7e7e7; /* Slightly darker gray for buttons */
+  color: black;
+  padding: 12px;
+  font-size: 15px;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for modal dropdown button */
+.modal-dropdown-btn:hover {
+  background-color: #cce6ff; /* Light blue for hover */
+}
+
 .tag-container {
   display: inline-flex; /* Align items horizontally in a single line */
   gap: 10px; /* Space between tags */
@@ -138,19 +210,216 @@
   background-color: #007bff;  
   padding: 5px 10px;  
   border-radius: 20px; 
+
 }
 
-.icon-buttons {
-  display: flex;
-  align-items: center;
+/* Hover effect for dropdown button */
+.dropdown-btn:hover {
+  background-color: #cce6ff; /* Light blue for hover */
 }
 
-.top-box {
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  background-color: #f3f3f3; /* Same light gray as main container */
+  padding-left: 20px; /* Indent for sub-items */
+  border-left: 2px solid #cce6ff; /* Blue line for active dropdown */
+  
+}
+
+/* Dropdown items */
+.dropdown-content a {
+  color: #333;
+  padding: 8px 10px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for items */
+.dropdown-content a:hover {
+  background-color: #d6e9ff; /* Very light blue on hover */
+  color: black;
+}
+
+/*  selected area style */
+
+.filter-tags {
+  max-height: 15vh;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  overflow-y: hidden; /* Disables vertical scrolling */
+  white-space: nowrap; /* Prevents items from wrapping to the next line */
+}
+
+.tag-container {
+  display: inline-flex; /* Align items horizontally in a single line */
+  gap: 10px; /* Space between tags */
+}
+/* Style for each tag badge */
+.tag-badge {
+display: inline-flex;  /* Ensure the items inside are in a row */
+align-items: center;  /* Align text and "X" vertically in the center */
+background-color: #007bff;  /* Blue background */
+color: white;
+padding: 5px 10px;  
+border-radius: 20px;  /* Rounded corners for tags */
+font-size: 14px;
+font-weight: bold;
+white-space: nowrap;  /* Prevent text from wrapping to the next line */
+}
+
+/* Style for the "X" button */
+.remove-tag {
+background: #f44336;  /* Red background for the "X" */
+color: white;
+border: none;
+border-radius: 50%;  /* Circular shape for the "X" */
+width: 20px;
+height: 20px;
+
+align-items: center;
+justify-content: center;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+margin-left: 8px;  /* Space between text and "X" */
+padding: 0;  /* Remove any extra padding */
+}
+
+/* Hover effect for the "X" button */
+.remove-tag:hover {
+background-color: #d32f2f;  /* Darker red when hovered */
+transform: scale(1.1);  /* Slightly grow the "X" when hovered */
+}
+
+/* Focus effect for accessibility */
+.remove-tag:focus {
+outline: none;
+box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
+}
+
+/* Manage Tags window */
+
+/* Dropdown content (hidden by default) */
+.modal-dropdown-content {
+    display: none;
+    background-color: #f3f3f3; /* Same light gray as main container */
+    padding-left: 20px; /* Indent for sub-items */
+    border-left: 2px solid #cce6ff; /* Blue line for active dropdown */
+}
+
+/* Dropdown items */
+.modal-dropdown-content a {
+    color: #333;
+    padding: 8px 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+/* Hover effect for items */
+.modal-dropdown-content a:hover {
+    background-color: #d6e9ff; /* Very light blue on hover */
+    color: black;
+}
+
+/* Renamed for clarity when container is referenced */
+.modal-tag-container {
+  display: inline-flex; /* Align items horizontally in a single line */
+  gap: 10px; /* Space between tags */
+}
+
+.toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  background-color: #fefefe;
+  z-index: 100;
+  padding-bottom: 10px;
+}
+
+.modal {
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 3px solid #000000;
+  width: 40%;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.modal-body {
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+}
+
+.close {
+  color: #aaa;
+  position: absolute;
+  font-size: 35px;
+  font-weight: bold;
+  right: 1px;
+  top: 1px;
+}
+
+.close:hover {
+  color: black;
+  cursor: pointer;
+}
+
+/* This is added for the selected tag area in the manage tags  */
+#dropzone {
   display: flex;
-  align-items: center;
-  justify-content: space-between; 
+  flex-wrap: wrap;
+  gap: 10px; /* Space between tags */
   padding: 10px;
+  border: 2px solid #ddd; /* Light border around the dropzone */
+  border-radius: 12px; /* Rounded corners for the box */
+  background-color: #f9f9f9; /* Light background color */
+  max-width: 100%; /* Prevent it from stretching too wide */
 }
+
+
+/* Copied and renamed to reference the Manage Tags dropzone */
+#modal-dropzone {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between tags */
+  padding: 10px;
+  border: 2px solid #ddd; /* Light border around the dropzone */
+  border-radius: 12px; /* Rounded corners for the box */
+  background-color: #f9f9f9; /* Light background color */
+  max-width: 100%; /* Prevent it from stretching too wide */
+}
+
+#contextMenu {
+  position: absolute;
+  background-color: #f8f9fa;
+  padding: 5px;
+  border: 1px solid #000000;
+  display: none;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+}
+
+.modal-dialog {
+  max-width: 1500px;
+  width: 100%;
+  margin: 1.75rem auto;
+}
+/* Manage Tags window end */
 
 #dropzone {
   flex-grow: 1;
@@ -381,3 +650,4 @@ header {
 .favorite-btn:hover {
   color: #ffd700; /* Brighter yellow on hover */
 }
+
