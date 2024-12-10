@@ -1,68 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
+        <%- include("partials/head.ejs") %>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+
+<!-- <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Tags</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        .tag-container {
-            margin-bottom: 10px;
-        }
-
-        .toggle {
-            cursor: pointer;
-        }
-
-        .modal-header {
-            position: sticky;
-            top: 0;
-            background-color: #fefefe;
-            z-index: 100;
-            padding-bottom: 10px;
-        }
-
-        .modal {
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 3px solid #000000;
-            width: 40%;
-            max-height: 80vh;
-            overflow: hidden;
-        }
-
-        .modal-body {
-            max-height: calc(100vh - 250px);
-            overflow-y: auto;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 35px;
-            font-weight: bold;
-        }
-
-        .close:hover {
-            color: black;
-            cursor: pointer;
-        }
-
-        ul {
-            list-style-type: none;
-            /*
-            padding-left: 0; Remove default indentation 
-            */
-        }
-    </style>
+</head> -->
+<head>
+    <%- include("partials/head.ejs") %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <!-- <%- include("partials/nav.ejs") %> -->
@@ -70,7 +23,6 @@
     <h1>Manage Tags</h1>
 
     <button id="manageTagsBtn">Manage Tags</button>
-
     <!-- Modal window -->
     <div id="manageTagsModal" class="modal">
         <div class="modal-content">
@@ -78,7 +30,10 @@
             <!-- Header -->
             <div class="modal-header">
                 <h2 style="flex-grow: 1;">Manage Tags for file_name</h2>
-                <span class="close" style="cursor: pointer;" title="Close the window - changes won't be saved">&times;</span> <!-- Close (X) button -->
+                 <!-- Close (X) button -->
+                <span class="close" style="cursor: pointer;" title="Close the window - changes won't be saved">
+                    &times;
+                </span>
             </div>
 
             <br>
@@ -86,68 +41,69 @@
             <!-- Search field and buttons (part of the header) -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <form class="d-flex flex-grow-1 me-2" role="search">
-                    <input class="form-control me-2 p-2" type="search" placeholder="Search tags or values" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit" onclick="event.preventDefault();">Search</button>
+                    <input class="form-control me-2 p-2" type="search" id="searchInput" placeholder="Search tags or values" aria-label="Search" oninput="filterTags()">
                 </form>
-
                 <div class="d-flex">
-                    <button class="btn btn-outline-secondary rounded-circle me-2" id="refreshBtn" title="Refresh the list">
-                        <i class="bi bi-arrow-clockwise"></i>
-                    </button>
-
                     <!-- Tag Edit button -->
                     <button class="btn btn-outline-primary rounded-circle" id="addTagBtn" title="Go to Tag Edit to create new tags">
-                        <i class="bi bi-plus"></i>
+                        <a href="/tag-editor">
+                            <i class="bi bi-plus"></i>
+                        </a>
                     </button>
                 </div>
             </div>
 
-            <hr>
+         
+        <!-- this area will show all the tags attached to that file  for now I only have default tags  -->
+        <div class="filter-tags" id="dropzone" >
+            <div id="tag-container" class="tag-container" style="display: inline-flex;">
+                <span class="tag-badge">
+                    tags  
+                    <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
+                </span>
+                <!-- Add more tags here to test scrolling -->
+            </div>
+        </div>
+      
             <h4>
                 <div style="text-align: center;">
                     All Tags
                 </div>
-            </h4>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <ul>
-                    <% tags.forEach(tag => { %>
-                    <li class="tag-container">
-                        <input type="checkbox" id="tag-<%= tag.tag_id %>">
-                        <!-- Checkbox for the tag -->
-                        <span class="toggle"><i class="bi bi-caret-down"></i>
-                            <%= tag.tag_name %>
-                        </span>
-
-                        <!-- Tag values -->
-                        <ul class="tag-values" id="tag-values-<%= tag.tag_id %>">
-                            <% tag.tag_values.forEach(value => { %>
-                                <li>
-                                    <input type="checkbox" id="tag-value-<%= value.id %>">
-                                    <label for="tag-value-<%= value.id %>">
-                                        <%= value.tag_value %>
-                                    </label>
-                                </li>
-                            <% }) %>
-                        </ul>
-                        
-                    </li>
-                    <% }) %>
-                </ul>
+            </h4>  
+            <div  style="max-height: 30vh; overflow-y: auto;">
+            <% tags.forEach(tag => { %>
+                <button class="dropdown-btn" >
+                  <span><%= tag.tag_name || 'Untitled Tag' %></span>
+                  <span>&#9662;</span>  <!--   Down arrow symbol -->
+                </button>
+                <div class="dropdown-content">
+                  <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
+                  <% if (filteredValues && filteredValues.length > 0) { %>
+                    <% filteredValues.forEach(value => { %>
+                      <a href="#subitem1"><%= value.tag_value %></a>
+                    <% }); %>
+                  <% } else { %>
+                    <a href="#subitem2">No values</a>
+                  <% } %>
+                </div>
+              <% }); %>
             </div>
+            <br>
 
-            <button id="saveChangesBtn" title="Save changes you have made">Save Changes</button>
+
+            <!-- Tags and values -->  
+            <button id="saveChangesBtn" class="btn btn-success" title="Save changes you have made">
+                Save Changes
+            </button>
         </div>
     </div>
 
     <script>
         var modal = document.getElementById("manageTagsModal");
-        var openModalBtn = document.getElementById("manageTagsBtn");
 
         // Open the modal
         // This will open from a right click on a file, not a designated button
-        openModalBtn.onclick = function () {
+        document.getElementById("manageTagsBtn").onclick = function () {
             modal.style.display = "block";
         }
 
@@ -168,11 +124,30 @@
             alert("Changes confirmed");
         }
 
-        document.getElementById("addTagBtn").onclick = function () {
-            window.location.href = "./tag-editor";
+        // Prevent 'Enter' key from closing the modal window
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        });
+
+        function filterTags() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const tags = document.querySelectorAll('.tag-container');
+
+            tags.forEach(item => {
+                const tagName = item.querySelector('.toggle').innerText.toLowerCase();
+                const valueName = item.querySelector('.tag-values').innerText.toLowerCase();
+                if (tagName.includes(searchInput) || valueName.includes(searchInput)) {
+                    item.style.display = 'block'; // Show matching tag or value
+                } else {
+                    item.style.display = 'none'; // Hide non-matching tag or value
+                }
+            });
         }
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="/js/manageTagsScript.js"> </script>
+
 </body>
 </html>

@@ -2,6 +2,12 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 
+const db = require('./routes/db');
+const fs = require('fs');
+const path = require('path');
+
+const filesDirectory = path.join(__dirname, 'test_dir');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -149,8 +155,29 @@ app.get('/tag_values', (req, res) => {
     const sql = 'SELECT * FROM tag_values';
     db.query(sql, (err, results) => {
         if (err) return res.status(500).send(err);
+        console.log('Database Results:', results);
+
         res.send(results);
     });
+});
+
+
+app.get('/default-tags', (req, res) => {
+  const sql = `
+    SELECT t.tag_name, tv.tag_value, tv.value_id
+    FROM tags t
+    LEFT JOIN tag_values tv ON t.tag_id = tv.tag_id
+    WHERE t.tag_name IN ('Content Type', 'LocalFile')
+  `;
+  db.query(sql, (err, results) => {
+      if (err) return res.status(500).send(err);
+
+      // Log the results to see the structure
+      console.log('Database Results:', results);
+
+      // If results are an array of objects, return them as is
+      res.send(results);
+  });
 });
 
 // API to list all tag values for a given tag name
@@ -415,6 +442,26 @@ app.post('/files/:file_id/tags/add', (req, res) => {
     addTagToFile(file_id, tag_name, tag_value, res);
 });
 
+// API to add multiple tags at once to a file based on file_id
+app.post('/files/:file_id/tags', (req, res) => {
+  const { file_id } = req.params;
+  const { value_ids } = req.body; // Expecting an array of value_ids
+
+  // Check if value_ids are provided and if array is empty
+  if (!Array.isArray(value_ids) || value_ids.length === 0) {
+    return res.status(400).send({ error: 'Invalid or missing value_ids' });
+  }
+
+  // Transform each value_id into a string of file_id, value_id
+  // Combine into a string separated by ', '
+  const values = value_ids.map(value_id => `(${file_id}, ${value_id})`).join(', ');
+  const sql = `INSERT INTO file_tags (file_id, value_id) VALUES ${values}`;
+
+  db.query(sql, (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send({ message: 'Tags added successfully' });
+  });
+});
 
 // API to remove a tag from a file
 app.delete('/files/:file_id/tags/:value_id', (req, res) => {
@@ -424,6 +471,32 @@ app.delete('/files/:file_id/tags/:value_id', (req, res) => {
         if (err) return res.status(500).send(err);
         res.send({ message: 'Tag removed from file' });
     });
+});
+
+// API to remove multiple tags at once from a file based on file_id
+app.delete('/files/:file_id/tags', (req, res) => {
+  const { file_id } = req.params;
+  const { value_ids } = req.body; // Expecting an array of value_ids
+
+  // Check if value_ids are provided and if array is empty
+  if (!Array.isArray(value_ids) || value_ids.length === 0) {
+    return res.status(400).send({ error: 'Invalid or missing value_ids' });
+  }
+
+  // Create a string of placeholders for the value_ids
+  // Map each value_id to a '?'
+  // Join the array of '?' into a string separated by ', '
+  const placeholders = value_ids.map(() => '?').join(', ');
+
+  const sql = `DELETE FROM file_tags WHERE file_id = ? AND value_id IN (${placeholders})`;
+
+  // Combine file_id with the value_ids into an array for the query
+  const queryParams = [file_id, ...value_ids];
+
+  db.query(sql, queryParams, (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send({ message: 'Tags removed from file' });
+  });
 });
 
 //
@@ -540,18 +613,19 @@ app.post('/files/tags', (req, res) => {
               
               // Drop the temporary table after querying
               db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {
-                res.json(files);
+            
+                  res.json(returnMetadata(files));
               });
             });
           } else {
             // No normal tag-value pairs, just return the wildcard results
             const sql = `SELECT f.* FROM temp_files tf JOIN files f ON f.file_id = tf.file_id`;
-            db.query(sql, (err, files) => {
+            db.query(sql, (err, results) => {
               if (err) return res.status(500).send(err);
               
               // Drop the temporary table after querying
-              db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {
-                res.json(files);
+              db.query('DROP TEMPORARY TABLE IF EXISTS temp_files', () => {            
+                  res.json(returnMetadata(results));
               });
             });
           }
@@ -571,8 +645,8 @@ app.post('/files/tags', (req, res) => {
         const values = normalTagValuePairs.reduce((arr, pair) => [...arr, pair.tag_name, pair.tag_value], []);
 
         db.query(sql, values, (err, files) => {
-          if (err) return res.status(500).send(err);
-          res.json(files);
+          if (err) return res.status(500).send(err);      
+            res.json(returnMetadata(files));
         });
       }
     })
@@ -582,13 +656,139 @@ app.post('/files/tags', (req, res) => {
     });
 });
 
+app.get('/allFiles', (req, res) => {
+  const sql = 'SELECT * FROM files'; // SQL query to fetch all files
 
+  db.query(sql, (err, results) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+      const filesWithMetadata = results.map(file => {
+      const filePath = path.join(filesDirectory, file.file_path.split('/').pop()); 
+        try {
+            // Get file metadata using fs.statSync (synchronous method)
+            const stats = fs.statSync(filePath);
+
+            // Add metadata to the file object
+            return {
+                ...file,
+                metadata: {
+                    size: stats.size,  // Size in bytes
+                    modifiedDate: stats.mtime,  // Last modified date
+                    createdDate: stats.birthtime,  // Creation date
+                    fileType: getFileType(filePath),  // Get file type based on extension
+                }
+            };
+        } catch (err) {
+            console.error(`Error retrieving metadata for ${filePath}:`, err);
+            return {
+                ...file,
+                metadata: null  // If there's an error, return null metadata
+            };
+        }
+    });
+
+      res.json(filesWithMetadata);
+  });
+});
+
+app.post("/files/searchTags", (req, res) => {
+  const tagIds = req.body.tagIdsToQuery; // Expecting an array of tag_ids
+
+  // Check if tagIds is provided and is an array
+  if (!Array.isArray(tagIds) || tagIds.length === 0) {
+      return res.status(400).json({ error: "Invalid input. Please provide an array of tag_ids." });
+  }
+
+  // Construct the SQL query
+  const sql = `
+      SELECT f.*
+      FROM files f
+      INNER JOIN file_tags ft ON f.file_id = ft.file_id
+      INNER JOIN tag_values tv ON ft.value_id = tv.value_id
+      INNER JOIN tags t ON tv.value_id = t.tag_id
+      WHERE tv.tag_name IN (?)
+      GROUP BY f.file_id
+  `;
+
+  // Extract tag_ids from the request body
+  const tagIdList = tagIds.map(tag => tag.tag_id).filter(id => id); // Ensure to filter out any undefined or null ids
+
+  db.query(sql, [tagIdList], (err, results) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Database error" });
+      }
+
+      res.json(results); // Send the results back to the client
+  });
+});
+
+app.post('/files/combineTags', (req, res) => {
+  const { tagIds, valueIds } = req.body; // Expecting arrays of tag_ids and value_ids
+
+  if (!Array.isArray(tagIds) || !Array.isArray(valueIds)) {
+      return res.status(400).json({ error: 'tagIds and valueIds must be arrays' });
+  }
+
+  const helperQuery = `
+     SELECT DISTINCT file_id FROM files f
+      NATURAL JOIN file_tags
+      NATURAL JOIN tag_values
+      WHERE file_id in (${tagIds})
+      
+      UNION
+
+      (SELECT DISTINCT file_id
+      FROM files f
+      NATURAL JOIN file_tags
+      WHERE value_id IN (${valueIds}));
+  `;
+
+
+  db.query(helperQuery, (err, results) => {
+      if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+        res.json(returnMetadata(results));
+
+      // console.log(results)
+  });
+});
+
+app.post('/files/searchByTagId', (req, res) => {
+  const { tagIds } = req.body; // Expecting an array of tag_ids
+  // console.log("API " + tagIds);
+  if (!Array.isArray(tagIds)) {
+      return res.status(400).json({ error: 'tagIds must be an array' });
+  }
+
+  // Create a comma-separated list of tag IDs for the SQL query
+  const query = `
+      SELECT DISTINCT f.file_id, f.file_path
+      FROM files f
+      JOIN file_tags ft ON f.file_id = ft.file_id
+      WHERE ft.value_id IN (
+          SELECT value_id FROM tag_values WHERE tag_id IN (${tagIds})
+      )
+  `;
+
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+        res.json(returnMetadata(results));
+  });
+});
 
 // API to list tags for a specific file
 app.get('/files/:file_id/tags', (req, res) => {
     const { file_id } = req.params;
     const sql = `
-        SELECT t.tag_name, tv.tag_value
+        SELECT t.tag_name, tv.tag_value, tv.value_id
         FROM tags t
         JOIN tag_values tv ON t.tag_id = tv.tag_id
         JOIN file_tags ft ON tv.value_id = ft.value_id
@@ -600,6 +800,69 @@ app.get('/files/:file_id/tags', (req, res) => {
     });
 });
 
+function getFileType(filePath) {
+  const extension = filePath.split('.').pop().toLowerCase();
+  switch (extension) {
+      case 'pdf':
+          return 'PDF Document';
+      case 'doc':
+      case 'docx':
+          return 'Word Document';
+      case 'xls':
+      case 'xlsx':
+          return 'Excel Spreadsheet';
+      case 'ppt':
+      case 'pptx':
+          return 'PowerPoint Presentation';
+      case 'txt':
+          return 'Text File';
+      case 'jpg':
+      case 'jpeg':
+          return 'JPEG Image';
+      case 'png':
+          return 'PNG Image';
+      case 'gif':
+          return 'GIF Image';
+      case 'zip':
+      case 'rar':
+          return 'Compressed File';
+      case 'mp4':
+          return 'Multimedia Video';
+      default:
+          return 'Unknown File Type';
+  }
+}
+
+function returnMetadata(data){
+  const filesWithMetadata = data.map(file => {
+    const filePath = path.join(filesDirectory, file.file_path.split('/').pop()); 
+      try {
+          // Get file metadata using fs.statSync (synchronous method)
+          const stats = fs.statSync(filePath);
+
+          // Add metadata to the file object
+          return {
+              ...file,
+              metadata: {
+                  size: stats.size,  // Size in bytes
+                  modifiedDate: stats.mtime,  // Last modified date
+                  createdDate: stats.birthtime,  // Creation date
+                  fileType: getFileType(filePath),  // Get file type based on extension
+              }
+          };
+      } catch (err) {
+          console.error(`Error retrieving metadata for ${filePath}:`, err);
+          return {
+              ...file,
+              metadata: null  // If there's an error, return null metadata
+          };
+      }
+  });
+
+  return(filesWithMetadata);
+}
+
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -608,3 +871,4 @@ app.listen(PORT, () => {
 });
 
 module.exports.db = db;
+    ensureDefaultTags();

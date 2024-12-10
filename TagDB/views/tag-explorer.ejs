@@ -5,7 +5,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-  <% console.log(files); %>
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -15,107 +14,216 @@
                 <h1 class="text-left">Tag Explorer</h1>
             </header>
         </div>
-    </div>
+      </div>
 
+
+  
     <div class="row">
-        <div class="col-3 sidebar p-3">
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu">
-                  <% tags.forEach(tag => { %>
-                    <li class="nav-item dropdown dropend">
-                        <a class="dropdown-item dropdown-toggle draggable" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%= tag.tag_id%>">
-                            <%= tag.tag_name || 'Untitled Tag' %>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <% if (tag.tag_values && tag.tag_values.length > 0) { %>
-                                <% tag.tag_values.forEach(value => { %>
-                                    <li><a class="dropdown-item draggable" href="#" draggable="true" data-tag-name="<%= tag.tag_name %>" data-subtag-id="<%=value.value_id%>"><%= value.tag_value %></a></li>
-                                <% }); %>
-                            <% } else { %>
-                                <li><a href="#">No values</a></li>
-                            <% } %>
-                        </ul>
-                    </li>
-                <% }); %>
-                </ul>
-              </li>
-        </div>
+        <!-- Sidebar -->
+        <div class="col-3 sidebar p-3" style="max-height: 94vh; overflow-y: auto;">
+          <!-- Search -->
+          <form class="d-flex mb-3" role="search">
+            <input class="form-control me-2" type="search" id="searchInput" placeholder="Search" aria-label="Search" oninput="filterTags()">
+            <button 
+            type="button" 
+            class="btn btn-outline-danger d-flex align-items-center justify-content-center rounded-circle" 
+            id="clearRecentsIcon" 
+            onclick="clearRecentTags()"
+            style="width: 40px; height: 40px;" 
+            aria-label="More options">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          </form>
+          
+       <!-- Dropdown for favorite tags -->
+        <button class="dropdown-btn">
+          <span>Favorites</span>
+          <span>&#9662;</span>
+        </button>
+        <div class="dropdown-content" id="favoriteTagsDropdown"></div> <!-- Dropdown for favorite tags -->
+        <br>
+        
+          <!-- <button onclick="clearFavoriteTags()">Clear Favorite Tags</button> -->
 
-        <div class="col-9 p-3">
-          <div class="top-box" style="display: flex; align-items: center;">
-            <div class="filter-tags" id="dropzone">
-              <div id ="tag-container" class="tag-container">
-                  <span class="tag-badge">Tags</span>
-                  
-              </div>
-            </div>
-            <div class="icon-buttons" style="margin-left: 10px;">
-              <a href = "#" onclick="clearTags()">
-                <img src="/images/x_symbol.png" alt="X symbol" />
-              </a>
-              <a href="#">
-                <img src="/images/plus_symbol.png" alt="Plus symbol" />
-              </a>
-              <a href="/manage-tags">
-                <img src="/images/gear_symbol.png" alt="Gear symbol" />
-              </a>
-            </div>
-          </div>
-          <div class="file-list" id = "results">
-            <div class="file-list-header row">
-              <div class="col-4">File Name</div>
-              <div class="col-3">Date Modified</div>
-              <div class="col-3">Type</div>
-              <div class="col-2">Size</div>
-            </div>
-            <div class="file-item row">
-              <div class="col-4">File1.pdf</div>
-              <div class="col-3">10/2/2024</div>
-              <div class="col-3">PDF File</div>
-              <div class="col-2">45 KB</div>
-            </div>
-            <div class="file-item row active">
-              <div class="col-4">File2.txt</div>
-              <div class="col-3">10/1/2024</div>
-              <div class="col-3">Text Document</div>
-              <div class="col-2">2 KB</div>
-            </div>
-            <div class="file-item row">
-              <div class="col-4">File3.xlsx</div>
-              <div class="col-3">9/29/2024</div>
-              <div class="col-3">Microsoft Excel Workbook</div>
-              <div class="col-2">10 KB</div>
-            </div>
-            <div class="file-item row">
-              <div class="col-4">File4.exe</div>
-              <div class="col-3">8/12/2024</div>
-              <div class="col-3">Application</div>
-              <div class="col-2">691 KB</div>
-            </div>
-            <% files.forEach(file => { %>
-              <div class="file-item row">
-                  <div class="col-4"><%= file.file_path.split('/').pop() %></div> <!-- Extracts the file name -->
-                  <div class="col-3"> <!-- Date Modified (You might want to add this field in your DB) --></div>
-                  <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
-                  <div class="col-2"> 0 KB</div>
+          <button class="dropdown-btn">
+            <span>Recent</span>
+            <span>&#9662;</span> <!-- Down arrow symbol -->
+          </button>
+          <div class="dropdown-content"  id="recentTagsDropdown"></div> <!-- Dropdown for recent tags -->
+
+
+          <hr>
+          <br>
+   
+   
+             <!-- Dropdown List Section -->
+          
+             <% tags.forEach(tag => { %> <!-- This is all the tags -->
+              <button class="dropdown-btn draggable" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%= tag.tag_id %>">
+                <span><%= tag.tag_name || 'Untitled Tag' %></span>
+                <span>&#9662;</span> <!-- Down arrow symbol -->
+              </button>
+            
+              <div class="dropdown-content">
+                <a onclick="addTagOnClick('tag', '<%=tag.tag_id%>', '<%=tag.tag_name%>', '<%=tag.tag_name%>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-id="<%=tag.tag_id%>" any-tag="True">Any</a>
+            
+                <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
+                <% if (filteredValues && filteredValues.length > 0) { %>
+                  <% filteredValues.forEach(value => { %>
+                    <div class="dropdown-item-wrapper">
+                      <a onclick="addTagOnClick('subtag', '<%= value.value_id %>', '<%= tag.tag_name %>', '<%= value.tag_value %>')" class="draggable" href="#subitem1" draggable="true" data-tag-name="<%= tag.tag_name %>" data-tag-value="<%= value.tag_value %>" data-tag-id="<%= tag.tag_id %>" data-subtag-id="<%= value.value_id %>">
+                        <%= value.tag_value %>
+                      </a>
+                      
+                      <!-- Star icon with dynamic class and toggle functionality -->
+                      <i class="bi bi-star favorite-btn" id="star-<%= value.value_id %>"
+                        onclick="toggleFavoriteTag('subtag', '<%= value.value_id %>', '<%= tag.tag_name %>', '<%= value.tag_value %>')"></i>
+                    </div>
+                  <% }); %>
+                <% } else { %> 
+                  <div class="dropdown-item-wrapper">
+                    <a href="#subitem2">No values</a>
+                    <i class="bi bi-star favorite-btn" id="star-<%= tag.tag_id %>"></i> <!-- Default empty star -->
+                  </div>
+                <% } %>
+
               </div>
             <% }); %>
             
-          </div>
+      </div>
+   
+   <!-- Main Content Area -->
+   <div class="col-9 p-3">
+    <!-- <div class="filter-tags mb-3" id="filterTagsArea">
+  </div> -->
+
+  <div class="filter-tags-and-icons d-flex align-items-center">
+    <div class="filter-tags" id="dropzone">
+      <div id="tag-container" class="tag-container">
+        <span class="tag-badge">
+          <%= defaultTags[0].tag_name %>: *  
+          <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
+        </span>
+      </div>
+    </div>
+  
+    <div class="icon-buttons" style="margin-left: 10px;">
+      <a href="#" onclick="clearTags()">
+        <img src="/images/x_symbol.png" alt="X symbol" />
+      </a>
+      <a href="#">
+        <img src="/images/plus_symbol.png" alt="Plus symbol" />
+      </a>
+      <a href="/manage-tags">
+        <img src="/images/gear_symbol.png" alt="Gear symbol" />
+      </a>
+    </div>
+  </div>
+    <!-- File List -->
+    <div class="file-list" id = "results">
+      <div class="file-list-header row">
+        <div class="col-4">File Name</div>
+        <div class="col-3">Date Modified</div>
+        <div class="col-3">Type</div>
+        <div class="col-2">Size</div>
+      </div>
+      <% files.forEach(file => { %>
+        <div class="file-item row">
+            <div class="col-4"> <a href="open/<%=file.file_path.split('/').pop()%>"> <%= file.file_path.split('/').pop() %> </a></div> <!-- Extracts the file name -->
+            <div class="col-3">  <%= file.modifiedDate.toLocaleDateString() %></div>
+            <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
+            <div class="col-2"> <%= file.size < 1024 ? file.size + " bytes" : (file.size / 1024).toFixed(2) + " KB" %></div>
         </div>
+      <% }); %>
+      
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
-  <script src="/js/tagExplorerScript.js"> 
+  <!-- Context Menu -->
+  <div id="contextMenu" class="menu">
+    <p id="manageTags">Manage Tags</p>
+  </div>
+
+    <!-- Modal window -->
+    <div id="manageTagsModal" class="modal" tabindex="-1" aria-labelledby="manageTagsModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                 <!-- Close (X) button -->
+                <span class="close" style="cursor: pointer;" title="Close the window. Changes won't be saved.">
+                    &times;
+                </span>
+            </div>
+
+            <br>
+
+            <!-- Search field and Tag Edit (+) button -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <form class="d-flex flex-grow-1 me-2" role="search">
+                    <input class="form-control me-2 p-2" type="search" id="searchInputInModal" placeholder="Search" aria-label="Search" oninput="filterTagsInWindow()"
+                    title="Quickly search for tags.">
+                </form>
+                <div class="d-flex">
+                    <!-- Tag Edit button -->
+                    <button class="btn btn-outline-primary rounded-circle" id="addTagBtn" title="Go to Tag Editor to create new tags. Changes won't be saved.">
+                        <a href="/tag-editor">
+                            <i class="bi bi-plus fs-5"></i>
+                        </a>
+                    </button>
+                </div>
+            </div>
+
+        <!-- this area will show all the tags attached to that file for now I only have default tags  -->
+        <div class="filter-tags" id="modal-dropzone" title="Tags applied to the file are shown here.">
+          <!-- Changed to 'modal-tag-container' to differentiate between which tag container id and class is referenced -->
+            <div id="modal-tag-container" class="modal-tag-container" style="display: inline-flex;">
+                <span class="tag-badge">
+                    tags  
+                    <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
+                </span>
+                <!-- Add more tags here to test scrolling -->
+            </div>
+        </div>
+      
+            <div style="max-height: 30vh; overflow-y: auto;" title="These dropdowns contain all existing tags.">
+            <% tags.forEach(tag => { %>
+                <button class="modal-dropdown-btn" >
+                  <span><%= tag.tag_name || 'Untitled Tag' %></span>
+                  <span>&#9662;</span>  <!--   Down arrow symbol -->
+                </button>
+                <div class="modal-dropdown-content">
+                  <% if (tag.tag_values && tag.tag_values.length > 0) { %>
+                      <% tag.tag_values.forEach(value => { %>
+                          <a href="#subitem1"><%= value.tag_value %></a>
+                      <% }); %>
+                  <% } else { %>
+                      <a href="#subitem2">No values</a>
+                  <% } %>
+              </div>
+              <% }); %>
+            </div>
+            <br>
+ 
+            <button id="saveChangesBtn" class="btn btn-success" title="Save changes you have made." onclick="handleSaveChanges()">
+                Save Changes
+            </button>
+        </div>
+        </div>
+    </div>
+   
+   
+  </div>
+</div>
+<div class="small-window">
+  <h5 id="count">result: </h5>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+<script src="/js/tagExplorerScript.js"> 
     <% 
 function getFileType(filePath) {
     const extension = filePath.split('.').pop().toLowerCase();
@@ -150,7 +258,7 @@ function getFileType(filePath) {
     }
 }
 %>
-  </script>
+</script>
 
 </body>
 </html>

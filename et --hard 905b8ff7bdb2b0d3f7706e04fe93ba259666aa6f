@@ -1,0 +1,377 @@
+[33mcommit 46b600131df60af10f16668bb82a1e749d49ad27[m[33m ([m[1;36mHEAD -> [m[1;32mtamanna[m[33m)[m
+Merge: 905b8ff 1d41750
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Tue Dec 3 18:47:00 2024 -0800
+
+    Merge branch 'Maxwelle' into tamanna
+
+[33mcommit 905b8ff7bdb2b0d3f7706e04fe93ba259666aa6f[m[33m ([m[1;31morigin/tamanna[m[33m)[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Tue Dec 3 17:23:25 2024 -0800
+
+    Organize and streamline all the code
+
+[33mcommit 64e3d4f90fb2bbbbac73011291ad04bad5fb8276[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Tue Dec 3 17:17:58 2024 -0800
+
+    Organize and streamline all the code
+
+[33mcommit 1d41750edd0522f8cb16ea65b1d1658e47d6b0d5[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/Maxwelle[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mMaxwelle[m[33m)[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Sat Nov 16 22:42:23 2024 -0800
+
+    Added comments to tagExplorerScript.js for readability
+
+[33mcommit 74b67a1eb80c5e38cb12d36c692598d72a96ded5[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Thu Nov 14 20:17:27 2024 -0800
+
+    Changed code to use proper test_dir
+
+[33mcommit c03d5e1db3c36def7199feb2364d94f315c3b23d[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Thu Nov 14 17:50:18 2024 -0800
+
+    Added file opening functionality, fixed files metadata
+    
+    Make sure that for every file returned by an SQL call, there is a matching file in test_dir
+
+[33mcommit 663eda6a92900bdfd78a5cacfd460376b4811098[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Wed Nov 13 20:38:38 2024 -0800
+
+    Implemented drag drop and on click
+
+[33mcommit 91769654403642d7e490afcb4a45f9a4b3f77cab[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Nov 13 20:07:05 2024 -0800
+
+    Added scroll bar to the selected tag area
+
+[33mcommit b9554e4c437ce40f876695b56af6f7ebf34844c4[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Nov 13 13:30:53 2024 -0800
+
+    added pin for default tags
+
+[33mcommit d3105d7fe38c758922024c9119caee6d8e98a41b[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Nov 13 10:36:11 2024 -0800
+
+    Added default tags
+
+[33mcommit 343fc5e5e62bef9abadd8d207a87a13b6277b851[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Nov 13 10:29:52 2024 -0800
+
+    Add default tags to file explorer
+
+[33mcommit ada0667875cbf8f818d891dced2e8ee0535af22e[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Nov 13 09:29:34 2024 -0800
+
+    Modified dropdown functionality, improved search feature, and updated staging area logic
+
+[33mcommit 6e4f3ddb53761ec273bdaa3329818a5f6986d3d2[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Tue Nov 12 17:00:31 2024 -0800
+
+    Updated tag dropbox to stay the same size
+
+[33mcommit 16371c93c861bfd6cbac4af4087b04a4464fd097[m[33m ([m[1;31morigin/Aryaman[m[33m, [m[1;32mAryaman[m[33m)[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Wed Oct 30 19:35:42 2024 -0700
+
+    Update manage tags link, create clear tag filter button
+
+[33mcommit 49d659cb56d4160e46cbb09ad2676eb1d1715879[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Oct 30 11:47:02 2024 -0700
+
+    Added the search feature
+
+[33mcommit 0c3c0d4fe5871ed4fbf8b6ab0c275f2fb3e6690e[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Oct 30 11:14:26 2024 -0700
+
+    Added the side bar to display all the tags, and added the scrollbar
+
+[33mcommit 96f9cb0ccdc6477fead31bea2b7e4d35fff6e077[m
+Merge: a7d207e 6b7f3c3
+Author: Maxwelle Tartaglia <118233059+MaxTart@users.noreply.github.com>
+Date:   Tue Oct 29 21:24:00 2024 -0700
+
+    Merge pull request #4 from Aryamannn/Alex
+    
+    Alex
+
+[33mcommit 6b7f3c343354c398b00ed010e1da0504cbd79e4a[m[33m ([m[1;32mAlex[m[33m)[m
+Merge: 6989be8 a7d207e
+Author: Maxwelle Tartaglia <118233059+MaxTart@users.noreply.github.com>
+Date:   Tue Oct 29 21:23:33 2024 -0700
+
+    Merge branch 'Maxwelle' into Alex
+
+[33mcommit 6989be807facbd9b862e14fe75e8c34c04a3ea61[m
+Author: ahernandez12N <alexhernandez2@csumb.edu>
+Date:   Tue Oct 29 20:20:51 2024 -0700
+
+    Display tag_values in window
+
+[33mcommit a7d207ea345d85ce491cb81276d4e910e1786cfc[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Mon Oct 28 22:19:40 2024 -0700
+
+    Added file results/tag filter, new API calls
+
+[33mcommit 8ddbea7b993ceb4f7ccd12b2cf85ecb72da130e2[m
+Author: ahernandez12N <alexhernandez2@csumb.edu>
+Date:   Sun Oct 27 20:28:11 2024 -0700
+
+    show tags in window and linked to Tag Edit
+
+[33mcommit 058fd4410d1057dcf3639e7a70cd10bc9eaf985e[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Fri Oct 25 12:05:33 2024 -0700
+
+    Updated filter tags to include parent tag before subtag
+
+[33mcommit 54b0cd133f7f6d2bd4c5405bc8180123eaac9111[m
+Author: Maxwelle <mtartaglia@csumb.edu>
+Date:   Thu Oct 24 20:05:11 2024 -0700
+
+    Updated drag and drop functionality to allow parent tags. File List WIP
+
+[33mcommit 7cf8f3d1a16c2a07e83bc1a1f4d0d99c1fdb2c18[m
+Merge: a4bd869 8c018db
+Author: Maxwelle Tartaglia <118233059+MaxTart@users.noreply.github.com>
+Date:   Thu Oct 24 14:21:56 2024 -0700
+
+    Merge pull request #3 from Aryamannn/Alex
+    
+    Adding Alex commits to Maxwelle branch
+
+[33mcommit 8c018db493a83bab4c0e8007496eb97db0e12fa8[m
+Author: ahernandez12N <alexhernandez2@csumb.edu>
+Date:   Tue Oct 22 14:28:48 2024 -0700
+
+    added modal window on button click
+
+[33mcommit a4bd869a90174014523fc0180ab96deeb1ed0a76[m
+Author: Maxwelle Tartaglia <118233059+MaxTart@users.noreply.github.com>
+Date:   Mon Oct 21 21:20:19 2024 -0700
+
+    Added drag and drop, buttons, and selected area scroll.
+
+[33mcommit 5648bb7b845274e74fbc69a37a1011c1f1704f74[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Sun Oct 20 14:45:32 2024 -0700
+
+    Display all the tags from the database
+
+[33mcommit 46b76f89c309256dd7e0c98d8e6bf9156e3b2383[m
+Merge: ba08516 e352c15
+Author: Aryamannn <88676074+Aryamannn@users.noreply.github.com>
+Date:   Fri Oct 18 10:35:37 2024 -0700
+
+    Merge pull request #2 from Aryamannn/tamanna
+    
+    Implement EJS Framework and Update Project Structure
+
+[33mcommit e352c15e36d474a8e844e9bedb7d955a794ac809[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Thu Oct 17 13:44:23 2024 -0700
+
+    Successfully added all the required pages and resolved merge conflicts.
+
+[33mcommit 309e6b8883d679b0582712c2beef709a7a4f54f8[m
+Merge: cb4692e ba08516
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Thu Oct 17 13:24:47 2024 -0700
+
+    Merge remote-tracking branch 'origin/main' into tamanna
+
+[33mcommit cb4692e3f682463edf086a6672e51f0fdb4264d6[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Thu Oct 17 13:12:02 2024 -0700
+
+    Added all the require files
+
+[33mcommit ba08516898b2512b9737193c38bf1bf0934f1346[m
+Merge: 6871585 a471f9a
+Author: Tamanna Zahir <tamannakhankakar@gmail.com>
+Date:   Thu Oct 17 11:15:31 2024 -0700
+
+    Merge pull request #1 from Aryamannn/jpasqua
+    
+    Add support for wildcard tag values
+
+[33mcommit ed2d6c714daa6b9f284c56da7e1973f05b38cfb4[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Wed Oct 16 14:22:38 2024 -0700
+
+    Adding EJS framework
+
+[33mcommit a471f9a9d8af3da6278c31f95b2226ffcdd3b99b[m[33m ([m[1;31morigin/jpasqua[m[33m)[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Sat Oct 12 13:31:00 2024 -0700
+
+    Refine test data file types/names
+
+[33mcommit b2ac872c131fced6cc9ced141f8a257f4a51c075[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Sat Oct 12 13:25:59 2024 -0700
+
+    Add a "*" option for tag searches.
+
+[33mcommit 483037989e26f11e35373f4a50dbe46dbf411f20[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Fri Oct 11 22:47:03 2024 -0700
+
+    Add the query function and some query tests
+
+[33mcommit 4bc787ff9e1279b4cc056c3da736c3b9cfe50344[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Fri Oct 11 22:46:47 2024 -0700
+
+    Add test data to help with wildcard tests
+
+[33mcommit db2ebc8df97370d159d8eaf985d6eeb4754f0ecf[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Fri Oct 11 22:46:08 2024 -0700
+
+    Support tag wildcards
+
+[33mcommit c9844bd82a8e0c1d53c297d585a994fac38b1ce9[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Fri Oct 11 22:45:51 2024 -0700
+
+    Add some queries with tag wildcards
+
+[33mcommit d4f728dd3819022ef40c3a8c24830cb43fd7bf8f[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Fri Oct 11 22:45:09 2024 -0700
+
+    Grant CREATE TEMPORARY TABLES to taguser
+
+[33mcommit 7f733dbb251f51316268d93ac2c0fdd149d97682[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Wed Sep 25 19:22:49 2024 -0700
+
+    Make pre text "copy-able"
+
+[33mcommit 91925a423a7f1148e38addbcdb487b1aa3f4cb10[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Wed Sep 25 19:22:24 2024 -0700
+
+    Add a note about permissions
+
+[33mcommit d74b3e0a4270d59147d1db205882a84253f2e4cd[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Wed Sep 25 19:22:11 2024 -0700
+
+    Permission changes
+
+[33mcommit 415e1b6afa9169b773734f3df90fd81e243b96af[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Wed Sep 25 19:04:18 2024 -0700
+
+    Add MacNotes and tweak WindowsNotes
+
+[33mcommit 68715852b0acb773fbfaa8155e55f6a0f538d36f[m
+Author: Tamanna Zahir <tamannakhankakar@gmail.com>
+Date:   Wed Sep 25 09:47:57 2024 -0700
+
+    Update README.md
+
+[33mcommit ecada3e61d52935cb739f9a075157b421012de44[m
+Author: Tamanna Zahir <tamannakhankakar@gmail.com>
+Date:   Wed Sep 25 09:46:16 2024 -0700
+
+    Update README.md
+
+[33mcommit c63def677ed5f2730f25d89eb96388b720544875[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Tue Sep 24 10:52:30 2024 -0700
+
+    Remove a step and clarify another step
+
+[33mcommit c0c190a64ca5a05aa1fa58a9139e612015fbc41d[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Tue Sep 24 10:48:16 2024 -0700
+
+    More tweaks to details
+
+[33mcommit 394448dda17c4eed7e1e0d79c188bd6c298d5f65[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Tue Sep 24 10:28:30 2024 -0700
+
+    Fix quoting
+
+[33mcommit 32b78e2e0437a04209e359c54c4db588171bcffa[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Tue Sep 24 10:21:35 2024 -0700
+
+    Highlight a note
+
+[33mcommit 6af1114b5a1efa45dda481bfc40ec51ba6c5cf54[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Tue Sep 24 10:10:02 2024 -0700
+
+    Code formatting
+
+[33mcommit 1ba3ba0703323d0e072d1ca3be881caefe4e78ec[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Tue Sep 24 10:04:08 2024 -0700
+
+    Remove unused .env file, add back .gitignore files
+
+[33mcommit 42c1b2c7676b5ddfe0787bc7719be127d6c28cb2[m
+Author: Joe Pasqua <joe@noroomattheinn.org>
+Date:   Tue Sep 24 09:59:37 2024 -0700
+
+    Reorganize files
+
+[33mcommit a43f4634df3967db778fed8d4f37d97fad232c05[m
+Author: Aryamannn <mishraaryaman2003@gmail.com>
+Date:   Sat Sep 21 21:26:16 2024 -0700
+
+    .env file
+
+[33mcommit 2e2ac2a578099e85b2cdbbe891913239417507ee[m
+Merge: 915a94f 7f247ec
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Fri Sep 20 15:50:14 2024 -0700
+
+    Merge branch 'main' of https://github.com/Aryamannn/tag-explorer
+
+[33mcommit 915a94fdf437df53d0ddf0a0b0c4d1695f67a5d8[m
+Author: Tamanna Zahir <128883456+Tamanna-Zahir@users.noreply.github.com>
+Date:   Fri Sep 20 15:49:57 2024 -0700
+
+    add the new files
+
+[33mcommit 7f247ec0847ea6c6ed4ec5dc61567a63a1b43649[m
+Author: Tamanna Zahir <tamannakhankakar@gmail.com>
+Date:   Fri Sep 20 15:45:53 2024 -0700
+
+    Create README.md
+
+[33mcommit 6e5369ddcc44078532c2cebd19e853635abd1246[m
+Author: Aryamannn <mishraaryaman2003@gmail.com>
+Date:   Sun Sep 15 21:24:47 2024 -0700
+
+    Node Modules
+
+[33mcommit a6107cb7a0240bef2dc5cbcfd105ea337ab77057[m
+Author: Aryamannn <mishraaryaman2003@gmail.com>
+Date:   Sun Sep 15 21:07:34 2024 -0700
+
+    Tag DB Files
+
+[33mcommit 367025ce82dde1e2cd2c4d28788f9fbc2ea6acf4[m
+Author: Aryamannn <mishraaryaman2003@gmail.com>
+Date:   Sun Sep 15 21:05:50 2024 -0700
+
+    Tag DB Files
