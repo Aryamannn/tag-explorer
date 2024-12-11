@@ -128,7 +128,7 @@
         <div class="col-2">Size</div>
       </div>
       <% files.forEach(file => { %>
-        <div class="file-item row">
+        <div class="file-item row" data-file-id="<%= file.file_id %>">
             <div class="col-4"> <a href="open/<%=file.file_path.split('/').pop()%>"> <%= file.file_path.split('/').pop() %> </a></div> <!-- Extracts the file name -->
             <div class="col-3">  <%= file.modifiedDate.toLocaleDateString() %></div>
             <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->

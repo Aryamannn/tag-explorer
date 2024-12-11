@@ -373,6 +373,8 @@ async function showContextMenu(e) {
     // Store selected file details for later use
     selectedFileName = fileItem.querySelector(".col-4").textContent;
     selectedFileId = fileItem.getAttribute("data-file-id");
+    console.log(selectedFileName);
+    console.log(selectedFileId);
   }
   contextMenu.style.left = `${e.pageX}px`;
   contextMenu.style.top = `${e.pageY}px`;
