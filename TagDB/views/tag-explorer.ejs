@@ -128,7 +128,7 @@
         <div class="col-2">Size</div>
       </div>
       <% files.forEach(file => { %>
-        <div class="file-item row">
+        <div class="file-item row" data-file-id="<%= file.file_id %>">
             <div class="col-4"> <a href="open/<%=file.file_path.split('/').pop()%>"> <%= file.file_path.split('/').pop() %> </a></div> <!-- Extracts the file name -->
             <div class="col-3">  <%= file.modifiedDate.toLocaleDateString() %></div>
             <div class="col-3"><%= getFileType(file.file_path) %></div> <!-- Displays the file type -->
@@ -176,10 +176,10 @@
             </div>
 
         <!-- this area will show all the tags attached to that file for now I only have default tags  -->
-        <div class="filter-tags" id="modal-dropzone" title="Tags applied to the file are shown here.">
+        <div class="modal-filter-tags" id="modal-dropzone" title="Tags applied to the file are shown here.">
           <!-- Changed to 'modal-tag-container' to differentiate between which tag container id and class is referenced -->
             <div id="modal-tag-container" class="modal-tag-container" style="display: inline-flex;">
-                <span class="tag-badge">
+                <span class="modal-tag-badge">
                     tags  
                     <i class="fas fa-thumbtack pin-icon"></i>  <!-- Pin icon -->
                 </span>
@@ -187,23 +187,24 @@
             </div>
         </div>
       
-            <div style="max-height: 30vh; overflow-y: auto;" title="These dropdowns contain all existing tags.">
-            <% tags.forEach(tag => { %>
-                <button class="modal-dropdown-btn" >
-                  <span><%= tag.tag_name || 'Untitled Tag' %></span>
-                  <span>&#9662;</span>  <!--   Down arrow symbol -->
-                </button>
-                <div class="modal-dropdown-content">
-                  <% if (tag.tag_values && tag.tag_values.length > 0) { %>
-                      <% tag.tag_values.forEach(value => { %>
-                          <a href="#subitem1"><%= value.tag_value %></a>
-                      <% }); %>
-                  <% } else { %>
-                      <a href="#subitem2">No values</a>
-                  <% } %>
-              </div>
-              <% }); %>
+        <div style="max-height: 30vh; overflow-y: auto;" title="These dropdowns contain all existing tags.">
+          <% tags.forEach(tag => { %>
+            <button class="modal-dropdown-btn">
+              <span><%= tag.tag_name || 'Untitled Tag' %></span>
+              <span>&#9662;</span> <!-- Down arrow symbol -->
+            </button>
+            <div class="modal-dropdown-content">
+              <% const filteredValues = tagValues.filter(value => value.tag_id === tag.tag_id); %>
+              <% if (filteredValues && filteredValues.length > 0) { %>
+                <% filteredValues.forEach(value => { %>
+                  <a href="#subitem1"><%= value.tag_value %></a>
+                <% }); %>
+              <% } else { %>
+                <a href="#subitem2">No values</a>
+              <% } %>
             </div>
+          <% }); %>
+        </div>
             <br>
  
             <button id="saveChangesBtn" class="btn btn-success" title="Save changes you have made." onclick="handleSaveChanges()">
