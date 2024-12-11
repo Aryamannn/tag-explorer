@@ -268,6 +268,7 @@ function setQueryResults(data) {
   data.forEach(file => {
     const fileItem = document.createElement('div');
     fileItem.className = 'file-item row';
+    fileItem.setAttribute('data-file-id', file.file_id);
 
     // Creating columns for file information
     const fileNameCol = document.createElement('div');
@@ -373,6 +374,8 @@ async function showContextMenu(e) {
     // Store selected file details for later use
     selectedFileName = fileItem.querySelector(".col-4").textContent;
     selectedFileId = fileItem.getAttribute("data-file-id");
+    console.log(selectedFileName);
+    console.log(selectedFileId);
   }
   contextMenu.style.left = `${e.pageX}px`;
   contextMenu.style.top = `${e.pageY}px`;
@@ -611,11 +614,17 @@ function resetDropdowns() {
 
 // Retrieve the tags and values of the file based on the file id when clicking 'Manage Tags' option
 async function getTagsAndValues() {
+
+  // Clear out any unintended tags when a new file is opened in the window
+  const modalElement = document.getElementById("manageTagsModal");
+  const modalTagContainer = modalElement.querySelector('#modal-tag-container');
+  modalTagContainer.innerHTML = '';
+
   if (selectedFileId) {
     try {
       const response = await fetch(`/files/${selectedFileId}/tags`);
       const tags = await response.json();
-      console.log("file id: ", selectedFileId);
+      console.log("file id and tags: ", selectedFileId, tags);
       displayTagsAndValues(tags);
     } catch (error) {
       console.error("Error fetching tags:", error);
@@ -625,9 +634,15 @@ async function getTagsAndValues() {
 
 // Send the file's tags and values to the modal-tag-container area
 function displayTagsAndValues(tags) {
+  console.log("Displaying tags:", tags);
   tags.forEach(tag => {
     selectValueInWindow(tag.tag_name, tag.tag_value, tag.value_id);
   });
+}
+
+function isModalOpen(modalId) {
+  const modalElement = document.getElementById(modalId);
+  return modalElement && modalElement.classList.contains("show");
 }
 
 let selectedValuesInWindow = [];
@@ -636,8 +651,8 @@ let deletedValues = [];
 function selectValueInWindow(tagName, value, valueId) {
   const formattedValue = `${tagName}: ${value}`;
 
-  // Check if the value has already been selected
-  if (selectedValuesInWindow.some(item => item.formattedValue === formattedValue)) {
+  // Check if the window is open and the value has already been selected
+  if (isModalOpen("manageTagsModal") && selectedValuesInWindow.some(item => item.formattedValue === formattedValue)) {
     alert('This value has already been selected!');
     return; // Do not add it again
   }
@@ -648,7 +663,7 @@ function selectValueInWindow(tagName, value, valueId) {
   // Create a new element to display the selected tag
   const tagContainer = document.getElementById('modal-tag-container');
   const tagElement = document.createElement('span');
-  tagElement.classList.add('tag-badge');
+  tagElement.classList.add('modal-tag-badge');
   tagElement.textContent = formattedValue;
 
   // Create a button (X) to remove the tag

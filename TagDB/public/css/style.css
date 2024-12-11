@@ -31,6 +31,12 @@
   margin-bottom: 10px;
 }
 
+.modal-filter-tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
 .tag-badge {
   display: inline-flex;
   align-items: center;
@@ -40,7 +46,20 @@
   border-radius: 20px;
 }
 
+.modal-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
 .tag-badge .close-btn {
+  cursor: pointer;
+}
+
+.modal-tag-badge .close-btn {
   cursor: pointer;
 }
 
@@ -89,6 +108,13 @@ border-radius: 0.4rem;
 font-size: 0.9rem;
 margin-bottom: 0.3rem;
 }
+.modal-filter-tags .modal-tag-badge {
+  display: inline-block;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  }
 .close-btn {
 cursor: pointer;
 color: white;
@@ -252,6 +278,13 @@ color: white;
   white-space: nowrap; /* Prevents items from wrapping to the next line */
 }
 
+.modal-filter-tags {
+  max-height: 15vh;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  overflow-y: hidden; /* Disables vertical scrolling */
+  white-space: nowrap; /* Prevents items from wrapping to the next line */
+}
+
 .tag-container {
   display: inline-flex; /* Align items horizontally in a single line */
   gap: 10px; /* Space between tags */
@@ -268,6 +301,18 @@ font-size: 14px;
 font-weight: bold;
 white-space: nowrap;  /* Prevent text from wrapping to the next line */
 }
+
+.modal-tag-badge {
+  display: inline-flex;  /* Ensure the items inside are in a row */
+  align-items: center;  /* Align text and "X" vertically in the center */
+  background-color: #007bff;  /* Blue background */
+  color: white;
+  padding: 5px 10px;  
+  border-radius: 20px;  /* Rounded corners for tags */
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;  /* Prevent text from wrapping to the next line */
+  }
 
 /* Style for the "X" button */
 .remove-tag {
@@ -354,8 +399,8 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   margin: 5% auto;
   padding: 20px;
   border: 3px solid #000000;
-  width: 40%;
-  max-height: 80vh;
+  width: 45%;
+  max-height: 100vh;
   overflow: hidden;
 }
 
@@ -412,6 +457,7 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
   cursor: pointer;
   user-select: none;
   text-align: center;
+  max-width: 110px;
 }
 
 .modal-dialog {
@@ -447,6 +493,20 @@ box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);  /* Add a shadow when focused */
 }
 
 #dropzone .tag-badge {
+  flex-shrink: 0;  
+  flex-grow: 0; 
+  background-color: #007bff; 
+  color: white;
+  padding: 5px 10px;  
+  border-radius: 10px;  
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap; 
+  
+
+}
+
+#modal-tag-container .modal-tag-badge {
   flex-shrink: 0;  
   flex-grow: 0; 
   background-color: #007bff; 
