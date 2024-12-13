@@ -14,16 +14,15 @@ app.use(express.json());
 
 // Set the view engine to EJS
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
 
 
 
-// const db = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'taguser',
-//     password: 'taggy',
-//     database: 'TagDB'
-// });
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'taguser',
+    password: 'taggy',
+    database: 'TagDB'
+});
 
 // Global array to hold default tag/value pairs
 const defaultTags = [
@@ -31,10 +30,10 @@ const defaultTags = [
 ];
 
 // Connect to the database
-// db.connect(err => {
-//     if (err) throw err;
-//     console.log('MySQL connected...');
-// });
+db.connect(err => {
+    if (err) throw err;
+    console.log('MySQL connected...');
+});
 
 //routes
 // Import route files
@@ -520,7 +519,6 @@ app.get('/files', (req, res) => {
         res.send(results);
     });
 });
-
 
 function buildFileQuery(tagValuePairs) {
     // Create placeholders for the tag_name and tag_value pairs in the SQL query
