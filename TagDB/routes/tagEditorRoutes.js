@@ -1,20 +1,27 @@
 // routes/tagEditorRoutes.js
+// const express = require('express');
+// const router = express.Router();
+// const mysql = require('mysql2');
+// const db = require('./db');
+
+
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql2');
+const db = require('./db');
+const axios = require('axios');
 
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'taguser',
-    password: 'taggy',
-    database: 'TagDB'
-});
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'taguser',
+//     password: 'taggy',
+//     database: 'TagDB'
+// });
 
-// Connect to the database
-db.connect(err => {
-    if (err) throw err;
-    console.log('MySQL connected...');
-});
+// // Connect to the database
+// db.connect(err => {
+//     if (err) throw err;
+//     console.log('MySQL connected...');
+// });
 
 // Get the tag editor page with all tags
 router.get('/', async (req, res) => {
