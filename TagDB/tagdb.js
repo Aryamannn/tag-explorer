@@ -14,6 +14,7 @@ app.use(express.json());
 
 // Set the view engine to EJS
 app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 app.use(express.static('public'));
 
@@ -443,26 +444,6 @@ app.post('/files/:file_id/tags/add', (req, res) => {
     addTagToFile(file_id, tag_name, tag_value, res);
 });
 
-// API to add multiple tags at once to a file based on file_id
-app.post('/files/:file_id/tags', (req, res) => {
-  const { file_id } = req.params;
-  const { value_ids } = req.body; // Expecting an array of value_ids
-
-  // Check if value_ids are provided and if array is empty
-  if (!Array.isArray(value_ids) || value_ids.length === 0) {
-    return res.status(400).send({ error: 'Invalid or missing value_ids' });
-  }
-
-  // Transform each value_id into a string of file_id, value_id
-  // Combine into a string separated by ', '
-  const values = value_ids.map(value_id => `(${file_id}, ${value_id})`).join(', ');
-  const sql = `INSERT INTO file_tags (file_id, value_id) VALUES ${values}`;
-
-  db.query(sql, (err, result) => {
-    if (err) return res.status(500).send(err);
-    res.send({ message: 'Tags added successfully' });
-  });
-});
 
 // API to remove a tag from a file
 app.delete('/files/:file_id/tags/:value_id', (req, res) => {
@@ -472,32 +453,6 @@ app.delete('/files/:file_id/tags/:value_id', (req, res) => {
         if (err) return res.status(500).send(err);
         res.send({ message: 'Tag removed from file' });
     });
-});
-
-// API to remove multiple tags at once from a file based on file_id
-app.delete('/files/:file_id/tags', (req, res) => {
-  const { file_id } = req.params;
-  const { value_ids } = req.body; // Expecting an array of value_ids
-
-  // Check if value_ids are provided and if array is empty
-  if (!Array.isArray(value_ids) || value_ids.length === 0) {
-    return res.status(400).send({ error: 'Invalid or missing value_ids' });
-  }
-
-  // Create a string of placeholders for the value_ids
-  // Map each value_id to a '?'
-  // Join the array of '?' into a string separated by ', '
-  const placeholders = value_ids.map(() => '?').join(', ');
-
-  const sql = `DELETE FROM file_tags WHERE file_id = ? AND value_id IN (${placeholders})`;
-
-  // Combine file_id with the value_ids into an array for the query
-  const queryParams = [file_id, ...value_ids];
-
-  db.query(sql, queryParams, (err, result) => {
-    if (err) return res.status(500).send(err);
-    res.send({ message: 'Tags removed from file' });
-  });
 });
 
 //
@@ -520,6 +475,7 @@ app.get('/files', (req, res) => {
         res.send(results);
     });
 });
+
 
 function buildFileQuery(tagValuePairs) {
     // Create placeholders for the tag_name and tag_value pairs in the SQL query
@@ -754,14 +710,13 @@ app.post('/files/combineTags', (req, res) => {
           return res.status(500).json({ error: 'Database error' });
       }
         res.json(returnMetadata(results));
-
       // console.log(results)
   });
 });
 
 app.post('/files/searchByTagId', (req, res) => {
   const { tagIds } = req.body; // Expecting an array of tag_ids
-  // console.log("API " + tagIds);
+  console.log("API " + tagIds);
   if (!Array.isArray(tagIds)) {
       return res.status(400).json({ error: 'tagIds must be an array' });
   }
@@ -790,7 +745,7 @@ app.post('/files/searchByTagId', (req, res) => {
 app.get('/files/:file_id/tags', (req, res) => {
     const { file_id } = req.params;
     const sql = `
-        SELECT t.tag_name, tv.tag_value, tv.value_id
+        SELECT t.tag_name, tv.tag_value
         FROM tags t
         JOIN tag_values tv ON t.tag_id = tv.tag_id
         JOIN file_tags ft ON tv.value_id = ft.value_id

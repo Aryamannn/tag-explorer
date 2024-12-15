@@ -1,4 +1,3 @@
-// const path = require('path')
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
@@ -9,98 +8,159 @@ const { exec } = require('child_process');
 
 const filesDirectory = path.join(__dirname, '..', 'test_dir');
 
-// app.use(express.static(path.join(__dirname, 'public')));
-
+// Helper Functions
 function getFileType(filePath) {
-    const extension = filePath.split('.').pop().toLowerCase();
-    switch (extension) {
-        case 'pdf':
-            return 'PDF Document';
-        case 'doc':
-        case 'docx':
-            return 'Word Document';
-        case 'xls':
-        case 'xlsx':
-            return 'Excel Spreadsheet';
-        case 'ppt':
-        case 'pptx':
-            return 'PowerPoint Presentation';
-        case 'txt':
-            return 'Text File';
-        case 'jpg':
-        case 'jpeg':
-            return 'JPEG Image';
-        case 'png':
-            return 'PNG Image';
-        case 'gif':
-            return 'GIF Image';
-        case 'zip':
-        case 'rar':
-            return 'Compressed File';
-        case 'mp4':
-            return 'Multimedia Video';
-        default:
-            return 'Unknown File Type';
+    try {
+        if (!filePath) return 'Unknown';
+        const extension = path.extname(filePath).toLowerCase().slice(1);
+        const fileTypes = {
+            pdf: 'PDF Document',
+            doc: 'Word Document',
+            docx: 'Word Document',
+            xls: 'Excel Spreadsheet',
+            xlsx: 'Excel Spreadsheet',
+            ppt: 'PowerPoint Presentation',
+            pptx: 'PowerPoint Presentation',
+            txt: 'Text File',
+            jpg: 'JPEG Image',
+            jpeg: 'JPEG Image',
+            png: 'PNG Image',
+            gif: 'GIF Image',
+            zip: 'Compressed File',
+            rar: 'Compressed File',
+            mp4: 'Multimedia Video'
+        };
+        return fileTypes[extension] || 'Unknown File Type';
+    } catch (err) {
+        console.error('Error getting file type:', err);
+        return 'Unknown File Type';
     }
-  }
+}
 
+function safeGetFileStats(filePath) {
+    try {
+        if (!filePath || !fs.existsSync(filePath)) {
+            return {
+                exists: false,
+                error: 'File not found',
+                size: 0,
+                modifiedDate: null,
+                fileType: 'Unknown'
+            };
+        }
+        const stats = fs.statSync(filePath);
+        return {
+            exists: true,
+            size: stats.size,
+            modifiedDate: stats.mtime,
+            fileType: getFileType(filePath),
+            error: null
+        };
+    } catch (err) {
+        console.error(`Error getting file stats for ${filePath}:`, err);
+        return {
+            exists: false,
+            error: err.message,
+            size: 0,
+            modifiedDate: null,
+            fileType: 'Unknown'
+        };
+    }
+}
 
-// Route to render the tag explorer page
-// Route to render the tag explorer page
-router.get("/", async  (req, res) => {
-     // Query to get all files
-     const sqlFiles = 'SELECT f.file_id, f.file_path, GROUP_CONCAT(DISTINCT tv.value_id) AS tag_values, GROUP_CONCAT(DISTINCT t.tag_id) AS tag_names FROM files f LEFT JOIN file_tags ft ON f.file_id = ft.file_id LEFT JOIN tag_values tv ON ft.value_id = tv.value_id LEFT JOIN tags t ON tv.tag_id = t.tag_id GROUP BY f.file_id, f.file_path ORDER BY f.file_path ASC;';
-     db.query(sqlFiles, async (err, fileResults) => {
-         if (err) {
-             console.error(err);
-             return res.status(500).send("Database error");
-         }
+async function makeAPIRequest(url) {
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching from ${url}:`, error);
+        return [];
+    }
+}
 
-         // console.log(JSON.stringify(tagsWithValues, null, 2));
-         // console.log(JSON.stringify(fileResults, null, 2));
-         const filesWithMetadata = fileResults.map(file => {
-             const filePath = path.join(filesDirectory, file.file_path.split('/').pop()); // Assuming the `file_path` is relative
-             const stats = fs.statSync(filePath); // Get file metadata
-             return {
-                 ...file,
-                 size: stats.size, // File size in bytes
-                 modifiedDate: stats.mtime // Last modified date
-             };
-         });
+// Main route to render the tag explorer page
+router.get("/", async (req, res) => {
+    try {
+        // Query to get all files with their tags
+        const sqlFiles = `
+            SELECT 
+                f.file_id, 
+                f.file_path, 
+                GROUP_CONCAT(DISTINCT tv.value_id) AS tag_values, 
+                GROUP_CONCAT(DISTINCT t.tag_id) AS tag_names 
+            FROM files f 
+            LEFT JOIN file_tags ft ON f.file_id = ft.file_id 
+            LEFT JOIN tag_values tv ON ft.value_id = tv.value_id 
+            LEFT JOIN tags t ON tv.tag_id = t.tag_id 
+            GROUP BY f.file_id, f.file_path 
+            ORDER BY f.file_path ASC
+        `;
 
-         try {
-            //  const [tagValuesResponse] = await Promise.all([
-            //      axios.get('http://localhost:3000/tag_values')// Fetching default tags from the new API
-            //  ]);
-            //  const tagValues = tagValuesResponse.data;
-            //  res.render("tag-explorer", { tags: tagsWithValues, files: filesWithMetadata, tagValues: tagValues });
-    //      } catch (error) {
-    //          console.error(error);
-    //          res.status(500).send('Server error');
-    //      }
-    //      // Render the view with both tags and files
-         
-    //  });
-  
-    // try {
-        const [tagsResponse, tagValuesResponse,defaultTagsResponse] = await Promise.all([
-            axios.get('http://localhost:3000/tags'),
-            axios.get('http://localhost:3000/tag_values'),
-            axios.get('http://localhost:3000/default-tags') // Fetching default tags from the new API
+        // Get file results from database
+        const fileResults = await new Promise((resolve, reject) => {
+            db.query(sqlFiles, (err, results) => {
+                if (err) reject(err);
+                else resolve(results || []);
+            });
+        });
 
+        // Process files and get metadata
+        const filesWithMetadata = fileResults.map(file => {
+            const filePath = path.join(filesDirectory, file.file_path.split('/').pop());
+            const fileStats = safeGetFileStats(filePath);
+
+            return {
+                ...file,
+                metadata: {
+                    size: fileStats.size,
+                    modifiedDate: fileStats.modifiedDate,
+                    fileType: fileStats.fileType,
+                    error: fileStats.error
+                }
+            };
+        });
+
+        // Fetch all required data in parallel
+        const [tags, tagValues, defaultTags] = await Promise.allSettled([
+            makeAPIRequest('http://localhost:3000/tags'),
+            makeAPIRequest('http://localhost:3000/tag_values'),
+            makeAPIRequest('http://localhost:3000/default-tags')
         ]);
 
-        const tags = tagsResponse.data;
-        const tagValues = tagValuesResponse.data;
-        const defaultTags = defaultTagsResponse.data;
-           
-        console.log("tags:", tags); // Logs the full tags array
-        console.log("tag-values:", tagValues); // Logs the full tagValues array
-        console.log("default tags:", defaultTags); // Logs the full defaultTags array
-        res.render('tag-explorer', {  files: filesWithMetadata , tags, tagValues , defaultTags});
+        // Process results
+        const processedTags = tags.status === 'fulfilled' ? tags.value : [];
+        const processedTagValues = tagValues.status === 'fulfilled' ? tagValues.value : [];
+        const processedDefaultTags = defaultTags.status === 'fulfilled' ? defaultTags.value : [];
+
+        // Log data for debugging
+        console.log('Tags:', processedTags);
+        console.log('Tag values:', processedTagValues);
+        console.log('Default tags:', processedDefaultTags);
+
+        res.render('tag-explorer', {
+            files: filesWithMetadata,
+            tags: processedTags,
+            tagValues: processedTagValues,
+            defaultTags: processedDefaultTags,
+            helpers: {
+                formatSize: (size) => {
+                    if (!size) return 'N/A';
+                    return size < 1024 ? `${size} bytes` : `${(size / 1024).toFixed(2)} KB`;
+                },
+                formatDate: (date) => {
+                    if (!date) return 'N/A';
+                    return new Date(date).toLocaleDateString();
+                },
+                getFileType: (filePath) => getFileType(filePath)
+            }
+        });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Server error');
+        console.error('Error in tag explorer route:', error);
+        res.status(500).render('error', {
+            message: 'Server error: ' + error.message,
+            error: { status: 500, stack: process.env.NODE_ENV === 'development' ? error.stack : '' }
+        });
     }
 
 });

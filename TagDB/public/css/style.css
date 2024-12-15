@@ -1,12 +1,6 @@
 .sidebar {
   height: 100vh;
   background-color: #f8f9fa;
-  position: sticky; /* Makes the sidebar stick to its position */
-  top: 0; /* Adjust as needed to offset from the top */
-  max-height: 95vh; /* Restrict sidebar height */
-  overflow-y: auto; /* Add vertical scrolling for the sidebar content */
-  background-color: #f8f9fa; /* Optional: Background color for better visibility */
-  border-right: 1px solid #ddd; /* Optional: Add a right border for separation */
 }
 
 .file-list {
@@ -25,7 +19,7 @@
   border-bottom: none;
 }
 
-.filter-tags {
+.modal-filter-tags {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
