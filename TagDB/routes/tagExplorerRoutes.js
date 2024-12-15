@@ -164,7 +164,7 @@ router.get("/", async (req, res) => {
     }
 
 });
-});
+
 router.get("/autocomplete", async (req, res) => {
   try {
     const tagsResponse = await axios.get('http://localhost:3000/tags');
