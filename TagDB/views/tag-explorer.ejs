@@ -20,19 +20,19 @@
   
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-3 sidebar p-3" style="max-height: 94vh; overflow-y: auto;">
+        <div class="col-3 sidebar p-3" style="max-height: 100vh; overflow-y: auto;">
           <!-- Search -->
           <form class="d-flex mb-3" role="search">
             <input class="form-control me-2" type="search" id="searchInput" placeholder="Search" aria-label="Search" oninput="filterTags()">
             <button 
             type="button" 
-            class="btn btn-outline-danger d-flex align-items-center justify-content-center rounded-circle" 
+            class="btn btn-outline-danger rounded-circle" 
             id="clearRecentsIcon" 
-            onclick="clearRecentTags()"
-            style="width: 40px; height: 40px;" 
+            onclick="clearRecentTags()" 
+            style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; border: 2px solid #dc3545; background-color: transparent;" 
             aria-label="More options">
-            <i class="bi bi-three-dots"></i>
-          </button>
+            <img src="/images/clear.png" alt="X symbol" style="width: 24px; height: 24px;" /> <!-- Adjust image size here -->
+        </button>
           </form>
           
        <!-- Dropdown for favorite tags -->

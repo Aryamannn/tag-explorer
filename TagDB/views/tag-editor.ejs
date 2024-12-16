@@ -1,273 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Explorer Frontend</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/tag_edits.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSkt1Kp4r1ATIvxsO9lrpCjlX9xIY7PQxmZQ5tw80pM" crossorigin="anonymous">
+
 
     <title>Tag Editor</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-start; /* Align to top */
-            justify-content: center; /* Center horizontally */
-        }
-
-        .editor-container {
-            width: 100%;
-            max-width: 800px; /* Fixed maximum width */
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            height: 600px; /* Fixed height */
-            margin-top: 40px; /* Add some space from top */
-            overflow: hidden;
-            position: relative;
-        }
-
-        .header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-        }
-
-        .header-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: #111827;
-        }
-        /* Search styling */
-        .search-container {
-            padding: 16px;
-            border-bottom: 1px solid #e5e7eb;
-            background: white;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 8px 16px;
-            border: 1px solid #e5e7eb;
-            border-radius: 24px;
-            font-size: 14px;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-        }
-
-        /* Content area */
-        .content-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            background: white;
-        }
-
-        /* Tag container styling */
-        .tag-container {
-            margin-bottom: 4px;
-        }
-
-        .subtag-container {
-            margin-left: 24px;
-            border-left: 2px solid #e5e7eb;
-            margin-top: 2px;
-            padding-left: 8px;
-        }
-
-        .tag-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .tag-row:hover {
-            background: #e3f2fd;
-        }
-
-        /* Button styling */
-        .add-tag-button {
-            background: none;
-            border: none;
-            color: #007bff;
-            cursor: pointer;
-            font-size: 14px;
-            padding: 8px 0;
-            margin-bottom: 16px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .add-tag-button:hover {
-            color: #0056b3;
-        }
-
-        .expand-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 2px 4px;
-            color: #6b7280;
-            font-size: 12px;
-            transition: color 0.2s;
-        }
-
-        .expand-button:hover {
-            color: #007bff;
-        }
-
-        .menu-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px 8px;
-            color: #6b7280;
-            font-size: 16px;
-            line-height: 1;
-            transition: all 0.2s;
-            border-radius: 4px;
-        }
-
-        .menu-toggle:hover {
-            color: #007bff;
-            background: #e3f2fd;
-        }
-
-        /* Menu styling */
-        .tag-menu {
-            position: absolute;
-            right: 0;
-            margin-top: 4px;
-            width: 160px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-        }
-
-        .menu-button {
-            width: 100%;
-            padding: 8px 16px;
-            text-align: left;
-            font-size: 14px;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid #e5e7eb;
-            color: #374151;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .menu-button:last-child {
-            border-bottom: none;
-        }
-
-        .menu-button:hover {
-            background: #e3f2fd;
-            color: #007bff;
-        }
-
-        .delete-button {
-            color: #6b7280;
-        }
-
-        .delete-button:hover {
-            color: #dc2626;
-            background: #fee2e2;
-        }
-
-        /* Edit styling */
-        .edit-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .edit-input {
-            padding: 6px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .edit-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-        }
-
-        /* Utility classes */
-        .button-green { 
-            color: #16a34a;
-            transition: color 0.2s;
-        }
-        .button-green:hover {
-            color: #15803d;
-        }
-        
-        .button-red { 
-            color: #6b7280;
-            transition: color 0.2s;
-        }
-        .button-red:hover {
-            color: #dc2626;
-        }
-        
-        .hidden { display: none; }
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .gap-2 { gap: 8px; }
-        .relative { position: relative; }
-        .ml-6 { margin-left: 24px; }
-
-        /* Text styling */
-        span {
-            font-size: 14px;
-            color: #374151;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #c5c5c5;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a3a3a3;
-        }
-    </style>
+    
 </head>
 <body>
-    <div class="editor-container">
+    <div class="editor-container" >
         <div class="header">
             <span class="header-title">Tag Editor</span>
         </div>
@@ -281,9 +32,11 @@
         </div>
         
         <div class="content-area">
-            <button onclick="addMainTag()" class="add-tag-button">
-                + Add Tag
+            <div class="d-grid gap-2">
+            <button  class="btn btn-primary"  onclick="addMainTag()" class="add-tag-button">
+                Add Tag
             </button>
+            </div>
 
             <div id="tags-container">
                 <% tags.forEach(function(tag) { %>
@@ -293,39 +46,25 @@
                                 <button onclick="toggleExpand('<%- tag.id %>')" class="expand-button">
                                     <%- tag.isExpanded ? '▼' : '▶' %>
                                 </button>
-                                <% if (editingTag && editingTag.id === tag.id && !editingTag.isSubTag) { %>
-                                    <div class="edit-container">
-                                        <input type="text"
-                                               class="edit-input"
-                                               value="<%- tag.name %>"
-                                               onkeypress="handleKeyPress(event, '<%- tag.id %>', false)"
-                                               id="edit-<%- tag.id %>">
-                                        <button onclick="saveEdit('<%- tag.id %>', false)" class="button-green">
-                                            ✓
-                                        </button>
-                                        <button onclick="cancelEdit()" class="button-red">
-                                            ✗
-                                        </button>
-                                    </div>
-                                <% } else { %>
-                                    <span><%- tag.name %></span>
-                                <% } %>
+                                <span><%- tag.name %></span>
                             </div>
 
                             <div class="relative">
-                                <button onclick="toggleMenu('<%- tag.id %>', false)" data-menu-toggle class="menu-toggle">
-                                    •
+                                <button onclick="toggleMenu('<%- tag.id %>', false, event)" data-menu-toggle class="menu-toggle">
+                                    •••
                                 </button>
 
                                 <div id="menu-<%- tag.id %>" class="tag-menu hidden">
-                                    <button class="menu-button" onclick="startEditing('<%- tag.id %>', '<%- tag.name %>', false)">
+                                    <button  class="menu-button edit-button" onclick="startEditing('<%- tag.id %>', '<%- tag.name %>', false)">
                                         Edit Tag
                                     </button>
-                                    <button class="menu-button" onclick="addSubTag('<%- tag.id %>')">
-                                        + Add Tag
+                                 
+                                    <button  class="menu-button add-button" onclick="addSubTag('<%- tag.id %>')">
+                                        Add Value
                                     </button>
-                                    <button class="menu-button delete-button" onclick="deleteTag('<%- tag.id %>', false)">
-                                        - Delete Tag
+                                   
+                                    <button   class="menu-button delete-button" onclick="deleteTag('<%- tag.id %>', false)">
+                                        Delete Tag
                                     </button>
                                 </div>
                             </div>
@@ -333,25 +72,10 @@
 
                         <div id="subtags-<%- tag.id %>" class="subtag-container <%= tag.isExpanded ? '' : 'hidden' %>">
                             <% tag.subTags.forEach(function(subTag) { %>
+                            
                                 <div class="tag-row" data-subtag-id="<%- subTag.id %>">
                                     <div class="ml-6">
-                                        <% if (editingTag && editingTag.id === subTag.id && editingTag.isSubTag) { %>
-                                            <div class="edit-container">
-                                                <input type="text"
-                                                       class="edit-input"
-                                                       value="<%- subTag.name %>"
-                                                       onkeypress="handleKeyPress(event, '<%- subTag.id %>', true, '<%- tag.id %>')"
-                                                       id="edit-<%- subTag.id %>">
-                                                <button onclick="saveEdit('<%- subTag.id %>', true, '<%- tag.id %>')" class="button-green">
-                                                    ✓
-                                                </button>
-                                                <button onclick="cancelEdit()" class="button-red">
-                                                    ✗
-                                                </button>
-                                            </div>
-                                        <% } else { %>
-                                            <span><%- subTag.name %></span>
-                                        <% } %>
+                                        <span><%- subTag.name %></span>
                                     </div>
 
                                     <div class="relative">
@@ -360,11 +84,11 @@
                                         </button>
 
                                         <div id="menu-<%- subTag.id %>" class="tag-menu hidden">
-                                            <button class="menu-button" onclick="startEditing('<%- subTag.id %>', '<%- subTag.name %>', true, '<%- tag.id %>')">
-                                                Edit Tag
+                                            <button class="menu-button edit-button" onclick="startEditing('<%- subTag.id %>', '<%- subTag.name %>', true, '<%- tag.id %>')">
+                                                Edit Value
                                             </button>
                                             <button class="menu-button delete-button" onclick="deleteTag('<%- subTag.id %>', true, '<%- tag.id %>')">
-                                                - Delete Tag
+                                                 Delete Value
                                             </button>
                                         </div>
                                     </div>
@@ -378,27 +102,292 @@
     </div>
 
     <script>
-        // Click outside to close menus
-        document.addEventListener('click', function(event) {
-        if (event.target.closest('[data-menu-toggle]') || event.target.closest('.tag-menu')) {
-            return;
-        }
-        document.querySelectorAll('.tag-menu').forEach(menu => menu.classList.add('hidden'));
-    });
+        // Global state to track editing
+        let editingTag = null;
+        let lastTagId = 0;
 
-        function toggleExpand(tagId) {
-            const subtagsContainer = document.getElementById(`subtags-${tagId}`);
-            const button = event.currentTarget;
-            
-            subtagsContainer.classList.toggle('hidden');
-            
-            if (subtagsContainer.classList.contains('hidden')) {
-                button.textContent = '▶';
-            } else {
-                button.textContent = '▼';
+        // Utility function to generate unique IDs
+        function generateId() {
+            lastTagId++;
+            return `tag-${lastTagId}`;
+        }
+
+        // Add main tag with API call
+        async function addMainTag() {
+            try {
+                const response = await fetch('/tag-editor/tags/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tag_name: 'New Tag'
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Failed to create tag');
+                
+                const data = await response.json();
+                const newTagId = data.tag_id;
+                
+                const tagHtml = `
+                    <div class="tag-container" data-tag-id="${newTagId}">
+                        <div class="tag-row">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleExpand('${newTagId}')" class="expand-button">▶</button>
+                                <div class="edit-container">
+                                    <input type="text"
+                                           class="edit-input"
+                                           value="New Tag"
+                                           onkeypress="handleKeyPress(event, '${newTagId}', false)"
+                                           id="edit-${newTagId}">
+                                    <button onclick="saveEdit('${newTagId}', false)" class="button-green">✓</button>
+                                    <button onclick="cancelEdit()" class="button-red">✗</button>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <button onclick="toggleMenu('${newTagId}', false)" data-menu-toggle class="menu-toggle">•</button>
+                                <div id="menu-${newTagId}" class="tag-menu hidden">
+                                    <button class="menu-button" onclick="startEditing('${newTagId}', '', false)">Edit Tag</button>
+                                    <button class="menu-button" onclick="addSubTag('${newTagId}')">+ Add Tag</button>
+                                    <button class="menu-button delete-button" onclick="deleteTag('${newTagId}', false)">- Delete Tag</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="subtags-${newTagId}" class="subtag-container hidden"></div>
+                    </div>
+                `;
+                
+                const tagsContainer = document.getElementById('tags-container');
+                tagsContainer.insertAdjacentHTML('beforeend', tagHtml);
+                const input = document.getElementById(`edit-${newTagId}`);
+                input.select();
+                editingTag = { id: newTagId, isSubTag: false };
+            } catch (error) {
+                console.error('Error creating tag:', error);
+                alert('Failed to create tag');
             }
         }
 
+        // Add subtag
+        async function addSubTag(parentId) {
+            try {
+                const response = await fetch(`/tag-editor/tags/${parentId}/values`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tag_value: 'New Subtag'
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to create subtag');
+                
+                const data = await response.json();
+                const newSubTagId = data.value_id;
+                
+                const subTagHtml = `
+                    <div class="tag-row" data-subtag-id="${newSubTagId}">
+                        <div class="ml-6">
+                            <div class="edit-container">
+                                <input type="text"
+                                       class="edit-input"
+                                       value="New Subtag"
+                                       onkeypress="handleKeyPress(event, '${newSubTagId}', true, '${parentId}')"
+                                       id="edit-${newSubTagId}">
+                                <button onclick="saveEdit('${newSubTagId}', true, '${parentId}')" class="button-green">✓</button>
+                                <button onclick="cancelEdit()" class="button-red">✗</button>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <button onclick="toggleMenu('${newSubTagId}', true, '${parentId}')" data-menu-toggle class="menu-toggle">•</button>
+                            <div id="menu-${newSubTagId}" class="tag-menu hidden">
+                                <button class="menu-button" onclick="startEditing('${newSubTagId}', '', true, '${parentId}')">Edit Tag</button>
+                                <button class="menu-button delete-button" onclick="deleteTag('${newSubTagId}', true, '${parentId}')">- Delete Tag</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const subtagsContainer = document.getElementById(`subtags-${parentId}`);
+                subtagsContainer.insertAdjacentHTML('beforeend', subTagHtml);
+                subtagsContainer.classList.remove('hidden');
+                
+                const expandButton = subtagsContainer.parentElement.querySelector('.expand-button');
+                if (expandButton) expandButton.textContent = '▼';
+                
+                const input = document.getElementById(`edit-${newSubTagId}`);
+                input.select();
+                editingTag = { id: newSubTagId, isSubTag: true };
+            } catch (error) {
+                console.error('Error creating subtag:', error);
+                alert('Failed to create subtag');
+            }
+        }
+
+        // Save edit with API call
+        async function saveEdit(id, isSubTag, parentId) {
+            const input = document.getElementById(`edit-${id}`);
+            const newName = input.value.trim();
+            
+            if (newName === '') {
+                alert('Tag name cannot be empty');
+                return;
+            }
+            
+            try {
+                const endpoint = isSubTag ? `/tag-editor/tags/values/${id}` : `/tag-editor/tags/${id}`;
+                const body = isSubTag ? { tag_value: newName } : { tag_name: newName };
+                
+                const response = await fetch(endpoint, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                if (!response.ok) throw new Error('Failed to update tag');
+                
+                const tagElement = isSubTag 
+                    ? document.querySelector(`[data-subtag-id="${id}"]`) 
+                    : document.querySelector(`[data-tag-id="${id}"]`).querySelector('.tag-row');
+                
+                const spanHtml = `<span>${newName}</span>`;
+                
+                if (isSubTag) {
+                    tagElement.querySelector('.ml-6').innerHTML = spanHtml;
+                } else {
+                    const container = tagElement.querySelector('.flex.items-center.gap-2');
+                    const expandButton = container.querySelector('.expand-button');
+                    container.innerHTML = '';
+                    container.appendChild(expandButton);
+                    container.insertAdjacentHTML('beforeend', spanHtml);
+                }
+                
+                editingTag = null;
+            } catch (error) {
+                console.error('Error updating tag:', error);
+                alert('Failed to update tag');
+            }
+        }
+
+        // Delete tag with API call
+        async function deleteTag(id, isSubTag, parentId) {
+            if (!confirm('Are you sure you want to delete this tag?')) return;
+            
+            try {
+                const endpoint = isSubTag ? `/tag-editor/tags/values/${id}` : `/tag-editor/tags/${id}`;
+                const response = await fetch(endpoint, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) throw new Error('Failed to delete tag');
+                
+                if (isSubTag) {
+                    const subTag = document.querySelector(`[data-subtag-id="${id}"]`);
+                    if (subTag) subTag.remove();
+                } else {
+                    const tag = document.querySelector(`[data-tag-id="${id}"]`);
+                    if (tag) tag.remove();
+                }
+            } catch (error) {
+                console.error('Error deleting tag:', error);
+                alert('Failed to delete tag');
+            }
+        }
+
+        // Start editing a tag
+        function startEditing(id, currentName, isSubTag, parentId) {
+            document.querySelectorAll('.tag-menu').forEach(menu => menu.classList.add('hidden'));
+            
+            const tagElement = isSubTag 
+                ? document.querySelector(`[data-subtag-id="${id}"]`) 
+                : document.querySelector(`[data-tag-id="${id}"]`).querySelector('.tag-row');
+            
+            const currentSpan = tagElement.querySelector('span');
+            const currentText = currentName || currentSpan.textContent;
+            
+            const editHtml = `
+                <div class="edit-container">
+                    <input type="text"
+                           class="edit-input"
+                           value="${currentText}"
+                           onkeypress="handleKeyPress(event, '${id}', ${isSubTag}, '${parentId || ''}')"
+                           id="edit-${id}">
+                    <button onclick="saveEdit('${id}', ${isSubTag}, '${parentId || ''}')" class="button-green">✓</button>
+                    <button onclick="cancelEdit()" class="button-red">✗</button>
+                </div>
+            `;
+            
+            if (isSubTag) {
+                tagElement.querySelector('.ml-6').innerHTML = editHtml;
+            } else {
+                const container = tagElement.querySelector('.flex.items-center.gap-2');
+                const expandButton = container.querySelector('.expand-button');
+                container.innerHTML = '';
+                container.appendChild(expandButton);
+                container.insertAdjacentHTML('beforeend', editHtml);
+            }
+            
+            const input = document.getElementById(`edit-${id}`);
+            input.select();
+            editingTag = { id, isSubTag };
+        }
+
+        // Handle keypress events
+        function handleKeyPress(event, id, isSubTag, parentId) {
+            if (event.key === 'Enter') {
+                saveEdit(id, isSubTag, parentId);
+            } else if (event.key === 'Escape') {
+                cancelEdit();
+            }
+        }
+
+        // Cancel editing
+        function cancelEdit() {
+            if (!editingTag) return;
+            
+            const { id, isSubTag } = editingTag;
+            const tagElement = isSubTag 
+                ? document.querySelector(`[data-subtag-id="${id}"]`) 
+                : document.querySelector(`[data-tag-id="${id}"]`);
+            
+            if (!tagElement) {
+                if (isSubTag) {
+                    tagElement.remove();
+                } else {
+                    const container = document.querySelector(`[data-tag-id="${id}"]`);
+                    if (container) container.remove();
+                }
+            } else {
+                const currentInput = document.getElementById(`edit-${id}`);
+                const spanHtml = `<span>${currentInput.defaultValue}</span>`;
+                
+                if (isSubTag) {
+                    tagElement.querySelector('.ml-6').innerHTML = spanHtml;
+                } else {
+                    const container = tagElement.querySelector('.flex.items-center.gap-2');
+                    const expandButton = container.querySelector('.expand-button');
+                    container.innerHTML = '';
+                    container.appendChild(expandButton);
+                    container.insertAdjacentHTML('beforeend', spanHtml);
+                }
+            }
+            
+            editingTag = null;
+        }
+
+        // Toggle expand/collapse for tags
+        function toggleExpand(tagId) {
+            const subtagsContainer = document.getElementById(`subtags-${tagId}`);
+            const button = event.currentTarget;
+            subtagsContainer.classList.toggle('hidden');
+            button.textContent = subtagsContainer.classList.contains('hidden') ? '▶' : '▼';
+        }
+
+        // Toggle menu
         function toggleMenu(id, isSubTag, parentId) {
             event.stopPropagation();
             const menus = document.querySelectorAll('.tag-menu');
@@ -410,18 +399,18 @@
             const menu = document.getElementById(`menu-${id}`);
             menu.classList.toggle('hidden');
         }
+        
 
-        // Filter tags functionality
+        // Filter tags
         function filterTags() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const tagContainers = document.querySelectorAll('.tag-container');
             
             tagContainers.forEach(container => {
-                const tagName = container.querySelector('span').textContent.toLowerCase();
+                const tagName = container.querySelector('span')?.textContent.toLowerCase() || '';
                 const subTags = container.querySelectorAll('.subtag-container span');
                 let match = tagName.includes(searchTerm);
                 
-                // Check subtags
                 subTags.forEach(subTag => {
                     if (subTag.textContent.toLowerCase().includes(searchTerm)) {
                         match = true;
@@ -432,271 +421,13 @@
             });
         }
 
-//Global state to track editing
-let editingTag = null;
-let lastTagId = 0; // For generating unique IDs
-
-// Utility function to generate unique IDs
-function generateId() {
-    lastTagId++;
-    return `tag-${lastTagId}`;
-}
-
-// Add main tag
-function addMainTag() {
-    const tagsContainer = document.getElementById('tags-container');
-    const newTagId = generateId();
-    
-    const tagHtml = `
-        <div class="tag-container" data-tag-id="${newTagId}">
-            <div class="tag-row">
-                <div class="flex items-center gap-2">
-                    <button onclick="toggleExpand('${newTagId}')" class="expand-button">▶</button>
-                    <div class="edit-container">
-                        <input type="text"
-                               class="edit-input"
-                               value="New Tag"
-                               onkeypress="handleKeyPress(event, '${newTagId}', false)"
-                               id="edit-${newTagId}">
-                        <button onclick="saveEdit('${newTagId}', false)" class="button-green">✓</button>
-                        <button onclick="cancelEdit()" class="button-red">✗</button>
-                    </div>
-                </div>
-                <div class="relative">
-                    <button onclick="toggleMenu('${newTagId}', false)" data-menu-toggle class="menu-toggle">•</button>
-                    <div id="menu-${newTagId}" class="tag-menu hidden">
-                        <button class="menu-button" onclick="startEditing('${newTagId}', '', false)">Edit Tag</button>
-                        <button class="menu-button" onclick="addSubTag('${newTagId}')">+ Add Tag</button>
-                        <button class="menu-button delete-button" onclick="deleteTag('${newTagId}', false)">- Delete Tag</button>
-                    </div>
-                </div>
-            </div>
-            <div id="subtags-${newTagId}" class="subtag-container hidden"></div>
-        </div>
-    `;
-    
-    tagsContainer.insertAdjacentHTML('beforeend', tagHtml);
-    const input = document.getElementById(`edit-${newTagId}`);
-    input.select();
-    editingTag = { id: newTagId, isSubTag: false };
-}
-
-// Add subtag
-function addSubTag(parentId) {
-    const subtagsContainer = document.getElementById(`subtags-${parentId}`);
-    const newSubTagId = generateId();
-    
-    const subTagHtml = `
-        <div class="tag-row" data-subtag-id="${newSubTagId}">
-            <div class="ml-6">
-                <div class="edit-container">
-                    <input type="text"
-                           class="edit-input"
-                           value="New Subtag"
-                           onkeypress="handleKeyPress(event, '${newSubTagId}', true, '${parentId}')"
-                           id="edit-${newSubTagId}">
-                    <button onclick="saveEdit('${newSubTagId}', true, '${parentId}')" class="button-green">✓</button>
-                    <button onclick="cancelEdit()" class="button-red">✗</button>
-                </div>
-            </div>
-            <div class="relative">
-                <button onclick="toggleMenu('${newSubTagId}', true, '${parentId}')" data-menu-toggle class="menu-toggle">•</button>
-                <div id="menu-${newSubTagId}" class="tag-menu hidden">
-                    <button class="menu-button" onclick="startEditing('${newSubTagId}', '', true, '${parentId}')">Edit Tag</button>
-                    <button class="menu-button delete-button" onclick="deleteTag('${newSubTagId}', true, '${parentId}')">- Delete Tag</button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    subtagsContainer.insertAdjacentHTML('beforeend', subTagHtml);
-    subtagsContainer.classList.remove('hidden');
-    const expandButton = subtagsContainer.parentElement.querySelector('.expand-button');
-    if (expandButton) expandButton.textContent = '▼';
-    
-    const input = document.getElementById(`edit-${newSubTagId}`);
-    input.select();
-    editingTag = { id: newSubTagId, isSubTag: true };
-}
-
-// Start editing a tag
-function startEditing(id, currentName, isSubTag, parentId) {
-    // Close any open menus
-    document.querySelectorAll('.tag-menu').forEach(menu => menu.classList.add('hidden'));
-    
-    const tagElement = isSubTag 
-        ? document.querySelector(`[data-subtag-id="${id}"]`) 
-        : document.querySelector(`[data-tag-id="${id}"]`).querySelector('.tag-row');
-    
-    const currentSpan = tagElement.querySelector('span');
-    const currentText = currentName || currentSpan.textContent;
-    
-    const editHtml = `
-        <div class="edit-container">
-            <input type="text"
-                   class="edit-input"
-                   value="${currentText}"
-                   onkeypress="handleKeyPress(event, '${id}', ${isSubTag}, '${parentId || ''}')"
-                   id="edit-${id}">
-            <button onclick="saveEdit('${id}', ${isSubTag}, '${parentId || ''}')" class="button-green">✓</button>
-            <button onclick="cancelEdit()" class="button-red">✗</button>
-        </div>
-    `;
-    
-    if (isSubTag) {
-        tagElement.querySelector('.ml-6').innerHTML = editHtml;
-    } else {
-        const container = tagElement.querySelector('.flex.items-center.gap-2');
-        const expandButton = container.querySelector('.expand-button');
-        container.innerHTML = '';
-        container.appendChild(expandButton);
-        container.insertAdjacentHTML('beforeend', editHtml);
-    }
-    
-    const input = document.getElementById(`edit-${id}`);
-    input.select();
-    editingTag = { id, isSubTag };
-}
-
-// Save tag edit
-function saveEdit(id, isSubTag, parentId) {
-    const input = document.getElementById(`edit-${id}`);
-    const newName = input.value.trim();
-    
-    if (newName === '') {
-        alert('Tag name cannot be empty');
-        return;
-    }
-    
-    const tagElement = isSubTag 
-        ? document.querySelector(`[data-subtag-id="${id}"]`) 
-        : document.querySelector(`[data-tag-id="${id}"]`).querySelector('.tag-row');
-    
-    const spanHtml = `<span>${newName}</span>`;
-    
-    if (isSubTag) {
-        tagElement.querySelector('.ml-6').innerHTML = spanHtml;
-    } else {
-        const container = tagElement.querySelector('.flex.items-center.gap-2');
-        const expandButton = container.querySelector('.expand-button');
-        container.innerHTML = '';
-        container.appendChild(expandButton);
-        container.insertAdjacentHTML('beforeend', spanHtml);
-    }
-    
-    editingTag = null;
-}
-
-// Cancel tag edit
-function cancelEdit() {
-    if (!editingTag) return;
-    
-    const { id, isSubTag } = editingTag;
-    const tagElement = isSubTag 
-        ? document.querySelector(`[data-subtag-id="${id}"]`) 
-        : document.querySelector(`[data-tag-id="${id}"]`);
-    
-    if (!tagElement) {
-        // If canceling a new tag creation, remove the entire tag
-        if (isSubTag) {
-            tagElement.remove();
-        } else {
-            const container = document.querySelector(`[data-tag-id="${id}"]`);
-            if (container) container.remove();
-        }
-    } else {
-        // If canceling an edit of existing tag, revert to span
-        const currentInput = document.getElementById(`edit-${id}`);
-        const spanHtml = `<span>${currentInput.defaultValue}</span>`;
-        
-        if (isSubTag) {
-            tagElement.querySelector('.ml-6').innerHTML = spanHtml;
-        } else {
-            const container = tagElement.querySelector('.flex.items-center.gap-2');
-            const expandButton = container.querySelector('.expand-button');
-            container.innerHTML = '';
-            container.appendChild(expandButton);
-            container.insertAdjacentHTML('beforeend', spanHtml);
-        }
-    }
-    
-    editingTag = null;
-}
-
-// Handle keypress events
-function handleKeyPress(event, id, isSubTag, parentId) {
-    if (event.key === 'Enter') {
-        saveEdit(id, isSubTag, parentId);
-    } else if (event.key === 'Escape') {
-        cancelEdit();
-    }
-}
-
-// Delete tag
-function deleteTag(id, isSubTag, parentId) {
-    if (confirm('Are you sure you want to delete this tag?')) {
-        if (isSubTag) {
-            const subTag = document.querySelector(`[data-subtag-id="${id}"]`);
-            if (subTag) subTag.remove();
-        } else {
-            const tag = document.querySelector(`[data-tag-id="${id}"]`);
-            if (tag) tag.remove();
-        }
-    }
-}
-
-// Toggle expand/collapse for tags
-function toggleExpand(tagId) {
-    const subtagsContainer = document.getElementById(`subtags-${tagId}`);
-    const button = event.currentTarget;
-    
-    subtagsContainer.classList.toggle('hidden');
-    button.textContent = subtagsContainer.classList.contains('hidden') ? '▶' : '▼';
-}
-
-// Toggle menu
-function toggleMenu(id, isSubTag, parentId) {
-    event.stopPropagation();
-    const menus = document.querySelectorAll('.tag-menu');
-    menus.forEach(menu => {
-        if (menu.id !== `menu-${id}`) {
-            menu.classList.add('hidden');
-        }
-    });
-    const menu = document.getElementById(`menu-${id}`);
-    menu.classList.toggle('hidden');
-}
-
-// Click outside to close menus
-document.addEventListener('click', function(event) {
-    if (event.target.closest('[data-menu-toggle]') || event.target.closest('.tag-menu')) {
-        return;
-    }
-    document.querySelectorAll('.tag-menu').forEach(menu => menu.classList.add('hidden'));
-});
-
-// Filter tags
-function filterTags() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const tagContainers = document.querySelectorAll('.tag-container');
-    
-    tagContainers.forEach(container => {
-        const tagName = container.querySelector('span')?.textContent.toLowerCase() || '';
-        const subTags = container.querySelectorAll('.subtag-container span');
-        let match = tagName.includes(searchTerm);
-        
-        // Check subtags
-        subTags.forEach(subTag => {
-            if (subTag.textContent.toLowerCase().includes(searchTerm)) {
-                match = true;
+        // Close menus when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('[data-menu-toggle]') || event.target.closest('.tag-menu')) {
+                return;
             }
+            document.querySelectorAll('.tag-menu').forEach(menu => menu.classList.add('hidden'));
         });
-        
-        container.style.display = match ? 'block' : 'none';
-    });
-
-}    </script>
+    </script>
 </body>
 </html>
-
-
