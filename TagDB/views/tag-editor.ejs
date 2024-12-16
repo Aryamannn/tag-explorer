@@ -1,262 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Explorer Frontend</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/tag_edits.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSkt1Kp4r1ATIvxsO9lrpCjlX9xIY7PQxmZQ5tw80pM" crossorigin="anonymous">
+
 
     <title>Tag Editor</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-        }
-
-        .editor-container {
-            width: 100%;
-            max-width: 800px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            height: 600px;
-            margin-top: 40px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-        }
-
-        .header-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: #111827;
-        }
-
-        .search-container {
-            padding: 16px;
-            border-bottom: 1px solid #e5e7eb;
-            background: white;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 8px 16px;
-            border: 1px solid #e5e7eb;
-            border-radius: 24px;
-            font-size: 14px;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-        }
-
-        .content-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            background: white;
-        }
-
-        .tag-container {
-            margin-bottom: 4px;
-        }
-
-        .subtag-container {
-            margin-left: 24px;
-            border-left: 2px solid #e5e7eb;
-            margin-top: 2px;
-            padding-left: 8px;
-        }
-
-        .tag-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .tag-row:hover {
-            background: #e3f2fd;
-        }
-
-        .add-tag-button {
-            background: none;
-            border: none;
-            color: #007bff;
-            cursor: pointer;
-            font-size: 14px;
-            padding: 8px 0;
-            margin-bottom: 16px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .add-tag-button:hover {
-            color: #0056b3;
-        }
-
-        .expand-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 2px 4px;
-            color: #6b7280;
-            font-size: 12px;
-            transition: color 0.2s;
-        }
-
-        .expand-button:hover {
-            color: #007bff;
-        }
-
-        .menu-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px 8px;
-            color: #6b7280;
-            font-size: 16px;
-            line-height: 1;
-            transition: all 0.2s;
-            border-radius: 4px;
-        }
-
-        .menu-toggle:hover {
-            color: #007bff;
-            background: #e3f2fd;
-        }
-
-        .tag-menu {
-            position: absolute;
-            right: 0;
-            margin-top: 4px;
-            width: 160px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-        }
-
-        .menu-button {
-            width: 100%;
-            padding: 8px 16px;
-            text-align: left;
-            font-size: 14px;
-            background: transparent;
-            border: none;
-            color: #374151;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .menu-button:hover {
-            background: #e3f2fd;
-            color: #007bff;
-        }
-
-        .delete-button {
-            color: #6b7280;
-        }
-
-        .delete-button:hover {
-            color: #dc2626;
-            background: #fee2e2;
-        }
-
-        .edit-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .edit-input {
-            padding: 6px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .edit-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-        }
-
-        .button-green { 
-            color: #16a34a;
-            transition: color 0.2s;
-        }
-        
-        .button-green:hover {
-            color: #15803d;
-        }
-        
-        .button-red { 
-            color: #6b7280;
-            transition: color 0.2s;
-        }
-        
-        .button-red:hover {
-            color: #dc2626;
-        }
-
-        .hidden { display: none; }
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .gap-2 { gap: 8px; }
-        .relative { position: relative; }
-        .ml-6 { margin-left: 24px; }
-
-        span {
-            font-size: 14px;
-            color: #374151;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #c5c5c5;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a3a3a3;
-        }
-    </style>
+    
 </head>
 <body>
-    <div class="editor-container">
+    <div class="editor-container" >
         <div class="header">
             <span class="header-title">Tag Editor</span>
         </div>
@@ -270,9 +32,11 @@
         </div>
         
         <div class="content-area">
-            <button onclick="addMainTag()" class="add-tag-button">
-                + Add Tag
+            <div class="d-grid gap-2">
+            <button  class="btn btn-primary"  onclick="addMainTag()" class="add-tag-button">
+                Add Tag
             </button>
+            </div>
 
             <div id="tags-container">
                 <% tags.forEach(function(tag) { %>
@@ -286,19 +50,21 @@
                             </div>
 
                             <div class="relative">
-                                <button onclick="toggleMenu('<%- tag.id %>', false)" data-menu-toggle class="menu-toggle">
-                                    •
+                                <button onclick="toggleMenu('<%- tag.id %>', false, event)" data-menu-toggle class="menu-toggle">
+                                    •••
                                 </button>
 
                                 <div id="menu-<%- tag.id %>" class="tag-menu hidden">
-                                    <button class="menu-button" onclick="startEditing('<%- tag.id %>', '<%- tag.name %>', false)">
+                                    <button  class="menu-button edit-button" onclick="startEditing('<%- tag.id %>', '<%- tag.name %>', false)">
                                         Edit Tag
                                     </button>
-                                    <button class="menu-button" onclick="addSubTag('<%- tag.id %>')">
-                                        + Add Tag
+                                 
+                                    <button  class="menu-button add-button" onclick="addSubTag('<%- tag.id %>')">
+                                        Add Value
                                     </button>
-                                    <button class="menu-button delete-button" onclick="deleteTag('<%- tag.id %>', false)">
-                                        - Delete Tag
+                                   
+                                    <button   class="menu-button delete-button" onclick="deleteTag('<%- tag.id %>', false)">
+                                        Delete Tag
                                     </button>
                                 </div>
                             </div>
@@ -306,6 +72,7 @@
 
                         <div id="subtags-<%- tag.id %>" class="subtag-container <%= tag.isExpanded ? '' : 'hidden' %>">
                             <% tag.subTags.forEach(function(subTag) { %>
+                            
                                 <div class="tag-row" data-subtag-id="<%- subTag.id %>">
                                     <div class="ml-6">
                                         <span><%- subTag.name %></span>
@@ -317,11 +84,11 @@
                                         </button>
 
                                         <div id="menu-<%- subTag.id %>" class="tag-menu hidden">
-                                            <button class="menu-button" onclick="startEditing('<%- subTag.id %>', '<%- subTag.name %>', true, '<%- tag.id %>')">
-                                                Edit Tag
+                                            <button class="menu-button edit-button" onclick="startEditing('<%- subTag.id %>', '<%- subTag.name %>', true, '<%- tag.id %>')">
+                                                Edit Value
                                             </button>
                                             <button class="menu-button delete-button" onclick="deleteTag('<%- subTag.id %>', true, '<%- tag.id %>')">
-                                                - Delete Tag
+                                                 Delete Value
                                             </button>
                                         </div>
                                     </div>
@@ -632,6 +399,7 @@
             const menu = document.getElementById(`menu-${id}`);
             menu.classList.toggle('hidden');
         }
+        
 
         // Filter tags
         function filterTags() {

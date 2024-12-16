@@ -1,6 +1,25 @@
+/* Make sure the sidebar doesn't move */
 .sidebar {
-  height: 100vh;
-  background-color: #f8f9fa;
+  position: sticky;
+  top: 0; /* Keep it at the top of the screen */
+  max-height: 86vh; /* Allow the sidebar to scroll if necessary */
+  overflow-y: auto;
+  z-index: 10; /* Ensure the sidebar stays on top of content */
+}
+
+/* Ensure the main content area scrolls */
+.main-content {
+  max-height: 94vh; /* Allow scrolling for the content area */
+  overflow-y: auto;
+}
+
+/* You can adjust the width of the sidebar to your liking */
+.col-3.sidebar {
+  width: 25%; /* Adjust this as needed */
+}
+
+.col-9.p-3 {
+  width: 75%; /* Adjust this to match the content area width */
 }
 
 .file-list {
